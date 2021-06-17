@@ -13,21 +13,21 @@
 -----------------------------------------------------
  Version: 0.1.0.0 Alpha
 -----------------------------------------------------
- Usage: Настройки веб сервиса
+ Usage: WEB API settings
 =====================================================
 */
 if(!defined('FOXXEY')) {
 	die ("Not a real Fox! =(");
 }
 
-	define('webDir', 	'foxxey');
-	define('ROOT_DIR', 		$_SERVER['DOCUMENT_ROOT']);
-	define('SCRIPTS_DIR', 	ROOT_DIR.'/'.webDir.'/scripts/');
-	define('FILES_DIR', 	ROOT_DIR.'/'.webDir.'/files/');
-	define('SITE_ROOT', 	ROOT_DIR.'/'.webDir);
-	define('REMOTE_IP', 	getenv('REMOTE_ADDR'));
-	define('CURRENT_TIME',  time());
-	define('CURRENT_DATE', 	date("d.m.Y"));
+	define('webDir', 	  'foxxey');
+	define('ROOT_DIR', 	  $_SERVER['DOCUMENT_ROOT']);
+	define('SCRIPTS_DIR', ROOT_DIR.'/'.webDir.'/scripts/');
+	define('FILES_DIR',   ROOT_DIR.'/'.webDir.'/files/');
+	define('SITE_ROOT',   ROOT_DIR.'/'.webDir);
+	define('REMOTE_IP',   getenv('REMOTE_ADDR'));
+	define('CURRENT_TIME',time());
+	define('CURRENT_DATE',date("d.m.Y"));
 
 $config = array(
 	/* Database Settings*/
