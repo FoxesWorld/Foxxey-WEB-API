@@ -2,7 +2,7 @@
 WEB API for Foxxey Launcher
 
 __TODO__
- - Other Fixes and optimisations
+ - Fixes and optimisations
 
 __WAS DONE__
  - Balance parser
