@@ -82,7 +82,7 @@ class Authorise {
 								$this->webSiteFunction->passwordReHash($this->pass, $this->realPass, $this->realName);
 								exit('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": 100, "hardwareId":  '.$this->HWIDstatus.'}');
 							} else {
-								exit('{"login"" "'.$this->login.'", "fullName":"'.$this->fullname.'", "message": "'.$message['HWIDerror'].'", "hardwareId": '.$this->HWIDstatus.'}');
+								exit('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "message": "'.$message['HWIDerror'].'", "hardwareId": '.$this->HWIDstatus.'}');
 							}
 
 						} else {
