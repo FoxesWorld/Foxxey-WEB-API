@@ -32,5 +32,10 @@
 						$Auth = new Authorise($login, $password, $hwid);
 						die($Auth->logIn());
 					   break;
+					   
+					   case 'startUpSound':
+					   		$startSound = new startUpSound($config['debugStartUpSound']);
+							die($startSound->generateAudio());
+					   break;
 				   }
 	}

@@ -25,4 +25,5 @@ Ini_Set('display_errors', true);
 	require (SCRIPTS_DIR.'HWID.class.php');
 	require (SCRIPTS_DIR.'functions.class.php');
 	require (SCRIPTS_DIR.'authorise.class.php');
+	require (SCRIPTS_DIR.'startUpSound.class.php');
 	require (SCRIPTS_DIR.'actionScript.php');

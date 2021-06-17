@@ -47,6 +47,12 @@ $config = array(
 	'db_columnMail' 	=> 'email',
 	'authJSON'			=> false,
 	
+	/* startUpSound */
+	'debugStartUpSound' => false,
+	'enableVoice' 		=> true,
+	'enableMusic' 		=> true,
+	'easterMusRarity'   => 10, //1 by default
+	
 	/* Clients Settings */
 	'clientsDir' 		=> 'files/clients/',
 	'temp' 				=> false, //Use temporary files
