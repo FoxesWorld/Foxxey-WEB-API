@@ -16,6 +16,11 @@
  Usage: Authorising and using HWID
 =====================================================
 */
+
+	header('Content-Type: text/html; charset=utf-8');
+	if(!defined('FOXXEY')) {
+		die ("Not a real Fox! =( HWID");
+	}
 class Authorise {
 	
 		/* INPUT DATA */
@@ -88,7 +93,7 @@ class Authorise {
 								//================
 
 								// Fox checking
-								$checkFox = new foxCheck($this->login);
+								$checkFox = new foxCheck($this->login, $config['foxCheckDebug']);
 								if($checkFox->checkFox() === true){
 									echo '{"message": "'.$message['congrats'].'"},';
 									$this->webSiteFunction->insertCoins($this->login);

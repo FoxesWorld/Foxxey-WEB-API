@@ -1,5 +1,21 @@
 <?php
-
+/*
+=====================================================
+ foxCheck.class.php
+-----------------------------------------------------
+ https://Foxesworld.ru/
+-----------------------------------------------------
+ Copyright (c) 2016-2021  FoxesWorld
+-----------------------------------------------------
+ This code is reserved
+-----------------------------------------------------
+ File: foxCheck.class.php
+-----------------------------------------------------
+ Version: 0.1.0.0 Alpha
+-----------------------------------------------------
+ Usage: Check if user is a fox
+=====================================================
+*/
 	class foxCheck {
 		
 		private $login;
@@ -20,7 +36,7 @@
 			$FoxArray = array('Fox', 'foX', 'fOx', 'FOX', 'fox', 'Foxes', 'foxes', 'Lis', 'lis', 'Renard', 'Fuchs', 'FOTONTV');
 			foreach($FoxArray as $key) {
 				if($this->debug === true) {
-					echo "Checking ".$this->login." to str_pos ".$key."<br>";
+					echo "Checking <b>".$this->login."</b> to str_pos ".$key."<br>";
 				}
 				if(strpos($this->login, $key)){
 					if(!$this->foxCheckDB()) {

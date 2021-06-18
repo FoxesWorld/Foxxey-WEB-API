@@ -30,11 +30,15 @@ if(!defined('FOXXEY')) {
 	define('CURRENT_DATE',date("d.m.Y"));
 
 $config = array(
+	/* DEBUG */
+	'modulesDebug'		=> false,
+	'HWIDdebug'			=> false,
+	'foxCheckDebug'		=> false,
+	'debugStartUpSound' => false,
+
 	/* Foxxey settings */
 	'rewardAmmount'		=> 50,
 	'webserviceName' 	=> 'FoxesWorld | Foxxey',
-	'modulesDebug'		=> false,
-	'HWIDdebug'			=> false,
 	'not_allowed_symbol'=> array ("\x22", "\x60", "\t", '\n', '\r', "\n", "\r", '\\', ",", "/", "¬", "#", ";", ":", "~", "[", "]", "{", "}", ")", "(", "*", "^", "%", "$", "<", ">", "?", "!", '"', "'", " ", "&" ),
 
 	/* Database Settings*/
@@ -55,7 +59,6 @@ $config = array(
 	'authJSON'			=> false,
 	
 	/* startUpSound */
-	'debugStartUpSound' => false,
 	'enableVoice' 		=> true,
 	'enableMusic' 		=> true,
 	'easterMusRarity'   => 10, //1 by default

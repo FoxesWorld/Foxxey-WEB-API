@@ -13,12 +13,13 @@
 -----------------------------------------------------
  Version: 0.1.0.0 Experimental
 -----------------------------------------------------
- Usage: ASome text used in API
+ Usage: Some text used in API
 =====================================================
 */
-if(!defined('FOXXEY')) {
-	die ("Not a real Fox! =(");
-}
+	header('Content-Type: text/html; charset=utf-8');
+	if(!defined('FOXXEY')) {
+		die ("Not a real Fox! =( HWID");
+	}
 
 	$message = array(
 	/* AUTH */

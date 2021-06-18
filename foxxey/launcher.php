@@ -16,6 +16,7 @@
  Usage: All the functions of Foxxey can be obtained in here
 =====================================================
 */
+header('Content-Type: text/html; charset=utf-8');
 Error_Reporting(E_ALL);
 Ini_Set('display_errors', true);
 //==============================
