@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.0.0 Alpha
+ Version: 0.1.1.0 Alpha
 -----------------------------------------------------
  Usage: WEB API settings
 =====================================================
@@ -30,6 +30,12 @@ if(!defined('FOXXEY')) {
 	define('CURRENT_DATE',date("d.m.Y"));
 
 $config = array(
+	/* Foxxey settings */
+	'webserviceName' 	=> 'FoxesWorld | Foxxey',
+	'modulesDebug'		=> false,
+	'HWIDdebug'			=> false,
+	'not_allowed_symbol'=> array ("\x22", "\x60", "\t", '\n', '\r', "\n", "\r", '\\', ",", "/", "¬", "#", ";", ":", "~", "[", "]", "{", "}", ")", "(", "*", "^", "%", "$", "<", ">", "?", "!", '"', "'", " ", "&" ),
+
 	/* Database Settings*/
 	'db_host' 			=> 'localhost',
 	'db_port' 			=> '3306',
@@ -53,19 +59,9 @@ $config = array(
 	'enableMusic' 		=> true,
 	'easterMusRarity'   => 10, //1 by default
 	
-	/* Clients Settings */
-	'clientsDir' 		=> 'files/clients/',
-	'temp' 				=> false, //Use temporary files
-	'useban' 			=> false, //Doesn't work
-	'useantibrut' 		=> true,
-	'bantime'			=> CURRENT_TIME + (100),
-	
 	/* Skins&Cloaks Configuration */
 	'uploaddirs'  		=> 'MinecraftSkins',  
-	'uploaddirp'  		=> 'MinecraftCloaks',
-	
-	'webserviceName' 	=> 'FoxesWorld | Foxxey',
-	'not_allowed_symbol'=> array ("\x22", "\x60", "\t", '\n', '\r', "\n", "\r", '\\', ",", "/", "¬", "#", ";", ":", "~", "[", "]", "{", "}", ")", "(", "*", "^", "%", "$", "<", ">", "?", "!", '"', "'", " ", "&" ));
+	'uploaddirp'  		=> 'MinecraftCloaks');
 	
 	$skinurl            = 'https://login.foxesworld.ru/launcher/'.$config['uploaddirs'].'/'; //Skins Link
     $capeurl            = 'https://login.foxesworld.ru/launcher/'.$config['uploaddirp'].'/'; //Cloaks Link

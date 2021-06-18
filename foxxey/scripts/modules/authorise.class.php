@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.0.0 Alpha
+ Verssion: 0.1.1.0 Alpha
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -74,7 +74,7 @@ class Authorise {
 							if($this->isLogged) {
 
 								// Checking HWID
-									$hardwareCheck = new HWID($this->login, $this->HWID);
+									$hardwareCheck = new HWID($this->login, $this->HWID, $config['HWIDdebug']);
 									$this->HWIDstatus = $hardwareCheck->checkHWID() ? 'true' : 'false';
 								//==============
 								

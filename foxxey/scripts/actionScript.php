@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: actionScript.php
 -----------------------------------------------------
- Version: 0.1.1.0 Experimental
+ Version: 0.1.2.0 Experimental
 -----------------------------------------------------
  Usage: Hooks other classes/modules we have
 =====================================================
@@ -19,7 +19,7 @@
 	if(!defined('FOXXEY')) {
 		die ("Not a real Fox! =( HWID");
 	}
-	includeModules(SCRIPTS_DIR.'modules');
+	includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug']);
 
 	foreach ($_GET as $key => $value) {
 		$requestTitle = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($key))));
@@ -44,6 +44,9 @@
 	function includeModules($dirInclude, $debug = false){
 		$count = 0;
 		$dir = opendir($dirInclude);
+		if($debug === true){
+			echo "<b>Modules to include: </b> (Debug)<br>";
+		}
 		while($file = readdir($dir)){
 				if($file == '.' || $file == '..'){
 					continue;
