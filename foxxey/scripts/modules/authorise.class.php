@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.1.0 Alpha
+ Verssion: 0.1.2.0 Alpha
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -47,6 +47,7 @@ class Authorise {
 	
 		function logIn (){
 			global $config, $message;
+			$coins = 0;
 			//FILTRATING INPUT DATA
 				$this->login = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->login)));
 				$this->pass  = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->pass)));
@@ -71,19 +72,29 @@ class Authorise {
 								$this->isLogged = true;
 							}
 						}
-							if($this->isLogged) {
+						
+						if($this->isLogged) { //If Login is correct
 
 								// Checking HWID
 									$hardwareCheck = new HWID($this->login, $this->HWID, $config['HWIDdebug']);
 									$this->HWIDstatus = $hardwareCheck->checkHWID() ? 'true' : 'false';
 								//==============
-								
+
+							if($this->HWIDstatus === 'true'){ //If HWID is correct too
+
 								// Getting Balance
 								$balance = new userbalance($this->login, false);
 								$coins = $balance->getUserBalance()['realmoney'];
 								//================
 
-							if($this->HWIDstatus === 'true'){
+								// Fox checking
+								$checkFox = new foxCheck($this->login);
+								if($checkFox->checkFox() === true){
+									echo '{"message": "'.$message['congrats'].'"},';
+									$this->webSiteFunction->insertCoins($this->login);
+								}
+								//=================
+
 								$this->webSiteFunction->passwordReHash($this->pass, $this->realPass, $this->realName);
 								exit('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$coins.', "hardwareId":  '.$this->HWIDstatus.'}');
 							} else {
@@ -91,13 +102,13 @@ class Authorise {
 							}
 
 						} else {
-							exit($message['wrongLoginPass']);
+							exit('{"message": "'.$message['wrongLoginPass'].'"}');
 						}
 				} else {
-					exit($message['userNotFound']);
+					exit('{"message": "'.$message['userNotFound'].'"}');
 				}
 			} else {
-				exit($message['dataNotIsset']);
+				exit('{"message": "'.$message['dataNotIsset'].'"}');
 			}
 		}
 }

@@ -25,6 +25,7 @@ if(!defined('FOXXEY')) {
 	'wrongLoginPass' => 'Неправильный логин или пароль',
 	'userNotFound'	 => 'Пользователь не найден',
 	'dataNotIsset'	 => 'Данные не введены',
+	'congrats'		 => 'Поздравляю, вы - Лис!',
 	
 	/* HWID */
 	'HWIDerror'		 => 'Не с того ПК заходим!'

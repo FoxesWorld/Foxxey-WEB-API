@@ -39,12 +39,14 @@ if(!defined('FOXXEY')) {
 
 		function getRandomName(){
 			$array = array('Феспис',
-			   'Неизвестная личность',
+			   'Неизвестная Лисность',
 			   'Безимянный Лис',
 			   'Таинственный незнакомец',
-			   'Тот чьё имя нельзя называть',
+			   'Тот, чьё имя нельзя называть',
 			   'Скрытный незнакомец',
-			   'Шпиён!!1');
+			   'Шпиён!!1',
+			   'Дерпи',
+			   'Стромюокс');
 			$randWord = rand(0, count($array)-1);
 
 			return $array[$randWord];
@@ -92,6 +94,13 @@ if(!defined('FOXXEY')) {
 				$hash = md5( $hash );
 
 				return $hash;
+			}
+			
+			function insertCoins($login){
+				global $config;
+				$query = "UPDATE `balance` SET `realmoney`= realmoney+".$config['rewardAmmount']." WHERE username = '".$login."'";
+				$db = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata'], $config['db_host']);
+				$db->run($query);
 			}
 
 			public static function display_error($error ='No errors', $error_num = 100, $query) {

@@ -31,6 +31,7 @@ if(!defined('FOXXEY')) {
 
 $config = array(
 	/* Foxxey settings */
+	'rewardAmmount'		=> 50,
 	'webserviceName' 	=> 'FoxesWorld | Foxxey',
 	'modulesDebug'		=> false,
 	'HWIDdebug'			=> false,

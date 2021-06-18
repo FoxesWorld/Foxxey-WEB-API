@@ -16,6 +16,7 @@
  Usage: Hooks other classes/modules we have
 =====================================================
 */
+
 	if(!defined('FOXXEY')) {
 		die ("Not a real Fox! =( HWID");
 	}
@@ -37,6 +38,11 @@
 		   case 'startUpSound':
 		   		$startSound = new startUpSound($config['debugStartUpSound']);
 				die($startSound->generateAudio());
+		   break;
+		   
+		   case 'test':
+				$foxCheck = new foxCheck('Jesus', true);
+				die($foxCheck->checkFox());
 		   break;
 		}
 	}
