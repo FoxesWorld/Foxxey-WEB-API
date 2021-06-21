@@ -120,13 +120,18 @@ require (SCRIPTS_DIR.'mp3File.class.php');
 							case 1:
 							break;
 							
-							case 22:
+							case ($dayToday >= 21):
 								$eventName = "twistOfTheSun";
 							break;
 						}
 					break;
 					
 					case 7:
+						switch($dayToday){
+							case ($dayToday >= 5):
+								$eventName = "twistOfTheSun";
+							break;
+						}
 					break;
 					
 					case 8:

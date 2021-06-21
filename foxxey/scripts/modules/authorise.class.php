@@ -29,25 +29,27 @@ class Authorise {
 		protected $HWID;
 		
 		/* INTERNAL */
-		private $isLogged;
+		private $correctLogin;
 		private $HWIDstatus;
 		private $database;
-		private $webSiteFunction;
-		
+		private $webSiteFunc;
+
 		/* USERDATA */
 		private $realName;
 		private $realPass;
 		private $fullname;
 		private $userGroup;
 		private $regDate;
-	
+		
 		function __construct($login, $pass, $HWID){
 			global $config;
-			$this->webSiteFunction = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
+			$this->webSiteFunc  = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
+			//$this->udataDB    = new functions($config['db_user'], $config['db_pass'], $config['db_name_userdata'], $config['db_host']);
+			//$this->launcherDB = new functions($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
 			$this->login = $login;
 			$this->pass = $pass;
 			$this->HWID = $HWID;
-			$this->isLogged = false;
+			$this->correctLogin = false;
 		}
 	
 		function logIn (){
@@ -60,25 +62,25 @@ class Authorise {
 			//*********************
 			
 			//Getting USERDATA
-			$this->realName  = json_decode($this->webSiteFunction->getUserData($this->login, 'name'))		-> name		 ?? null;
-			$this->realPass  = json_decode($this->webSiteFunction->getUserData($this->login, 'password'))	-> password	 ?? null;
-			$this->fullname  = json_decode($this->webSiteFunction->getUserData($this->login, 'fullname'))	-> fullname   ?? $this->webSiteFunction->getRandomName();
-			$this->userGroup = json_decode($this->webSiteFunction->getUserData($this->login, 'user_group'))	-> user_group ?? 4;
-			$this->regDate 	 = json_decode($this->webSiteFunction->getUserData($this->login, 'reg_date'))	-> reg_date	 ?? null;
+			$this->realName  = json_decode($this->webSiteFunc->getUserData($this->login, 'name'))		-> name		 ?? null;
+			$this->realPass  = json_decode($this->webSiteFunc->getUserData($this->login, 'password'))	-> password	 ?? null;
+			$this->fullname  = json_decode($this->webSiteFunc->getUserData($this->login, 'fullname'))	-> fullname   ?? $this->webSiteFunc->getRandomName();
+			$this->userGroup = json_decode($this->webSiteFunc->getUserData($this->login, 'user_group'))	-> user_group ?? 4;
+			$this->regDate 	 = json_decode($this->webSiteFunc->getUserData($this->login, 'reg_date'))	-> reg_date	 ?? null;
 			
 			if($this->login !== '' && $this->pass !== '') {
 					if($this->realName !== null && $this->realPass !== null) {
 						if(strlen($this->realPass) == 32 && ctype_xdigit($this->realPass)) {
 							if($this->realPass == md5(md5($this->pass))) {
-								$this->isLogged = true;
+								$this->correctLogin = true;
 							}
 						} else {
 							if(password_verify($this->pass, $this->realPass)) {
-								$this->isLogged = true;
+								$this->correctLogin = true;
 							}
 						}
 						
-						if($this->isLogged) { //If Login is correct
+						if($this->correctLogin) { //If Login is correct
 
 								// Checking HWID
 									$hardwareCheck = new HWID($this->login, $this->HWID, $config['HWIDdebug']);
@@ -96,17 +98,18 @@ class Authorise {
 								$checkFox = new foxCheck($this->login, $config['foxCheckDebug']);
 								if($checkFox->checkFox() === true){
 									echo '{"message": "'.$message['congrats'].'"},';
-									$this->webSiteFunction->insertCoins($this->login);
+									$this->webSiteFunc->insertCoins($this->login);
 								}
 								//=================
 
-								$this->webSiteFunction->passwordReHash($this->pass, $this->realPass, $this->realName);
+								$this->webSiteFunc->passwordReHash($this->pass, $this->realPass, $this->realName);
 								exit('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$coins.', "hardwareId":  '.$this->HWIDstatus.'}');
 							} else {
 								exit('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "message": "'.$message['HWIDerror'].'", "hardwareId": '.$this->HWIDstatus.'}');
 							}
 
 						} else {
+							$antiBrute = new antiBrute(REMOTE_IP, false);
 							exit('{"message": "'.$message['wrongLoginPass'].'"}');
 						}
 				} else {

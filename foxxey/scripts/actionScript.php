@@ -32,18 +32,13 @@
 			$login		 = $_GET['login'] 		?? null;
 			$password 	 = $_GET['password'] 	?? null;
 			$hwid 		 = $_GET['hwid']		?? null;
-			$Auth = new Authorise($login, $password, $hwid);
+			$Auth 		 = new Authorise($login, $password, $hwid);
 			die($Auth->logIn());
 		   break;
 					   
 		   case 'startUpSound':
 		   		$startSound = new startUpSound($config['debugStartUpSound']);
 				die($startSound->generateAudio());
-		   break;
-		   
-		   case 'test':
-				$foxCheck = new foxCheck('Jesus', true);
-				die($foxCheck->checkFox());
 		   break;
 		}
 	}
@@ -60,9 +55,9 @@
 				} else {
 					if($debug === true){
 						echo "<b>".$count."</b> ".$file."<br>";
+						$count ++;
 					}
 					require ($dirInclude.'/'.$file);
-					$count ++;
 				}
 			}
 	}

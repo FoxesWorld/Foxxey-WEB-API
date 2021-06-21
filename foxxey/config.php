@@ -38,6 +38,7 @@ $config = array(
 
 	/* Foxxey settings */
 	'rewardAmmount'		=> 50,
+	'bantime'			=> CURRENT_TIME + (100),
 	'webserviceName' 	=> 'FoxesWorld | Foxxey',
 	'not_allowed_symbol'=> array ("\x22", "\x60", "\t", '\n', '\r', "\n", "\r", '\\', ",", "/", "¬", "#", ";", ":", "~", "[", "]", "{", "}", ")", "(", "*", "^", "%", "$", "<", ">", "?", "!", '"', "'", " ", "&" ),
 

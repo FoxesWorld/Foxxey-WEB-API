@@ -46,6 +46,7 @@
 						}
 						$this->foxCheckStatus = true;
 						$this->insertFox();
+						break;
 					} else {
 						if($this->debug === true) {
 							echo "Fox ".$this->login." was found in DB tabble";
