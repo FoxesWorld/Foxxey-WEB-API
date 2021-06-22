@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.2.0 Alpha
+ Verssion: 0.1.3.0 Alpha
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -69,6 +69,7 @@ class Authorise {
 			$this->regDate 	 = json_decode($this->webSiteFunc->getUserData($this->login, 'reg_date'))	-> reg_date	 ?? null;
 			
 			if($this->login !== '' && $this->pass !== '') {
+					$geoplugin = new geoPlugin();
 					if($this->realName !== null && $this->realPass !== null) {
 						if(strlen($this->realPass) == 32 && ctype_xdigit($this->realPass)) {
 							if($this->realPass == md5(md5($this->pass))) {
