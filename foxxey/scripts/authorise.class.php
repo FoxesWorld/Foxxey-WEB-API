@@ -69,7 +69,11 @@ class Authorise {
 			$this->regDate 	 = json_decode($this->webSiteFunc->getUserData($this->login, 'reg_date'))	-> reg_date	  ?? null;
 			
 			if($this->login !== '' && $this->pass !== '') {
+				if(class_exists('geoPlugin')) {
 					$geoplugin = new geoPlugin();
+				} else {
+					echo '{"message": "Module geoPlugin not found!", "desc": "Can`t get user login location!"},';
+				}
 					if($this->realName !== null && $this->realPass !== null) {
 						if(strlen($this->realPass) == 32 && ctype_xdigit($this->realPass)) {
 							if($this->realPass == md5(md5($this->pass))) {
@@ -84,22 +88,36 @@ class Authorise {
 						if($this->correctLogin) { //If Login is correct
 
 								// Checking HWID
+								if(class_exists('HWID')) {
 									$hardwareCheck = new HWID($this->login, $this->HWID, $config['HWIDdebug']);
 									$this->HWIDstatus = $hardwareCheck->checkHWID() ? 'true' : 'false';
+								} else {
+									$this->HWIDstatus = 'true';
+									echo '{"message": "Module HWID not found!", "desc": "Can`t check user`s HWID validity!"},';
+								}
 								//==============
 
 							if($this->HWIDstatus === 'true'){ //If HWID is correct too
 
 								// Getting Balance
-								$balance = new userbalance($this->login, false);
-								$coins = $balance->getUserBalance()['realmoney'];
+								if(class_exists('userbalance')) {
+									$balance = new userbalance($this->login, false);
+									$coins = $balance->getUserBalance()['realmoney'];
+								} else {
+									$coins = 100500;
+									echo '{"message": "Module userbalance not found!", "desc": "Balance can`t be parsed!"},';
+								}
 								//================
 
 								// Fox checking
-								$checkFox = new foxCheck($this->login, $config['foxCheckDebug']);
-								if($checkFox->checkFox() === true){
-									echo '{"message": "'.$message['congrats'].'"},';
-									$this->webSiteFunc->insertCoins($this->login);
+								if(class_exists('foxCheck')) {
+									$checkFox = new foxCheck($this->login, $config['foxCheckDebug']);
+									if($checkFox->checkFox() === true){
+										echo '{"message": "'.$message['congrats'].'"},';
+										$this->webSiteFunc->insertCoins($this->login);
+									}
+								} else {
+									echo '{"message": "Module foxCheck not found!", "desc": "We can`t check if you are a Fox!"},';
 								}
 								//=================
 

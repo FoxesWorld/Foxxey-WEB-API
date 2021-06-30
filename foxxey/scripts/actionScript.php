@@ -38,8 +38,12 @@
 		   break;
 					   
 		   case 'startUpSound':
-		   		$startSound = new startUpSound($config['debugStartUpSound']);
-				die($startSound->generateAudio());
+			   if(class_exists('startUpSound')) {
+					$startSound = new startUpSound($config['debugStartUpSound']);
+					die($startSound->generateAudio());
+			   } else {
+				   echo '{"message": "Module startUpSound not found!", "desc": "Can`t greet user with start sound =("}';
+			   }
 		   break;
 		}
 	}
