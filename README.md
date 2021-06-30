@@ -9,4 +9,4 @@ __WAS DONE__
  - Debug logging
  - Balance parser
  - startUpSound integration
- - modules system
+ - modules system V2
