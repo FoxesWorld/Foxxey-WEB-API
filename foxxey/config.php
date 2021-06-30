@@ -57,25 +57,10 @@ $config = array(
 	'db_columnIp' 		=> 'logged_ip',
 	'db_columnDatareg' 	=> 'reg_date',
 	'db_columnMail' 	=> 'email',
-	'authJSON'			=> false,
 	
 	/* startUpSound */
 	'enableVoice' 		=> true,
 	'enableMusic' 		=> true,
-	'easterMusRarity'   => 10, //1 by default
-	
-	/* Skins&Cloaks Configuration */
-	'uploaddirs'  		=> 'MinecraftSkins',  
-	'uploaddirp'  		=> 'MinecraftCloaks');
-	
-	$skinurl            = 'https://login.foxesworld.ru/launcher/'.$config['uploaddirs'].'/'; //Skins Link
-    $capeurl            = 'https://login.foxesworld.ru/launcher/'.$config['uploaddirp'].'/'; //Cloaks Link
-	
-	$skinsArray = array(
-	'skinsAbsolute' 	=> SITE_ROOT.'/'.$config['uploaddirs'],
-	'cloaksAbsolute'	=> SITE_ROOT.'/'.$config['uploaddirp'],
-	'skinUrl'			=> 'https://login.foxesworld.ru/launcher/'.$config['uploaddirs'].'/',
-	'capeUrl'			=> 'https://login.foxesworld.ru/launcher/'.$config['uploaddirp'].'/',
-	);
+	'easterMusRarity'   => 9);
 	
 require (SCRIPTS_DIR.'messages.php');

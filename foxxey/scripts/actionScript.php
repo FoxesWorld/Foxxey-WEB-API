@@ -29,6 +29,7 @@
 
 		  switch ($requestTitle) {
 		   case 'auth':
+			require (SCRIPTS_DIR.'/authorise.class.php');
 			$login		 = $_GET['login'] 		?? null;
 			$password 	 = $_GET['password'] 	?? null;
 			$hwid 		 = $_GET['hwid']		?? null;
@@ -57,7 +58,9 @@
 						echo "<b>".$count."</b> ".$file."<br>";
 						$count ++;
 					}
-					require ($dirInclude.'/'.$file);
+					if(strpos($file, 'module') !== false) {
+						require ($dirInclude.'/'.$file);
+					}
 				}
 			}
 	}
