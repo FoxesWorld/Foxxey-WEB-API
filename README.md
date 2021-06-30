@@ -10,3 +10,4 @@ __WAS DONE__
  - Balance parser
  - startUpSound integration
  - modules system V2
+ - HWID Check
