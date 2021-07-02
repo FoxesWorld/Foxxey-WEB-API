@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.3.0 Alpha
+ Verssion: 0.1.3.2 Alpha
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -33,6 +33,8 @@ class Authorise {
 		private $HWIDstatus;
 		private $database;
 		private $webSiteFunc;
+		private $randTexts;
+		private $noName;
 
 		/* USERDATA */
 		private $realName;
@@ -46,6 +48,14 @@ class Authorise {
 			$this->webSiteFunc  = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
 			//$this->udataDB    = new functions($config['db_user'], $config['db_pass'], $config['db_name_userdata'], $config['db_host']);
 			//$this->launcherDB = new functions($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
+				if(class_exists('randTexts')) {
+					$this->randTexts = new randTexts('noName');
+					$this->noName = $this->randTexts->textOut();
+				} else {
+					echo '{"message": "Module randTexts not found!", "desc": "Can`t say an unknown user who is he today!"},';
+					$this->noName = 'Unnamed user';
+				}
+
 			$this->login = $login;
 			$this->pass = $pass;
 			$this->HWID = $HWID;
@@ -64,7 +74,7 @@ class Authorise {
 			//Getting USERDATA
 			$this->realName  = json_decode($this->webSiteFunc->getUserData($this->login, 'name'))		-> name		  ?? null;
 			$this->realPass  = json_decode($this->webSiteFunc->getUserData($this->login, 'password'))	-> password	  ?? null;
-			$this->fullname  = json_decode($this->webSiteFunc->getUserData($this->login, 'fullname'))	-> fullname   ?? $this->webSiteFunc->getRandomName();
+			$this->fullname  = json_decode($this->webSiteFunc->getUserData($this->login, 'fullname'))	-> fullname   ?? $this->noName;
 			$this->userGroup = json_decode($this->webSiteFunc->getUserData($this->login, 'user_group'))	-> user_group ?? 4;
 			$this->regDate 	 = json_decode($this->webSiteFunc->getUserData($this->login, 'reg_date'))	-> reg_date	  ?? null;
 			

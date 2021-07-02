@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.1.15 Final
+ Version: 0.1.16 Final
 -----------------------------------------------------
  Usage: Sound generation
 =====================================================
@@ -22,8 +22,6 @@
 		$startSound = new startUpSound({Debug});
 		$sounds = $startSound->generateAudio();
 */
-
-require (SCRIPTS_DIR.'mp3File.class.php');
 
 	class startUpSound {
 	

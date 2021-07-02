@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: antiBrute.class.php
 -----------------------------------------------------
- Verssion: 0.1.2.0 Alpha
+ Verssion: 0.1.2.2 Alpha
 -----------------------------------------------------
  Usage: Prevent users bruting passwords
 =====================================================
@@ -55,7 +55,12 @@
 			}
 
 			if($this->DBtime > CURRENT_TIME){
-				exit ('{"message": "'.$this->bannedMessage().'"}');
+				if(class_exists('randTexts')) {
+					$randTexts = new randTexts('antiBrute');
+					exit ('{"message": "'.$randTexts->textOut().'"}');
+				} else {
+					exit ('{"message": "Module randTexts not found!", "desc": "Can`t tell user how to get rekt! BTW Pass is wrong cool down."}');
+				}
 			}
 		}
 
@@ -105,22 +110,5 @@
 
 		private function removeRow(){
 			$this->db->run("DELETE FROM ipCheck WHERE time < '".CURRENT_TIME."';");
-		}
-
-		private function bannedMessage(){
-			$array = array('Пожалуйста, понерфите...',
-			   'Воу, воу, остынь...',
-			   'Бип бип, бип бип?',
-			   'А ты шустрый, погоди, не так быстро. =)',
-			   'Самая быстрая клавиатура на диком западе! Похвально.',
-			   'Если ты не помнишь пароля, попробуй сбросить его!',
-			   'Хммм, наверное пароль - Qwerty123!',
-			   'Как ты умудрился забыть пароль?',
-			   'У вас непритязательный вкус.',
-			   'Дерпи это - тот, кто не может вспомнить свой пароль. >:3',
-			   'Стромюокс, что-то вас много развелось...');
-			$randWord = rand(0, count($array)-1);
-
-			return $array[$randWord];
 		}
 	}

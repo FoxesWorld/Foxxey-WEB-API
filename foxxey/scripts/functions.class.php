@@ -37,21 +37,6 @@ if(!defined('FOXXEY')) {
 			$this->db = new db($this->dbUser,$this->dbPass,$this->dbName, $this->dbHost);
 		}
 
-		function getRandomName(){
-			$array = array('Феспис',
-			   'Неизвестная Лисность',
-			   'Безимянный Лис',
-			   'Таинственный незнакомец',
-			   'Тот, чьё имя нельзя называть',
-			   'Скрытный незнакомец',
-			   'Шпиён!!1',
-			   'Дерпи',
-			   'Стромюокс');
-			$randWord = rand(0, count($array)-1);
-
-			return $array[$randWord];
-		}
-
 		function getUserData($login,$data){
 			$query = "SELECT $data FROM dle_users WHERE name = '$login'";
 			$selectedValue = $this->db->getRow($query);
