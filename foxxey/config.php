@@ -63,4 +63,4 @@ $config = array(
 	'enableMusic' 		=> true,
 	'easterMusRarity'   => 9);
 	
-require (SITE_ROOT.'/messages/messages.php');
+require (SITE_ROOT.'/messages/messages.lng');

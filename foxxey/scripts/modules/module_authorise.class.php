@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.3.2 Alpha
+ Verssion: 0.1.4.2 Alpha
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -35,6 +35,7 @@ class Authorise {
 		private $webSiteFunc;
 		private $randTexts;
 		private $noName;
+		private $HWIDerrorMessage;
 
 		/* USERDATA */
 		private $realName;
@@ -134,7 +135,13 @@ class Authorise {
 								$this->webSiteFunc->passwordReHash($this->pass, $this->realPass, $this->realName);
 								exit('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$coins.', "hardwareId":  '.$this->HWIDstatus.'}');
 							} else {
-								exit('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "message": "'.$message['HWIDerror'].'", "hardwareId": '.$this->HWIDstatus.'}');
+									if(class_exists('randTexts')) {
+										$this->randTexts = new randTexts('wrongHWID');
+										$this->HWIDerrorMessage = $this->randTexts->textOut();
+									} else {
+										$this->HWIDerrorMessage = 'Incorrect HWID';
+									}
+								exit('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "message": "'.$this->HWIDerrorMessage.'", "hardwareId": '.$this->HWIDstatus.'}');
 							}
 
 						} else {

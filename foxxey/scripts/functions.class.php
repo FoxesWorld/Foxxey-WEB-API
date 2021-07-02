@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions,class.php
 -----------------------------------------------------
- Version: 0.1.0.0 Experimental
+ Version: 0.1.2.0 Experimental
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
@@ -86,6 +86,43 @@ if(!defined('FOXXEY')) {
 				$query = "UPDATE `balance` SET `realmoney`= realmoney+".$config['rewardAmmount']." WHERE username = '".$login."'";
 				$db = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata'], $config['db_host']);
 				$db->run($query);
+			}
+			
+			public static function includeModules($dirInclude, $debug = false){
+				$count = 1;
+				$dir = opendir($dirInclude);
+				if($debug === true){
+					echo '<div style="width: fit-content;"><b>Modules to include: </b> (Debug)<hr style="margin: 0;">';
+				}
+				while($file = readdir($dir)){
+					if($file == '.' || $file == '..'){
+						continue;
+					} else {
+						if($debug === true){
+							echo "<b>".$count."</b> ".$file."<br>";
+							$count ++;
+						}
+						if(strpos($file, 'module') !== false) {
+							require ($dirInclude.'/'.$file);
+						}
+					}
+				}
+				if($debug === true){
+					echo '<hr style="margin: 0;"> Total modules: <b>'.$count.'</b></div>';
+				}
+			}
+			
+			public static function countFilesNum($dirPath, $fileMask){
+				$count = 0;
+				$dir = opendir($dirPath);
+				while($file = readdir($dir)){
+					if($file == '.' || $file == '..' || is_dir($dir.'/' . $file)){
+						continue;
+					} elseif(strpos($file, $fileMask)){
+						$count++;
+					}
+				}
+				return $count;
 			}
 
 			public static function display_error($error ='No errors', $error_num = 100, $query) {

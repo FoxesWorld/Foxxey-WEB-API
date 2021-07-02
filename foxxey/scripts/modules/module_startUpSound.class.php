@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.1.16 Final
+ Version: 0.1.17 Final
 -----------------------------------------------------
  Usage: Sound generation
 =====================================================
@@ -208,7 +208,7 @@
 						$currentMusFolder = static::$AbsolutesoundPath.'/'.static::$musMountPoint.static::$easter;
 					}
 
-					startUpSound::$musFilesNum = $this->countFilesNum($currentMusFolder, '.mp3'); //Count of music
+					startUpSound::$musFilesNum = functions::countFilesNum($currentMusFolder, '.mp3'); //Count of music
 					$maxRange = startUpSound::$musFilesNum;										
 				
 				if(isset(static::$musRange) && static::$musRange !== 0) {
@@ -259,7 +259,7 @@
 			if($config['enableVoice'] === true) {
 
 				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.static::$easter;			//Folder of Sounds
-				startUpSound::$soundFilesNum = $this->countFilesNum($currentSoundFolder, '.mp3');						//Count of Sounds
+				startUpSound::$soundFilesNum = functions::countFilesNum($currentSoundFolder, '.mp3');						//Count of Sounds
 
 				if(isset(static::$soundRange) && static::$soundRange !== 0) {
 					$RandSoundFile = $this->genRange('voice', static::$soundRange);
@@ -376,19 +376,6 @@
 			}
 				$RandSoundFile = $type.rand($minRange,$maxRange).'.mp3';
 				return $RandSoundFile;
-		}
-		
-		private function countFilesNum($dirPath, $fileMask){
-			$count = 0;
-			$dir = opendir($dirPath);
-			while($file = readdir($dir)){
-				if($file == '.' || $file == '..' || is_dir($dir.'/' . $file)){
-					continue;
-				} elseif(strpos($file, $fileMask)){
-					$count++;
-				}
-			}
-			return $count;
 		}
 
 		/**
