@@ -58,6 +58,10 @@ $config = array(
 	'db_columnDatareg' 	=> 'reg_date',
 	'db_columnMail' 	=> 'email',
 	
+	/* Skins */
+	'skinsAbsolute' 	=> SITE_ROOT.'/MinecraftSkins/',
+	'cloaksAbsolute'	=> SITE_ROOT.'/MinecraftCloaks/',
+	
 	/* startUpSound */
 	'enableVoice' 		=> true,
 	'enableMusic' 		=> true,

@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: actionScript.php
 -----------------------------------------------------
- Version: 0.1.2.1 Experimental
+ Version: 0.1.3.1 Experimental
 -----------------------------------------------------
  Usage: Hooks other classes/modules we have & ACTIONS
 =====================================================
@@ -52,6 +52,31 @@
 		   break;
 		   
 		   case 'API':
+		   break;
+		   
+		   case 'show':
+			   if(class_exists('skinViewer2D')) {
+				header("Content-type: image/png");
+				$show = $_GET['show'] ?? null;
+				$file_name = $_GET['file_name'] ?? null;
+				$name =  empty($file_name) ? 'default' : $file_name;
+					$skin =  $config['skinsAbsolute'] . $name . '.png';
+					$cloak = $config['cloaksAbsolute'] . $name . '.png';
+
+					if (!skinViewer2D::isValidSkin($skin)) {
+						$skin = $config['skinsAbsolute'] . 'default.png';
+					}
+						
+					if ($show !== 'head') {
+						$side = isset($_GET['side']) ? $_GET['side'] : false;
+						$img = skinViewer2D::createPreview($skin, $cloak, $side);
+					} else {
+						$img = skinViewer2D::createHead($skin, 64);
+					}
+					imagepng($img);
+			   } else {
+					die('{"message": "Module skinViewer2D not found!", "desc": "Can`t show user how beautiful he is =("}');
+			   }
 		   break;
 		}
 	}

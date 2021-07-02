@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: geoIP.class.php
 -----------------------------------------------------
- Version: 0.0.4 Alpha
+ Version: 0.0.5 Alpha
 -----------------------------------------------------
  scanning user's ip
 =====================================================
@@ -123,16 +123,16 @@ class geoPlugin {
 		global $config;
 		if($ip){
 			$db = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);
-			if(!isset($_COOKIE['ipAdded'])){
+			if(!isset($_COOKIE['ipAdded']) && !isset($_SESSION['ipAdded'])){
 				$query = "SELECT * FROM `ipDatabase` WHERE ip = '$ip'";
 				$data = $db->getValue($query);
 				if (!isset($data) || $data === false) {
 					//$date="[".date("d m Y H:i")."] ";
 						if(!$ipLocation){
-							$ipLocation = 'Nowhere';
+							$ipLocation = 'Ниоткудинск';
 						}
 						if(!$ipRegion){
-							$ipRegion = 'Land Of Fools';
+							$ipRegion = 'Страна дураков';
 						}					
 					$db->run("INSERT INTO `ipDatabase`(`ipLocation`, `ipRegion`, `ip`) VALUES ('$ipLocation','$ipRegion','$ip')");  
 					geoPlugin::addCityCount($ipRegion);
@@ -140,11 +140,13 @@ class geoPlugin {
 						echo 'Adding '.$ip.' - '.$ipLocation.'('.$ipRegion.') '.'to IP database';
 					}
 					setcookie("ipAdded", $ip, time()+36000);
+					$_SESSION['ipAdded'] = $ip;
 				} else {
 					if($log === true){
 						echo 'Cookie was not found but Ip - '.$ip.' is already added in the Database, so get another one cookie! 
 							  Thanks for helping us to build server statistics :3';
 						setcookie("ipAdded", $ip, time()+36000);
+						$_SESSION['ipAdded'] = $ip;
 					}
 				}
 			} else {

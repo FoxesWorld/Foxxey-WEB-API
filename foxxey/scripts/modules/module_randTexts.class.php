@@ -46,5 +46,9 @@
 			$randWord = rand(0, count($arr)-1);
 			return $arr[$randWord];
 		}
+		
+		private function prepareWorkDir(){
+			//WIP
+		}
 	
 	}

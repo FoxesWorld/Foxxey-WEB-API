@@ -16,9 +16,13 @@
  Usage: All the functions of Foxxey can be obtained in here
 =====================================================
 */
-header('Content-Type: text/html; charset=utf-8');
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Headers: access");
+header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Credentials: true");
 Error_Reporting(E_ALL);
 Ini_Set('display_errors', true);
+session_start();
 //==============================
 	define  ('FOXXEY',true);
 	require ('config.php');
