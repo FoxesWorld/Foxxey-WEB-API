@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.1.1 Experimental
+ Version: 0.1.2.2 Experimental
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -57,8 +57,19 @@ class HWID {
 				exit("No HWID was provided");
 			}
 		}
+		
+		private function checkMultiHWID($HWID, $login){
+			$query = "SELECT * FROM `usersHWID` WHERE hwid = '".$HWID."'";
+			$data = $this->launcherDB->getRow($query);
+			$checkHWID = $data['hwid'];
+			$existingName = $data['login'];
+			if($data !== false && $existingName !== $login) {
+				exit('{"message": "Already have an account called '.$existingName.'!"}');
+			}
+		}
 					
 		function checkHWID(){
+			$this->checkMultiHWID($this->HWID, $this->login);  //One account per PC
 			if($this->HWID !== $this->realHWID) {
 				$this->check = false;
 				if($this->realHWID === null){
