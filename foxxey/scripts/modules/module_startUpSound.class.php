@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.1.17 Final
+ Version: 0.2.18 Final
 -----------------------------------------------------
  Usage: Sound generation
 =====================================================
@@ -36,23 +36,27 @@
 		private static $debug = false;
 
 		/* Mus */
-		private static $musPerEvent = true;	//Use music for an each event
-		private static $selectedMusic; 		//Selected mus File
-		private static $musFileAbsolute;	//Absolute musFilePath
-		private static $durationMus = 0;	//Duration of a musFile
-		private static $musMd5;				//musFile md5
-		private static $musRange;			//Range of muic files
+		private static $musPerEvent = true;		//Use music for an each event
+		private static $selectedMusic; 			//Selected mus File
+		private static $musFileAbsolute;		//Absolute musFilePath
+		private static $durationMus = 0;		//Duration of a musFile
+		private static $musMd5;					//musFile md5
+		private static $musRange;				//Range of muic files
+		private static $isEasterMus = 'false';	//Is the mus is easter
+		private static $easterMusWarn;			//Warn message if easter not found
 		
 		/* Sound */
-		private static $selectedSound; 		//Selected sound File
-		private static $soundFileAbsolute;	//Absolute soundFilePath
-		private static $durationSound = 0;	//Duration of a soundFile
-		private static $soundMd5;			//soundFile md5
-		private static $soundRange;			//Range of sound files
+		private static $selectedSound; 			//Selected sound File
+		private static $soundFileAbsolute;		//Absolute soundFilePath
+		private static $durationSound = 0;		//Duration of a soundFile
+		private static $soundMd5;				//soundFile md5
+		private static $soundRange;				//Range of sound files
+		private static $isEasterSnd = 'false';	//Is the sound is easter
+		private static $easterSndWarn;			//Warn message if easter not found
 		
 		/* Both */
-		private static $maxDuration = 0;	//Maximum duration
-		private static $soundRangeDebug;	//Debug info of the range
+		private static $maxDuration = 0;		//Maximum duration
+		private static $soundRangeDebug;		//Debug info of the range
 		
 		//Initialisation
 		function __construct($debug = false) {
@@ -112,7 +116,7 @@
 					break;
 					
 					case 6:
-						switch($dayToday){ //Markus Pearson birthday
+						switch($dayToday){ //Markus Persson birthday
 							case 1:
 							break;
 							
@@ -124,7 +128,7 @@
 					
 					case 7:
 						switch($dayToday){
-							case ($dayToday >= 5):
+							case ($dayToday >= 5 && $dayToday < 6):
 								$eventName = "twistOfTheSun";
 							break;
 						}
@@ -198,6 +202,7 @@
 			global $config;
 			$minRange = 1;
 			$maxRange = 1;
+			$easterCheck;
 			
 			$this->easter($config['easterMusRarity'], static::$debug, 'music');
 			if($config['enableMusic'] === true) {
@@ -206,6 +211,14 @@
 						$currentMusFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$musMountPoint.static::$easter;
 					} else {
 						$currentMusFolder = static::$AbsolutesoundPath.'/'.static::$musMountPoint.static::$easter;
+					}
+					
+					if(static::$isEasterMus === 'true'){
+						$easterCheck = functions::countFilesNum($currentMusFolder, '.mp3');
+						if($easterCheck < 1){
+							$currentMusFolder = str_replace('/easter', "", $currentMusFolder);
+							startUpSound::$easterMusWarn = '<b style="color: red;">Esater Mus not found, using common</b><br>';
+						}
 					}
 
 					startUpSound::$musFilesNum = functions::countFilesNum($currentMusFolder, '.mp3'); //Count of music
@@ -237,6 +250,8 @@
 						'<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">'.
 						'<h1 style="font-size: large;margin: 0;">Mus Gen</h1>'.
 							"<b>selectedFile:</b>".			static::$selectedMusic.'<br>'.
+							"<b>isEaster:</b>".				static::$isEasterMus.'<br>'.
+							static::$easterMusWarn.
 							"<b>musFileAbsolutePath:</b>".	static::$musFileAbsolute.'<br>'.
 							"<b>musFileDuration:</b>".		static::$durationMus.'<br>'.
 							"<b>filesInDir:</b>".			static::$musFilesNum.'<br>'.
@@ -254,12 +269,20 @@
 		private function generateSound($debug = false) {
 			global $config;
 			$minRange = 1;
+			$easterCheck;
 
 			$this->easter($config['easterMusRarity'], static::$debug, 'sound');
 			if($config['enableVoice'] === true) {
-
 				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.static::$easter;			//Folder of Sounds
-				startUpSound::$soundFilesNum = functions::countFilesNum($currentSoundFolder, '.mp3');						//Count of Sounds
+
+				if(static::$isEasterSnd === 'true'){
+					$easterCheck = functions::countFilesNum($currentSoundFolder, '.mp3');
+					if($easterCheck < 1){
+						$currentSoundFolder = str_replace('/easter', "", $currentSoundFolder);
+						startUpSound::$easterSndWarn = '<b style="color: red;">Esater Snd not found, using common</b><br>';
+					}
+				}
+				startUpSound::$soundFilesNum = functions::countFilesNum($currentSoundFolder, '.mp3');			//Count of Sounds
 
 				if(isset(static::$soundRange) && static::$soundRange !== 0) {
 					$RandSoundFile = $this->genRange('voice', static::$soundRange);
@@ -288,6 +311,8 @@
 					'<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">'.
 						'<h1 style="font-size: large;margin: 0;">Sound Gen</h1>'.
 						"<b>selectedFile:</b>".			static::$selectedSound.'<br>'.
+						"<b>isEaster:</b>".				static::$isEasterSnd.'<br>'.
+						static::$easterSndWarn.
 						"<b>soundFileAbsolutePath:</b>".static::$soundFileAbsolute.'<br>'.
 						"<b>soundFileDuration:</b>".	static::$durationSound.'<br>'.
 						"<b>soundsInDir:</b>".			static::$soundFilesNum.'<br>'.
@@ -299,7 +324,7 @@
 		}
 
 		/**
-		* @param boolean $debug, Integer chance
+		* @param boolean $debug, Integer chance, of - sound|music
 		* @return String easter
 		*/
 		private function easter($chance, $debug = false, $of) {
@@ -309,16 +334,22 @@
 			$easterChance = mt_rand($minRange, $maxRange);
 				if ($easterChance <= $chance){
 					startUpSound::$easter = "/easter";
-					$status = 'true';
+					switch($of){
+						case 'sound':
+							startUpSound::$isEasterSnd = 'true';
+						break;
+						
+						case 'music':
+							startUpSound::$isEasterMus = 'true';
+						break;
+					}
 				} else {
 					startUpSound::$easter = "";
-					$status = 'false';
 				}
 			if($debug === true) {
 					echo 	'<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">'.
 							'<h1 style="font-size: large;margin: 0;">Easter '.$of.'</h1>
 							<b>This rand: </b>'.		$easterChance.' <= '.$config['easterMusRarity'].'<br>'.
-							'<b>Easter status: </b>'.	$status.
 							'</div>';
 			}
 		}
