@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.1.0 Alpha
+ Version: 0.1.2.1 Alpha
 -----------------------------------------------------
  Usage: WEB API settings
 =====================================================
@@ -35,10 +35,23 @@ $config = array(
 	'HWIDdebug'			=> false,
 	'foxCheckDebug'		=> false,
 	'debugStartUpSound' => false,
+	'antiBruteDebug'	=> false,
+	'randTextsDebug'	=> false,
+	
+		/* AUTHORISATION */
+			'checkHWID'    => true,
+			'geoIPcheck'   => true,
+			'useAntiBrute' => true,
+			'getBalance'   => true,
+			'foxChecking'  => true,
+			
+		/* FOC CHECK*/
+		'FoxArray' => array('Fox', 'foX', 'fOx', 'FOX', 'fox', 'Foxes', 'foxes', 'Lis', 'lis', 'Renard', 'Fuchs'),
 
 	/* Foxxey settings */
 	'rewardAmmount'		=> 50,
 	'bantime'			=> CURRENT_TIME + (100),
+	'maxLoginAttempts'	=> 1,
 	'webserviceName' 	=> 'FoxesWorld | Foxxey',
 	'not_allowed_symbol'=> array ("\x22", "\x60", "\t", '\n', '\r', "\n", "\r", '\\', ",", "/", "¬", "#", ";", ":", "~", "[", "]", "{", "}", ")", "(", "*", "^", "%", "$", "<", ">", "?", "!", '"', "'", " ", "&" ),
 
@@ -65,6 +78,6 @@ $config = array(
 	/* startUpSound */
 	'enableVoice' 		=> true,
 	'enableMusic' 		=> true,
-	'easterMusRarity'   => 9);
+	'easterMusRarity'   => 50);
 	
 require (SITE_ROOT.'/messages/messages.lng');

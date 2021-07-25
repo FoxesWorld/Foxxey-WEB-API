@@ -1,7 +1,7 @@
 <?php
 /*
 =====================================================
- What should I do! | Action script
+ What should I do!? | Action script
 -----------------------------------------------------
  https://FoxesWorld.ru/
 -----------------------------------------------------
@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: actionScript.php
 -----------------------------------------------------
- Version: 0.1.3.1 Experimental
+ Version: 0.1.3.2 Experimental
 -----------------------------------------------------
  Usage: Hooks other classes/modules we have & ACTIONS
 =====================================================
@@ -19,15 +19,16 @@
 
 	header('Content-Type: text/html; charset=utf-8');
 	if(!defined('FOXXEY')) {
-		die ("Not a real Fox! =( HWID");
+		die ("Not a real Fox! =(");
 	}
 
+	/* HOOKING MODULES */
 	functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug']);
 
 	foreach ($_GET as $key => $value) {
 		$requestTitle = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($key))));
 		$requestValue = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($value))));
-		  
+
 		  /* ACTIONS */
 		  switch ($requestTitle) {
 		   case 'auth':
@@ -47,7 +48,7 @@
 					$startSound = new startUpSound($config['debugStartUpSound']);
 					die($startSound->generateAudio());
 			   } else {
-				   die('{"message": "Module startUpSound not found!", "desc": "Can`t greet user with starting sound =("}');
+				   die('{"message": "Module startUpSound not found!", "desc": "Can`t greet user with awesome startUP sound =("}');
 			   }
 		   break;
 		   

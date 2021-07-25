@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: randTexts.class.php
 -----------------------------------------------------
- Verssion: 0.1.1.0 Alpha
+ Verssion: 0.1.2.0 Alpha
 -----------------------------------------------------
  Usage: Generate random text to entertain user
 =====================================================
@@ -25,6 +25,7 @@
 		
 		/* INTERNAL */
 		private $textsDir;
+		private $textArr;
 		
 		function __construct($textType, $debug = false){
 			$this->textsDir = SITE_ROOT.'/messages/randTexts/';
@@ -42,9 +43,9 @@
 		}
 
 		private function getTexts(){
-			$arr = file($this->textsDir.$this->textToSend.'.txt');
-			$randWord = rand(0, count($arr)-1);
-			return $arr[$randWord];
+			$this->textArr = file($this->textsDir.$this->textToSend.'.txt');
+			$randWord = rand(0, count($this->textArr)-1);
+			return $this->textArr[$randWord];
 		}
 		
 		private function prepareWorkDir(){

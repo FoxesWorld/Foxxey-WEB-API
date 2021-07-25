@@ -9,7 +9,7 @@
 		protected $balance;
 		protected $realmoney;
 		protected $bonuses;
-		protected $db;
+		private $db;
 
 		function __construct($login, $debug = false){
 			global $config;

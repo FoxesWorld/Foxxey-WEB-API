@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: foxCheck.class.php
 -----------------------------------------------------
- Version: 0.1.0.0 Alpha
+ Version: 0.1.0.1 Alpha
 -----------------------------------------------------
  Usage: Check if user is a fox
 =====================================================
@@ -20,7 +20,7 @@
 		
 		private $login;
 		private $debug;
-		private $foxCheckStatus;
+		private $foxCheckStatus = false;
 		private $checkStatusDB;
 		private $db;
 		
@@ -32,9 +32,8 @@
 		}
 		
 		function checkFox(){
-			$this->foxCheckStatus = false;
-			$FoxArray = array('Fox', 'foX', 'fOx', 'FOX', 'fox', 'Foxes', 'foxes', 'Lis', 'lis', 'Renard', 'Fuchs', 'FOTONTV');
-			foreach($FoxArray as $key) {
+			global $config;
+			foreach($config['FoxArray'] as $key) {
 				if($this->debug === true) {
 					echo "Checking <b>".$this->login."</b> to str_pos ".$key."<br>";
 				}

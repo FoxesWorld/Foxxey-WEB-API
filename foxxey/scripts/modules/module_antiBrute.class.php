@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: antiBrute.class.php
 -----------------------------------------------------
- Verssion: 0.1.2.2 Alpha
+ Verssion: 0.1.3.2 Alpha
 -----------------------------------------------------
  Usage: Prevent users bruting passwords
 =====================================================
@@ -22,7 +22,7 @@
 		private $debug;
 		private $ip;
 		private $db;
-		private $maxAttempts = 1;
+		private $maxAttempts;
 
 		/* DB DATA */
 		private $DBip;
@@ -35,6 +35,7 @@
 			global $config;
 			$this->ip = $ip;
 			$this->debug = $debug;
+			$this->maxAttempts = $config['maxLoginAttempts'];
 			$this->db = new db($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
 			$this->parseIpRow();
 
@@ -56,7 +57,7 @@
 
 			if($this->DBtime > CURRENT_TIME){
 				if(class_exists('randTexts')) {
-					$randTexts = new randTexts('antiBrute');
+					$randTexts = new randTexts('antiBrute', $config['randTextsDebug']);
 					exit ('{"message": "'.$randTexts->textOut().'"}');
 				} else {
 					exit ('{"message": "Module randTexts not found!", "desc": "Can`t tell user how to get rekt! BTW Pass is wrong cool down."}');
@@ -76,6 +77,7 @@
 				echo "Parsing ".$this->ip." data <br>".
 				"<b>DBip: </b>".$this->DBip."<br>".
 				"<b>DBid: </b>".$this->DBid."<br>".
+				"<b>maxAttempts:</b> ".$this->maxAttempts."<br>".
 				"<b>Auth attempts: </b>".$this->DBattempts."<br>".
 				"<b>DBtime: </b>".$this->DBtime;
 			}

@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions,class.php
 -----------------------------------------------------
- Version: 0.1.2.0 Experimental
+ Version: 0.1.3.0 Experimental
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
@@ -36,8 +36,10 @@ if(!defined('FOXXEY')) {
 
 			$this->db = new db($this->dbUser,$this->dbPass,$this->dbName, $this->dbHost);
 		}
+		
+		/* ALL NON-STATIC FUNCTIONS REQUIRE DB */
 
-		function getUserData($login,$data){
+		public function getUserData($login,$data){
 			$query = "SELECT $data FROM dle_users WHERE name = '$login'";
 			$selectedValue = $this->db->getRow($query);
 				if($selectedValue["$data"]){
@@ -50,22 +52,31 @@ if(!defined('FOXXEY')) {
 			return $answer;
 		}
 
-		function passwordReHash($pass, $realPass, $realName){
+		public function passwordReHash($pass, $realPass, $realName){
 			global $config;
-			$db = new db($config['db_user'],$config['db_pass'],$config['db_database']);
+			//$db = new db($config['db_user'],$config['db_pass'],$config['db_database']);
 			if (password_needs_rehash($realPass, PASSWORD_DEFAULT)) {
 				session_regenerate_id();
 				$this->realPass = password_hash($this->pass, PASSWORD_DEFAULT);
-				$new_pass_hash = 'password='.$db->safesql($realPass).', ';
+				$new_pass_hash = 'password='.$this->db->safesql($realPass).', ';
 			} else {
 				$new_pass_hash = '';
 			}
 
-			$hash = $this->generateLoginHash();
-			$db->run("UPDATE LOW_PRIORITY dle_users SET ".$new_pass_hash." hash='".$hash."', lastdate='".CURRENT_TIME."' WHERE name='".$realName."'");
+			$hash = functions::generateLoginHash();
+			$this->db->run("UPDATE LOW_PRIORITY dle_users SET ".$new_pass_hash." hash='".$hash."', lastdate='".CURRENT_TIME."' WHERE name='".$realName."'");
 		}
+			
+		public function insertCoins($login){
+			global $config;
+			$query = "UPDATE `balance` SET `realmoney`= realmoney+".$config['rewardAmmount']." WHERE username = '".$login."'";
+			$db = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata'], $config['db_host']);
+			$db->run($query);
+		}
+		
+		/* STATIC FUNCTIONS  (NO DB NEEDED)*/
 
-		function generateLoginHash(){
+			static function generateLoginHash(){
 				if(function_exists('openssl_random_pseudo_bytes')) {
 					$stronghash = md5(openssl_random_pseudo_bytes(15));
 				} else {
@@ -81,13 +92,6 @@ if(!defined('FOXXEY')) {
 				return $hash;
 			}
 			
-			function insertCoins($login){
-				global $config;
-				$query = "UPDATE `balance` SET `realmoney`= realmoney+".$config['rewardAmmount']." WHERE username = '".$login."'";
-				$db = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata'], $config['db_host']);
-				$db->run($query);
-			}
-			
 			public static function includeModules($dirInclude, $debug = false){
 				$count = 1;
 				$dir = opendir($dirInclude);
@@ -99,11 +103,15 @@ if(!defined('FOXXEY')) {
 						continue;
 					} else {
 						if($debug === true){
-							echo "<b>".$count."</b> ".$file."<br>";
+							echo "<b>".$count."</b> Including module ".$file."<br>";
 							$count ++;
 						}
 						if(strpos($file, 'module') !== false) {
 							require ($dirInclude.'/'.$file);
+						} else {
+							if($debug === true){
+								echo "<b>".$count."</b> ".$file." was not included as not the valid module<br>";
+							}
 						}
 					}
 				}
@@ -114,18 +122,22 @@ if(!defined('FOXXEY')) {
 			
 			public static function countFilesNum($dirPath, $fileMask){
 				$count = 0;
-				$dir = opendir($dirPath);
-				while($file = readdir($dir)){
-					if($file == '.' || $file == '..' || is_dir($dir.'/' . $file)){
-						continue;
-					} elseif(strpos($file, $fileMask)){
-						$count++;
+				if(is_dir($dirPath)) {
+					$dir = opendir($dirPath);
+					while($file = readdir($dir)){
+						if($file == '.' || $file == '..' || is_dir($dir.'/' . $file)){
+							continue;
+						} elseif(strpos($file, $fileMask)){
+							$count++;
+						}
 					}
+					return $count;
+				} else {
+					return false;
 				}
-				return $count;
 			}
 
-			public static function display_error($error ='No errors', $error_num = 100, $query) {
+			public static function display_error($error ='No errors', $error_num = 100500, $query) {
 				global $config;
 					$error = htmlspecialchars($error, ENT_QUOTES, 'ISO-8859-1');
 					$trace = debug_backtrace();

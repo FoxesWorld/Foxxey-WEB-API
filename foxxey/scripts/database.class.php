@@ -25,12 +25,12 @@ class db {
   const CHARSET = 'utf8';
  
   static private $db;
-  protected static $instance = null;
+  private static $instance = null;
 
   public function __construct($db_user, $db_pass, $db_name, $db_location = 'localhost', $show_error=1){
-    if (self::$instance === null){
+    if (db::$instance === null){
       try {
-        self::$db = new PDO(
+        db::$db = new PDO(
           'mysql:host='.$db_location.';dbname='.$db_name,
           $db_user,
           $db_pass,
@@ -46,7 +46,7 @@ class db {
 		  functions::display_error($message, $query, '1');
       }
     }
-    return self::$instance;
+    return db::$instance;
   }
  
   /**
@@ -144,5 +144,11 @@ class db {
   public static function sql($query, $args = [])
   {
     self::run($query, $args);
+  }
+  
+  private static function dbUnset (){
+	  db::$instance = NULL;
+	  //db::$db->query('KILL CONNECTION_ID()');
+	  db::$db = NULL;
   }
 }

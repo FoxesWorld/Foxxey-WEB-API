@@ -64,7 +64,7 @@ class HWID {
 			$checkHWID = $data['hwid'];
 			$existingName = $data['login'];
 			if($data !== false && $existingName !== $login) {
-				exit('{"message": "Already have an account called '.$existingName.'!"}');
+				die('{"message": "Already have an account called '.$existingName.'!"}');
 			}
 		}
 					
