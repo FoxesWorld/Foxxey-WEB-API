@@ -1,6 +1,6 @@
 <?php 
 
-	class userbalance {
+	class userbalance extends Authorise {
 
 		protected $login;
 		protected $debug;
@@ -54,5 +54,11 @@
 					echo "User was not specifyed do add in DB tabble";
 				}
 			}
+		}
+		
+		public function addUnitsPrize($login){
+			global $config;
+			$query = "UPDATE `balance` SET `realmoney`= realmoney+".$config['rewardAmmount']." WHERE username = '".$login."'";
+			$this->db->run($query);
 		}
 	}

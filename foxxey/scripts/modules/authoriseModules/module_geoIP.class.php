@@ -21,7 +21,7 @@ if(!defined('FOXXEY')) {
 }	
 
 //===================================================
-class geoPlugin {
+class geoPlugin extends Authorise {
 	
     //the geoPlugin server
     var $host = 'http://www.geoplugin.net/php.gp?ip={IP}&base_currency={CURRENCY}';

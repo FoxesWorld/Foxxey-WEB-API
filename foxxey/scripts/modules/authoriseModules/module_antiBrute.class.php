@@ -17,7 +17,7 @@
 =====================================================
 */
 
-	class antiBrute {
+	class antiBrute extends Authorise {
 
 		private $debug;
 		private $ip;

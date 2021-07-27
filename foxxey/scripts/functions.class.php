@@ -66,13 +66,6 @@ if(!defined('FOXXEY')) {
 			$hash = functions::generateLoginHash();
 			$this->db->run("UPDATE LOW_PRIORITY dle_users SET ".$new_pass_hash." hash='".$hash."', lastdate='".CURRENT_TIME."' WHERE name='".$realName."'");
 		}
-			
-		public function insertCoins($login){
-			global $config;
-			$query = "UPDATE `balance` SET `realmoney`= realmoney+".$config['rewardAmmount']." WHERE username = '".$login."'";
-			$db = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata'], $config['db_host']);
-			$db->run($query);
-		}
 		
 		/* STATIC FUNCTIONS  (NO DB NEEDED)*/
 

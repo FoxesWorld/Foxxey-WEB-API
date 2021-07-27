@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.2.1 Alpha
+ Version: 0.1.2.2 Alpha
 -----------------------------------------------------
  Usage: WEB API settings
 =====================================================
@@ -30,6 +30,11 @@ if(!defined('FOXXEY')) {
 	define('CURRENT_DATE',date("d.m.Y"));
 
 $config = array(
+
+	/* Foxxey settings */
+	'webserviceName' 	=> 'FoxesWorld | Foxxey',
+	'not_allowed_symbol'=> array ("\x22", "\x60", "\t", '\n', '\r', "\n", "\r", '\\', ",", "/", "¬", "#", ";", ":", "~", "[", "]", "{", "}", ")", "(", "*", "^", "%", "$", "<", ">", "?", "!", '"', "'", " ", "&" ),
+
 	/* DEBUG */
 	'modulesDebug'		=> false,
 	'HWIDdebug'			=> false,
@@ -38,24 +43,22 @@ $config = array(
 	'antiBruteDebug'	=> false,
 	'randTextsDebug'	=> false,
 	
-		/* AUTHORISATION */
-			'checkHWID'    => true,
-			'geoIPcheck'   => true,
-			'useAntiBrute' => true,
-			'getBalance'   => true,
-			'foxChecking'  => true,
+	/* AUTHORISATION */
+		'checkHWID'    => true,
+		'geoIPcheck'   => true,
+		'useAntiBrute' => true,
+		'getBalance'   => true,
+		'foxChecking'  => true,
 			
-		/* FOC CHECK*/
-		'FoxArray' => array('Fox', 'foX', 'fOx', 'FOX', 'fox', 'Foxes', 'foxes', 'Lis', 'lis', 'Renard', 'Fuchs'),
+		/* FOX CHECK*/
+			'FoxArray' => array('Fox', 'foX', 'fOx', 'FOX', 'fox', 'Foxes', 'foxes', 'Lis', 'lis', 'Renard', 'Fuchs'),
+			'rewardAmmount'		=> 50,
+		
+		/* ANTI BRUTE */
+			'bantime'			=> CURRENT_TIME + (100),
+			'maxLoginAttempts'	=> 1,
 
-	/* Foxxey settings */
-	'rewardAmmount'		=> 50,
-	'bantime'			=> CURRENT_TIME + (100),
-	'maxLoginAttempts'	=> 1,
-	'webserviceName' 	=> 'FoxesWorld | Foxxey',
-	'not_allowed_symbol'=> array ("\x22", "\x60", "\t", '\n', '\r', "\n", "\r", '\\', ",", "/", "¬", "#", ";", ":", "~", "[", "]", "{", "}", ")", "(", "*", "^", "%", "$", "<", ">", "?", "!", '"', "'", " ", "&" ),
-
-	/* Database Settings*/
+	/* Database Settings */
 	'db_host' 			=> 'localhost',
 	'db_port' 			=> '3306',
 	'db_user' 			=> 'root',
@@ -74,7 +77,7 @@ $config = array(
 	/* Skins */
 	'skinsAbsolute' 	=> SITE_ROOT.'/MinecraftSkins/',
 	'cloaksAbsolute'	=> SITE_ROOT.'/MinecraftCloaks/',
-	
+
 	/* startUpSound */
 	'enableVoice' 		=> true,
 	'enableMusic' 		=> true,

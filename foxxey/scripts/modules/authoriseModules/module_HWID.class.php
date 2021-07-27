@@ -20,11 +20,11 @@ if(!defined('FOXXEY')) {
 	die ("Not a real Fox! =(");
 }
 
-class HWID {
-					
-		private $check;
-		private $login;
-		private $HWID;
+class HWID extends Authorise{
+		
+		protected $login;
+		protected $HWID;		
+		private $check;	
 		private $realHWID;
 		private $debug;
 		private $launcherDB;

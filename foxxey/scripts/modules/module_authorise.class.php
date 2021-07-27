@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.5.4 Experimental
+ Verssion: 0.1.6.5 Experimental
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -19,12 +19,13 @@
 
 	header('Content-Type: text/html; charset=utf-8');
 	if(!defined('FOXXEY')) {
-		die ("Not a real Fox! =( HWID");
+		die ("Not a real Fox! =(");
 	}
+	Authorise::IncludeAuthModules();
 	
 	/* 
 	 * TODO
-	 * - Fix bad code with multi calling DB
+	 * - Fix bad code with multi calling DB!!!
 	 */
 
 class Authorise {
@@ -107,9 +108,10 @@ class Authorise {
 							if($config['useAntiBrute'] === true) {
 								$antiBrute = new antiBrute(REMOTE_IP, $config['antiBruteDebug']);
 							}
+							$line = '['.CURRENT_DATE.'] '.date('H:m:s').' Incorrect login for '.REMOTE_IP.' as '.$this->login.' using `'.$this->pass.'`'."\n";
+							file_put_contents(SITE_ROOT.'/logs/wrongAuth.log', $line, FILE_APPEND);
 							exit('{"message": "'.$message['wrongLoginPass'].'"}');
 						} else {
-
 								// Checking HWID
 								if($config['checkHWID'] === true) {
 									if(class_exists('HWID')) {
@@ -123,7 +125,10 @@ class Authorise {
 								//==============
 
 						if($this->HWIDstatus === 'true'){ //If HWID is correct
-								$this->webSiteFunc  = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
+								/* ISSUE!!! VAR ASSIGNMENT AGAIN! */
+								$this->webSiteFunc = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
+								$this->webSiteFunc->passwordReHash($this->pass, $this->realPass, $this->realName);
+
 								//GETTING PERSONAL DATA
 								$this->fullname  = json_decode($this->webSiteFunc->getUserData($this->login, 'fullname'))	-> fullname   ?? $this->noName;
 								$this->userGroup = json_decode($this->webSiteFunc->getUserData($this->login, 'user_group'))	-> user_group ?? 4;
@@ -156,8 +161,8 @@ class Authorise {
 								if(class_exists('foxCheck')) {
 									$checkFox = new foxCheck($this->login, $config['foxCheckDebug']);
 									if($checkFox->checkFox() === true){
+										$balance->addUnitsPrize($this->login);
 										echo '{"message": "'.$message['congrats'].'"},';
-										$this->webSiteFunc->insertunits($this->login);
 									}
 								} else {
 									echo '{"message": "Module foxCheck not found!", "desc": "We can`t check if you are a Fox!"},';
@@ -165,10 +170,10 @@ class Authorise {
 							}
 							//=================
 
-							$this->webSiteFunc  = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
-							$this->webSiteFunc->passwordReHash($this->pass, $this->realPass, $this->realName);
 							exit('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$units.', "hardwareId":  '.$this->HWIDstatus.'}');
 						} else {
+							$line = '['.CURRENT_DATE.'] '.date('H:m:s').' Incorrect HWID for '.$this->login.' IP is - '.REMOTE_IP."\n";
+							file_put_contents(SITE_ROOT.'/logs/wrongAuth.log', $line, FILE_APPEND);
 								if(class_exists('randTexts')) {
 									$this->randTexts = new randTexts('wrongHWID');
 									$this->HWIDerrorMessage = $this->randTexts->textOut();
@@ -180,5 +185,13 @@ class Authorise {
 					}
 				}
 			}
+		}
+		
+		public static function IncludeAuthModules(){
+			$modulesDir = SCRIPTS_DIR.'modules/authoriseModules';
+			if(!is_dir($modulesDir)){
+				mkdir($modulesDir);
+			}
+			functions::includeModules($modulesDir, false);
 		}
 }

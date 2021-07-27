@@ -16,9 +16,9 @@
  Usage: Check if user is a fox
 =====================================================
 */
-	class foxCheck {
+	class foxCheck extends Authorise {
 		
-		private $login;
+		protected $login;
 		private $debug;
 		private $foxCheckStatus = false;
 		private $checkStatusDB;
