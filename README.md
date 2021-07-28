@@ -3,9 +3,9 @@ WEB API for Foxxey Launcher
 
 __TODO__
  - Fixes and optimisations
- - Security
 
 __WAS DONE__
+ - Security
  - Debug logging
  - Balance parser
  - startUpSound integration
