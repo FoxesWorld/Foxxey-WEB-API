@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.2.2 Experimental
+ Version: 0.1.2.5 Experimental
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -23,7 +23,7 @@ if(!defined('FOXXEY')) {
 class HWID extends Authorise{
 		
 		protected $login;
-		protected $HWID;		
+		protected $HWID = "";		
 		private $check;	
 		private $realHWID;
 		private $debug;
@@ -51,6 +51,7 @@ class HWID extends Authorise{
 					
 		function insertHWID(){
 			if($this->HWID !== null) {
+				$this->checkMultiHWID();
 				$query = "INSERT INTO `usersHWID`(`login`, `hwid`) VALUES ('".$this->login."','".$this->HWID."')";
 				$this->launcherDB->run($query);
 			} else {
@@ -58,12 +59,12 @@ class HWID extends Authorise{
 			}
 		}
 		
-		private function checkMultiHWID($HWID, $login){
-			$query = "SELECT * FROM `usersHWID` WHERE hwid = '".$HWID."'";
+		private function checkMultiHWID(){
+			$query = "SELECT * FROM `usersHWID` WHERE hwid = '".$this->HWID."'";
 			$data = $this->launcherDB->getRow($query);
 			$checkHWID = $data['hwid'];
 			$existingName = $data['login'];
-			if($data !== false && $existingName !== $login) {
+			if($data !== false && $existingName !== $this->login && $checkHWID === null) {
 				die('{"message": "Already have an account called '.$existingName.'!"}');
 			}
 		}
@@ -94,5 +95,13 @@ class HWID extends Authorise{
 				}
 			}
 			return $this->check;
+		}
+		
+		protected function getUserNameByHWID(){
+			$query = "SELECT * FROM `usersHWID` WHERE hwid = '".$this->HWID."';";
+			$data = $this->launcherDB->getRow($query);
+			$existingName = $data['login'];
+			
+			return $existingName;
 		}
 	}

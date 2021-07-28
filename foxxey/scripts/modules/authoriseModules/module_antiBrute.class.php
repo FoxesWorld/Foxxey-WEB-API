@@ -106,6 +106,7 @@
 			if($this->debug === true) {
 				echo "Banning ".$this->ip." till ".$config['bantime']."<br>";
 			}
+			functions::writeLog('Banning '.$this->ip.' for too many authorisation errors');
 			$query = "UPDATE `ipCheck` SET `time`=".$config['bantime']." WHERE ip = '".$this->ip."'";
 			$this->db::run($query);
 		}

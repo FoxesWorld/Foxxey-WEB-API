@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions,class.php
 -----------------------------------------------------
- Version: 0.1.3.0 Experimental
+ Version: 0.1.4.0 Experimental
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
@@ -128,6 +128,11 @@ if(!defined('FOXXEY')) {
 				} else {
 					return false;
 				}
+			}
+			
+			public static function writeLog($logText, $rewrite = null){
+				$line = '['.CURRENT_DATE.'] '.date('H:m:s').' '.$logText."\n";
+				file_put_contents(FILES_DIR.'/logs/wrongAuth.log', $line, FILE_APPEND);
 			}
 
 			public static function display_error($error ='No errors', $error_num = 100500, $query) {

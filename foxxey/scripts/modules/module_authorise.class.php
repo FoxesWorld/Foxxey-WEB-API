@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.6.5 Experimental
+ Verssion: 0.1.6.6 Experimental
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -71,7 +71,6 @@ class Authorise {
 			//FILTRATING INPUT DATA
 				$this->login = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->login)));
 				$this->pass  = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->pass)));
-				$this->HWID  = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->HWID)));
 			//*********************
 			
 			//Getting AUTH USERDATA
@@ -108,14 +107,15 @@ class Authorise {
 							if($config['useAntiBrute'] === true) {
 								$antiBrute = new antiBrute(REMOTE_IP, $config['antiBruteDebug']);
 							}
-							$line = '['.CURRENT_DATE.'] '.date('H:m:s').' Incorrect login for '.REMOTE_IP.' as '.$this->login.' using `'.$this->pass.'`'."\n";
-							file_put_contents(SITE_ROOT.'/logs/wrongAuth.log', $line, FILE_APPEND);
+							functions::writeLog('Incorrect login for '.REMOTE_IP.' as '.$this->login.' using `'.$this->pass.'`');
 							exit('{"message": "'.$message['wrongLoginPass'].'"}');
 						} else {
 								// Checking HWID
 								if($config['checkHWID'] === true) {
 									if(class_exists('HWID')) {
 										$hardwareCheck = new HWID($this->login, $this->HWID, $config['HWIDdebug']);
+										$HWIDuser = $hardwareCheck->getUserNameByHWID($this->HWID) ?? 'Unknown bruter - `'.$this->HWID.'`';
+
 										$this->HWIDstatus = $hardwareCheck->checkHWID() ? 'true' : 'false';
 									} else {
 										$this->HWIDstatus = 'true';
@@ -172,8 +172,7 @@ class Authorise {
 
 							exit('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$units.', "hardwareId":  '.$this->HWIDstatus.'}');
 						} else {
-							$line = '['.CURRENT_DATE.'] '.date('H:m:s').' Incorrect HWID for '.$this->login.' IP is - '.REMOTE_IP."\n";
-							file_put_contents(SITE_ROOT.'/logs/wrongAuth.log', $line, FILE_APPEND);
+							functions::writeLog('Incorrect HWID for '.$this->login.' IP is - '.REMOTE_IP.' Bruted by '.$HWIDuser);
 								if(class_exists('randTexts')) {
 									$this->randTexts = new randTexts('wrongHWID');
 									$this->HWIDerrorMessage = $this->randTexts->textOut();
