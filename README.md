@@ -3,6 +3,7 @@ WEB API for Foxxey Launcher
 
 __TODO__
  - Fixes and optimisations
+
 __WAS DONE__
  - Security
  - Debug logging
