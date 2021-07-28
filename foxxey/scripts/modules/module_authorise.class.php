@@ -51,8 +51,14 @@ class Authorise {
 		private $fullname;
 		private $userGroup;
 		private $regDate;
-		
-		function __construct($login, $pass, $HWID){
+
+    /**
+     * Authorise constructor.
+     * @param $login
+     * @param $pass
+     * @param $HWID
+     */
+    function __construct($login, $pass, $HWID){
 			global $config;
 			$this->webSiteFunc  = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
 			//$this->udataDB    = new db($config['db_user'], $config['db_pass'], $config['db_name_userdata'], $config['db_host']);

@@ -28,8 +28,14 @@ class HWID extends Authorise{
 		private $realHWID;
 		private $debug;
 		private $launcherDB;
-					
-		function __construct($login, $HWID, $debug = false){
+
+    /**
+     * HWID constructor.
+     * @param $login
+     * @param $HWID
+     * @param bool $debug
+     */
+    function __construct($login, $HWID, $debug = false){
 			global $config;
 			$this->debug = $debug;
 			$this->check = false;

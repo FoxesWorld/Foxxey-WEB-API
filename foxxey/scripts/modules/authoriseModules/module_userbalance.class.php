@@ -11,7 +11,12 @@
 		protected $bonuses;
 		private $db;
 
-		function __construct($login, $debug = false){
+        /**
+         * userbalance constructor.
+         * @param $login
+         * @param bool $debug
+         */
+        function __construct($login, $debug = false){
 			global $config;
 			$this->login = $login;
 			$this->debug = $debug;

@@ -57,9 +57,12 @@
 		/* Both */
 		private static $maxDuration = 0;		//Maximum duration
 		private static $soundRangeDebug;		//Debug info of the range
-		
-		//Initialisation
-		function __construct($debug = false) {
+
+        /**
+         * startUpSound constructor.
+         * @param bool $debug
+         */
+        function __construct($debug = false) {
 			startUpSound::$debug = $debug;
 			$this->eventNow();
 			$this->generateMusic(static::$debug);

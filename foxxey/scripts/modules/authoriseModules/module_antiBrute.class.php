@@ -31,7 +31,12 @@
 		private $DBattempts;
 		/* DB DATA */
 
-		function __construct ($ip, $debug = false){
+        /**
+         * antiBrute constructor.
+         * @param $ip
+         * @param bool $debug
+         */
+        function __construct ($ip, $debug = false){
 			global $config;
 			$this->ip = $ip;
 			$this->debug = $debug;

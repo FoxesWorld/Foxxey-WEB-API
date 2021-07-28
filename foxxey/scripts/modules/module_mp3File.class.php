@@ -2,6 +2,11 @@
 class MP3File
 {
     protected $filename;
+
+    /**
+     * MP3File constructor.
+     * @param $filename
+     */
     public function __construct($filename)
     {
         $this->filename = $filename;
