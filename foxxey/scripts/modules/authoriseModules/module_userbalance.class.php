@@ -3,20 +3,23 @@
 	class userbalance extends Authorise {
 
 		protected $login;
-		protected $debug;
-		protected $status;
-		protected $realUser;
+		protected $pass;
+		protected $HWID;
+		private $debug;
+		private $status;
+		private $realUser;
+		
 		protected $balance;
 		protected $realmoney;
 		protected $bonuses;
 		private $db;
 
-        /**
-         * userbalance constructor.
-         * @param $login
-         * @param bool $debug
-         */
-        function __construct($login, $debug = false){
+		/**
+		 * userbalance constructor.
+		 * @param $login
+		 * @param bool $debug
+		 */
+		function __construct($login, $debug = false){
 			global $config;
 			$this->login = $login;
 			$this->debug = $debug;

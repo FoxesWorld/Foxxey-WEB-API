@@ -40,11 +40,11 @@ class geoPlugin extends Authorise {
     var $currencyCode = null;
     var $currencySymbol = null;
     var $currencyConverter = null;
-
-    /**
-     * geoPlugin constructor.
-     * @param null $ip
-     */
+ 
+	/**
+    * geoPlugin constructor.
+    * @param null $ip
+    */
     function __construct($ip = null) {
         global $_SERVER;
  

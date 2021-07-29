@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.6.6 Experimental
+ Verssion: 0.1.6.7 Experimental
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -51,18 +51,16 @@ class Authorise {
 		private $fullname;
 		private $userGroup;
 		private $regDate;
-
-    /**
-     * Authorise constructor.
-     * @param $login
-     * @param $pass
-     * @param $HWID
-     */
-    function __construct($login, $pass, $HWID){
+		
+		 /**
+		 * Authorise constructor.
+		 * @param $login
+		 * @param $pass
+		 * @param $HWID
+		 */
+		function __construct($login, $pass, $HWID){
 			global $config;
 			$this->webSiteFunc  = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
-			//$this->udataDB    = new db($config['db_user'], $config['db_pass'], $config['db_name_userdata'], $config['db_host']);
-			//$this->launcherDB = new functions($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
 
 			$this->login = $login;
 			$this->pass = $pass;
@@ -120,7 +118,7 @@ class Authorise {
 								if($config['checkHWID'] === true) {
 									if(class_exists('HWID')) {
 										$hardwareCheck = new HWID($this->login, $this->HWID, $config['HWIDdebug']);
-										$HWIDuser = $hardwareCheck->getUserNameByHWID($this->HWID) ?? 'Unknown bruter - `'.$this->HWID.'`';
+										$HWIDuser = $hardwareCheck->getUserNameByHWID() ?? 'Unknown bruter - `'.$this->HWID.'`';
 
 										$this->HWIDstatus = $hardwareCheck->checkHWID() ? 'true' : 'false';
 									} else {
@@ -131,6 +129,7 @@ class Authorise {
 								//==============
 
 						if($this->HWIDstatus === 'true'){ //If HWID is correct
+								functions::writeLog('Successful authorisation for '.$HWIDuser.' with the correct HWID');
 								/* ISSUE!!! VAR ASSIGNMENT AGAIN! */
 								$this->webSiteFunc = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
 								$this->webSiteFunc->passwordReHash($this->pass, $this->realPass, $this->realName);
@@ -176,7 +175,7 @@ class Authorise {
 							}
 							//=================
 
-							exit('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$units.', "hardwareId":  '.$this->HWIDstatus.'}');
+							die('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$units.', "hardwareId":  '.$this->HWIDstatus.'}');
 						} else {
 							functions::writeLog('Incorrect HWID for '.$this->login.' IP is - '.REMOTE_IP.' Bruted by '.$HWIDuser);
 								if(class_exists('randTexts')) {
@@ -185,7 +184,7 @@ class Authorise {
 								} else {
 									$this->HWIDerrorMessage = 'Incorrect HWID';
 								}
-							exit('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "message": "'.$this->HWIDerrorMessage.'", "hardwareId": '.$this->HWIDstatus.'}');
+							die('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "message": "'.$this->HWIDerrorMessage.'", "hardwareId": '.$this->HWIDstatus.'}');
 						}
 					}
 				}

@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.2.5 Experimental
+ Version: 0.1.3.6 Beta
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -26,22 +26,24 @@ class HWID extends Authorise{
 		protected $HWID = "";		
 		private $check;	
 		private $realHWID;
+		private $HWIDexists;
 		private $debug;
 		private $launcherDB;
-
-    /**
-     * HWID constructor.
-     * @param $login
-     * @param $HWID
-     * @param bool $debug
-     */
-    function __construct($login, $HWID, $debug = false){
+				
+		/**
+		 * HWID constructor.
+		 * @param $login
+		 * @param $HWID
+		 * @param bool $debug
+		 */				
+		function __construct($login, $HWID, $debug = false){
 			global $config;
 			$this->debug = $debug;
 			$this->check = false;
 			$this->login = $login;
 			$this->HWID = $HWID;
 			$this->realHWID = $this->getHWID();
+			$this->HWIDisexists($login);
 		}
 					
 		function getHWID(){
@@ -57,7 +59,6 @@ class HWID extends Authorise{
 					
 		function insertHWID(){
 			if($this->HWID !== null) {
-				$this->checkMultiHWID();
 				$query = "INSERT INTO `usersHWID`(`login`, `hwid`) VALUES ('".$this->login."','".$this->HWID."')";
 				$this->launcherDB->run($query);
 			} else {
@@ -70,8 +71,11 @@ class HWID extends Authorise{
 			$data = $this->launcherDB->getRow($query);
 			$checkHWID = $data['hwid'];
 			$existingName = $data['login'];
-			if($data !== false && $existingName !== $this->login && $checkHWID === null) {
-				die('{"message": "Already have an account called '.$existingName.'!"}');
+			if($checkHWID !== null && $existingName !== $this->login) {
+					if($this->HWIDexists === null) {
+						functions::writeLog($existingName.' has tried to create a multi account with login: '.$this->login .', but was restricted to do that!');
+						die('{"message": "Already have an account called '.$existingName.'!"}');
+					}
 			}
 		}
 					
@@ -101,6 +105,12 @@ class HWID extends Authorise{
 				}
 			}
 			return $this->check;
+		}
+		
+		private function HWIDisexists($login){
+			$query = "SELECT * FROM `usersHWID` WHERE login = '".$login."'";
+			$data = $this->launcherDB->getRow($query);
+			$this->HWIDexists = $data['hwid'];
 		}
 		
 		protected function getUserNameByHWID(){

@@ -26,13 +26,13 @@
 		/* INTERNAL */
 		private $textsDir;
 		private $textArr;
-
-        /**
-         * randTexts constructor.
-         * @param $textType
-         * @param bool $debug
-         */
-        function __construct($textType, $debug = false){
+		
+		/**
+		 * randTexts constructor.
+		 * @param $textType
+		 * @param bool $debug
+		 */
+		function __construct($textType, $debug = false){
 			$this->textsDir = SITE_ROOT.'/messages/randTexts/';
 			$this->debug = $debug;
 			$this->textToSend = $textType;

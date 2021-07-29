@@ -27,15 +27,7 @@ class db {
   static private $db;
   private static $instance = null;
 
-    /**
-     * db constructor.
-     * @param $db_user
-     * @param $db_pass
-     * @param $db_name
-     * @param string $db_location
-     * @param int $show_error
-     */
-    public function __construct($db_user, $db_pass, $db_name, $db_location = 'localhost', $show_error=1){
+  public function __construct($db_user, $db_pass, $db_name, $db_location = 'localhost', $show_error=1){
     if (db::$instance === null){
       try {
         db::$db = new PDO(

@@ -1,7 +1,7 @@
 <?php
 /*
 =====================================================
- Hey, I've got a lot of things fot you! | functions class
+ Hey, I've got a lot of things for you! | functions class
 -----------------------------------------------------
  https://FoxesWorld.ru/
 -----------------------------------------------------
@@ -28,14 +28,7 @@ if(!defined('FOXXEY')) {
 		private $dbPass;
 		private $db;
 
-        /**
-         * functions constructor.
-         * @param $dbUser
-         * @param $dbPass
-         * @param $dbName
-         * @param string $dbHost
-         */
-        function __construct($dbUser, $dbPass, $dbName, $dbHost = 'localhost'){
+		function __construct($dbUser, $dbPass, $dbName, $dbHost = 'localhost'){
 			$this->dbUser = $dbUser;
 			$this->dbPass = $dbPass;
 			$this->dbName = $dbName;
@@ -139,7 +132,7 @@ if(!defined('FOXXEY')) {
 			
 			public static function writeLog($logText, $rewrite = null){
 				$line = '['.CURRENT_DATE.'] '.date('H:m:s').' '.$logText."\n";
-				file_put_contents(FILES_DIR.'/logs/wrongAuth.log', $line, FILE_APPEND);
+				file_put_contents(FILES_DIR.'/logs/AuthLog.log', $line, FILE_APPEND);
 			}
 
 			public static function display_error($error ='No errors', $error_num = 100500, $query) {
@@ -152,6 +145,7 @@ if(!defined('FOXXEY')) {
 					$trace[$level]['file'] = str_replace(ROOT_DIR, "", $trace[$level]['file']);
 
 					echo '
+							<?xml version="1.0" encoding="iso-8859-1"?>
 							<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 							<html xmlns="http://www.w3.org/1999/xhtml">
 							<head>

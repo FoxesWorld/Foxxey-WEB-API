@@ -23,13 +23,13 @@
 		private $foxCheckStatus = false;
 		private $checkStatusDB;
 		private $db;
-
-        /**
-         * foxCheck constructor.
-         * @param $login
-         * @param bool $debug
-         */
-        function __construct($login, $debug = false){
+		
+		 /**
+		 * foxCheck constructor.
+		 * @param $login
+		 * @param bool $debug
+		 */
+		function __construct($login, $debug = false){
 			global $config;
 			$this->debug = $debug;
 			$this->login = $login;
