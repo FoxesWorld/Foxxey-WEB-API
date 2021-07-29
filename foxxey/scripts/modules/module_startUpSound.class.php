@@ -16,6 +16,11 @@
  Usage: Sound generation
 =====================================================
 */
+if (!defined('FOXXEY')) {
+	die ('{"message": "Not in FOXXEY thread"}');
+} else {
+	define('startUpSound', true);
+}
 
 /*		 USAGE
 		
@@ -60,6 +65,7 @@
 		
 		//Initialisation
 		function __construct($debug = false) {
+			startUpSound::IncludestartUpSoundModules();
 			startUpSound::$debug = $debug;
 			$this->eventNow();
 			$this->generateMusic(static::$debug);
@@ -423,5 +429,13 @@
 					"eventName" 		=> static::$eventNow);
 
 			return json_encode($outputArray, JSON_UNESCAPED_SLASHES);
-		}	
+		}
+		
+		private static function IncludestartUpSoundModules(){
+			$modulesDir = SCRIPTS_DIR.'modules/startUpSoundModules';
+			if(!is_dir($modulesDir)){
+				mkdir($modulesDir);
+			}
+			functions::includeModules($modulesDir, false);
+		}
 	}

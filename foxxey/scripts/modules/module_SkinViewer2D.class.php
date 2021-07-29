@@ -1,4 +1,8 @@
 <?php
+if (!defined('FOXXEY')) {
+	die ('{"message": "Not in FOXXEY thread"}');
+}
+
  class SkinViewer2D
  {
     private static $slimDetectPixel = array(42, 51); // x,y 

@@ -16,6 +16,9 @@
  Usage: Prevent users bruting passwords
 =====================================================
 */
+if(!defined('Authorisation')) {
+	die('{"message": "Not in authorisation thread"}');
+}
 
 	class antiBrute extends Authorise {
 

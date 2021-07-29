@@ -16,7 +16,9 @@
  Usage: Generate random text to entertain user
 =====================================================
 */
-
+if (!defined('FOXXEY')) {
+	die ('{"message": "Not in FOXXEY thread"}');
+}
 	class randTexts {
 	
 		/* INPUT */

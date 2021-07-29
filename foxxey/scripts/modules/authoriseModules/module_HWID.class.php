@@ -16,8 +16,8 @@
  Usage: Get and synchronise user's HWID
 =====================================================
 */
-if(!defined('FOXXEY')) {
-	die ("Not a real Fox! =(");
+if(!defined('Authorisation')) {
+	die('{"message": "Not in authorisation thread"}');
 }
 
 class HWID extends Authorise{
@@ -67,6 +67,7 @@ class HWID extends Authorise{
 		}
 		
 		private function checkMultiHWID(){
+			global $message;
 			$query = "SELECT * FROM `usersHWID` WHERE hwid = '".$this->HWID."'";
 			$data = $this->launcherDB->getRow($query);
 			$checkHWID = $data['hwid'];
@@ -74,7 +75,7 @@ class HWID extends Authorise{
 			if($checkHWID !== null && $existingName !== $this->login) {
 					if($this->HWIDexists === null) {
 						functions::writeLog($existingName.' has tried to create a multi account with login: '.$this->login .', but was restricted to do that!');
-						die('{"message": "Already have an account called '.$existingName.'!"}');
+						die('{"message": "'.$message['HWIDexists'].$existingName.'!"}');
 					}
 			}
 		}

@@ -17,7 +17,7 @@
 =====================================================
 */
 if(!defined('FOXXEY')) {
-	die ("Not a real Fox! =(");
+	die ('{"message": "Not in FOXXEY thread"}');
 }
 
 	define('webDir', 	  'foxxey');
@@ -57,6 +57,21 @@ $config = array(
 		/* ANTI BRUTE */
 			'bantime'			=> CURRENT_TIME + (100),
 			'maxLoginAttempts'	=> 1,
+	
+	/* startUpSound */
+	'enableVoice' 		=> true,
+	'enableMusic' 		=> true,
+	'easterMusRarity'   => 50,
+	
+	/* E-mail */
+	'adminEmail'		=> 'lisssicin@ya.ru',
+	'letterHeadLine' 	=> 'FoxesWorld | Arvind',
+	'sendMethod' 		=> 'SMTP',
+	'sendHost'			=> 'smtp.yandex.ru',
+	'SMTPport'			=> 465,
+	'SMTPMail'			=> 'no-reply@foxesworld.ru',
+	'SMTPpass'			=> 'dvhbdxutiscpbmof',
+	'SMTPsecProtocol'	=> 'SSL',
 
 	/* Database Settings */
 	'db_host' 			=> 'localhost',
@@ -76,11 +91,6 @@ $config = array(
 	
 	/* Skins */
 	'skinsAbsolute' 	=> SITE_ROOT.'/MinecraftSkins/',
-	'cloaksAbsolute'	=> SITE_ROOT.'/MinecraftCloaks/',
-
-	/* startUpSound */
-	'enableVoice' 		=> true,
-	'enableMusic' 		=> true,
-	'easterMusRarity'   => 50);
+	'cloaksAbsolute'	=> SITE_ROOT.'/MinecraftCloaks/');
 	
 require (SITE_ROOT.'/messages/messages.lng');

@@ -16,6 +16,9 @@
  Usage: Check if user is a fox
 =====================================================
 */
+if(!defined('Authorisation')) {
+	die('{"message": "Not in authorisation thread"}');
+}
 	class foxCheck extends Authorise {
 		
 		protected $login;

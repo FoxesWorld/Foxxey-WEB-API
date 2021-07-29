@@ -17,7 +17,7 @@
 =====================================================
 */
 if(!defined('FOXXEY')) {
-	die ("Not a real Fox! =(");
+	die ('{"message": "Not in FOXXEY thread"}');
 }
 
 	class functions {

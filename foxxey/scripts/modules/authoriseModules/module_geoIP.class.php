@@ -16,9 +16,9 @@
  scanning user's ip
 =====================================================
 */
-if(!defined('FOXXEY')) {
-	die ("Not a real fox =(");
-}	
+if(!defined('Authorisation')) {
+	die('{"message": "Not in authorisation thread"}');
+}
 
 //===================================================
 class geoPlugin extends Authorise {

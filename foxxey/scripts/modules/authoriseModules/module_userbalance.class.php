@@ -1,5 +1,7 @@
 <?php 
-
+if(!defined('Authorisation')) {
+	die('{"message": "Not in authorisation thread"}');
+}
 	class userbalance extends Authorise {
 
 		protected $login;

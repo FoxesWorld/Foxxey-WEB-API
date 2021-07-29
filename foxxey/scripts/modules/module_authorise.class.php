@@ -19,9 +19,10 @@
 
 	header('Content-Type: text/html; charset=utf-8');
 	if(!defined('FOXXEY')) {
-		die ("Not a real Fox! =(");
+		die ('{"message": "Not in FOXXEY thread"}');
+	} else {
+		define('Authorisation', true);
 	}
-	Authorise::IncludeAuthModules();
 	
 	/* 
 	 * TODO
@@ -60,6 +61,7 @@ class Authorise {
 		 */
 		function __construct($login, $pass, $HWID){
 			global $config;
+			Authorise::IncludeAuthModules();
 			$this->webSiteFunc  = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
 
 			$this->login = $login;
@@ -106,7 +108,7 @@ class Authorise {
 								$this->correctLogin = true;
 							}
 						}
-						
+
 						if(!$this->correctLogin) { //If Login is incorrect
 							if($config['useAntiBrute'] === true) {
 								$antiBrute = new antiBrute(REMOTE_IP, $config['antiBruteDebug']);
@@ -191,7 +193,7 @@ class Authorise {
 			}
 		}
 		
-		public static function IncludeAuthModules(){
+		private static function IncludeAuthModules(){
 			$modulesDir = SCRIPTS_DIR.'modules/authoriseModules';
 			if(!is_dir($modulesDir)){
 				mkdir($modulesDir);
