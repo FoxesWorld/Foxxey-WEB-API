@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions,class.php
 -----------------------------------------------------
- Version: 0.1.4.0 Experimental
+ Version: 0.1.4.1 Experimental
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
@@ -89,26 +89,33 @@ if(!defined('FOXXEY')) {
 				$count = 1;
 				$dir = opendir($dirInclude);
 				if($debug === true){
-					echo '<div style="width: fit-content;"><b>Modules to include: </b> (Debug)<hr style="margin: 0;">';
+					echo '<div style="width: fit-content;"><b>Modules to include: </b> <hr style="margin: 0;">';
 				}
 				while($file = readdir($dir)){
 					if($file == '.' || $file == '..'){
 						continue;
 					} else {
-						if($debug === true){
-							echo "<b>".$count."</b> Including module ".$file."<br>";
-							$count ++;
-						}
-						if(strpos($file, 'module') !== false) {
-							require ($dirInclude.'/'.$file);
-						} else {
-							if($debug === true){
-								echo "<b>".$count."</b> ".$file." was not included as not the valid module<br>";
+						if(!is_dir($dirInclude.'/'.$file)) {
+
+							if(strpos($file, 'module') !== false) {
+								require ($dirInclude.'/'.$file);
+
+									if($debug === true){
+										echo "<b>".$count."</b> Including ".$file."<br>";
+										$count ++;
+									}
+
+							} else {
+
+								if($debug === true){
+									echo "<b>".$count."</b> ".$file." was not included as not the valid <br>";
+								}
 							}
 						}
 					}
 				}
 				if($debug === true){
+					$count--;
 					echo '<hr style="margin: 0;"> Total modules: <b>'.$count.'</b></div>';
 				}
 			}
@@ -133,6 +140,18 @@ if(!defined('FOXXEY')) {
 			public static function writeLog($logText, $rewrite = null){
 				$line = '['.CURRENT_DATE.'] '.date('H:m:s').' '.$logText."\n";
 				file_put_contents(FILES_DIR.'/logs/AuthLog.log', $line, FILE_APPEND);
+			}
+			
+			public static function getUserName(){
+				global $config;
+						if(class_exists('randTexts')) {
+							$randTexts = new randTexts('noName', $config['randTextsDebug']);
+							$name = $randTexts->textOut();
+						} else {
+							echo '{"message": "Module randTexts not found!", "desc": "Can`t say an unknown user who is he today!"},';
+							$name = 'Unnamed user';
+						}
+				return $name;
 			}
 
 			public static function display_error($error ='No errors', $error_num = 100500, $query) {

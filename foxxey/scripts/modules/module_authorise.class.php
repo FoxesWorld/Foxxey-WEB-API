@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.6.7 Experimental
+ Verssion: 0.1.7.7 Experimental
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -49,6 +49,7 @@ class Authorise {
 		/* USERDATA */
 		private $realName;
 		private $realPass;
+		private $realMail;
 		private $fullname;
 		private $userGroup;
 		private $regDate;
@@ -82,6 +83,8 @@ class Authorise {
 			//Getting AUTH USERDATA
 			$this->realName  = json_decode($this->webSiteFunc->getUserData($this->login, 'name'))		-> name		  ?? null;
 			$this->realPass  = json_decode($this->webSiteFunc->getUserData($this->login, 'password'))	-> password	  ?? null;
+			$this->realMail  = json_decode($this->webSiteFunc->getUserData($this->login, 'email'))		-> email	  ?? null;
+			$this->fullname  = json_decode($this->webSiteFunc->getUserData($this->login, 'fullname'))	-> fullname   ?? functions::getUserName();
 			
 			if($this->login == '' && $this->pass == '') {
 				exit('{"message": "'.$message['dataNotIsset'].'"}');
@@ -137,19 +140,9 @@ class Authorise {
 								$this->webSiteFunc->passwordReHash($this->pass, $this->realPass, $this->realName);
 
 								//GETTING PERSONAL DATA
-								$this->fullname  = json_decode($this->webSiteFunc->getUserData($this->login, 'fullname'))	-> fullname   ?? $this->noName;
+								$this->fullname  = json_decode($this->webSiteFunc->getUserData($this->login, 'fullname'))	-> fullname   ?? functions::getUserName();
 								$this->userGroup = json_decode($this->webSiteFunc->getUserData($this->login, 'user_group'))	-> user_group ?? 4;
 								$this->regDate 	 = json_decode($this->webSiteFunc->getUserData($this->login, 'reg_date'))	-> reg_date	  ?? null;
-									
-									if(!$this->webSiteFunc->getUserData($this->login, 'fullname')) {
-										if(class_exists('randTexts')) {
-											$this->randTexts = new randTexts('noName', $config['randTextsDebug']);
-											$this->noName = $this->randTexts->textOut();
-										} else {
-											echo '{"message": "Module randTexts not found!", "desc": "Can`t say an unknown user who is he today!"},';
-											$this->noName = 'Unnamed user';
-										}
-									}
 
 							// Getting Balance
 							if($config['getBalance'] === true) {
@@ -180,6 +173,7 @@ class Authorise {
 							die('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$units.', "hardwareId":  '.$this->HWIDstatus.'}');
 						} else {
 							functions::writeLog('Incorrect HWID for '.$this->login.' IP is - '.REMOTE_IP.' Bruted by '.$HWIDuser);
+							Authorise::sendHWIDmail($this->realMail, 'Смена HWID', REMOTE_IP, $this->login, $config['webserviceName']);
 								if(class_exists('randTexts')) {
 									$this->randTexts = new randTexts('wrongHWID');
 									$this->HWIDerrorMessage = $this->randTexts->textOut();
@@ -194,10 +188,20 @@ class Authorise {
 		}
 		
 		private static function IncludeAuthModules(){
+			global $config;
 			$modulesDir = SCRIPTS_DIR.'modules/authoriseModules';
 			if(!is_dir($modulesDir)){
 				mkdir($modulesDir);
 			}
-			functions::includeModules($modulesDir, false);
+			functions::includeModules($modulesDir, $config['modulesDebug']);
+		}
+		
+		private static function sendHWIDmail($sendTo, $sendTitle, $ip, $login, $credits){
+			$mail = new foxMail(1);
+			$mailTpl = $mail->getTemplate('changeHWID');
+				$replaceArr = array("{login}", "{IP}", "{toGetFromNikitaFox}", "{Credits}");
+				$replacerArr = array($login, $ip, 'Данные нового ПК (Система, процессор и так далее..)', $credits);
+				$sendText = str_replace($replaceArr, $replacerArr, $mailTpl);
+			$mail->send($sendTo, $sendTitle, $sendText);
 		}
 }

@@ -432,10 +432,11 @@ if (!defined('FOXXEY')) {
 		}
 		
 		private static function IncludestartUpSoundModules(){
+			global $config;
 			$modulesDir = SCRIPTS_DIR.'modules/startUpSoundModules';
 			if(!is_dir($modulesDir)){
 				mkdir($modulesDir);
 			}
-			functions::includeModules($modulesDir, false);
+			functions::includeModules($modulesDir, $config['modulesDebug']);
 		}
 	}

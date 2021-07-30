@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: launcher.php
 -----------------------------------------------------
- Version: 0.1.1.0 Experimental
+ Version: 0.1.1.1 Experimental
 -----------------------------------------------------
  Usage: All the functions of Foxxey can be obtained in here
 =====================================================
@@ -24,9 +24,13 @@ Error_Reporting(E_ALL);
 Ini_Set('display_errors', true);
 session_start();
 //==============================
-	define  ('FOXXEY',true);
-	require ('foxxey/config.php');
-	require (SCRIPTS_DIR.'database.class.php');
-	require (SCRIPTS_DIR.'functions.class.php');
-	require (SCRIPTS_DIR.'actionScript.php');
+	if($_REQUEST) {
+		define  ('FOXXEY',true);
+		require ('foxxey/config.php');
+		require (SCRIPTS_DIR.'database.class.php');
+		require (SCRIPTS_DIR.'functions.class.php');
+		require (SCRIPTS_DIR.'actionScript.php');
+	} else  {
+		die('{"message": "No sent request"}');
+	}
 ?>

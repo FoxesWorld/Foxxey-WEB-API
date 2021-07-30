@@ -26,8 +26,8 @@
  * @author Brent R. Matzelle (original founder)
  */
 
-if (!defined ('MAIL')) {
-    die ('{"message": "Not in MAIL thread"}');
+if (!defined ('FoxMail')) {
+    die('{"message": "Not in FoxMail thread"}');
 }
 
 class PHPMailer

@@ -1,11 +1,11 @@
 <?php
 /*
 =====================================================
- Foxxey - by FoxesWorld
+ FoxesWorld - by ArcJet Systems
 -----------------------------------------------------
  https://foxesworld.ru/
 -----------------------------------------------------
- Copyright (c) 2016-2021 FoxesWorld
+ Copyright (c) 2016-2020 ArcJet Systems
 =====================================================
  Данный код защищен авторскими правами
 =====================================================
@@ -14,61 +14,58 @@
  Назначение: Класс для отправки писем с сайта
 =====================================================
 */
-/*
- * Using
- * $mail = new foxMail($config,1);
- * $mail->send(self::$email, "FoxEngine", self::$template);
-*/
-if (!defined('FOXXEY')) {
-	die ('{"message": "Not in FOXXEY thread"}');
-} else {
-	define('MAIL', true);
-}
 
-class ArvindMail {
+	if(!defined('FOXXEY')) {
+		die ('{"message": "Not in FOXXEY thread"}');
+	} else {
+		define('FoxMail',true);
+	}
+
+class foxMail {
 
 	public $mail = false;
 	public $send_error = false;
-	public $smtp_msg = "";
+	public $smtp_msg = "Succesful send mail to ";
 	public $from = false;
 	public $html_mail = false;
 	public $bcc = array ();
 	public $keepalive = false;
 	
-	function __construct($config, $is_html = false) {
-		ArvindMail::IncludeMailModules();
+	function __construct($is_html = false) {
+		global $config;
+		foxMail::IncludestartUpSoundModules();
 		$this->mail = new PHPMailer;
-		$this->mail->CharSet = $config['charset'];
+		$this->mail->CharSet = $config['encoding'];
 		$this->mail->Encoding = "base64";
 
-		$config['letterHeadLine'] = str_replace( '&amp;', '&', $config['letterHeadLine'] );
+		$config['mail_title'] = str_replace( '&amp;', '&', $config['mail_title'] );
 
-		if( $config['letterHeadLine'] ) {
-			$this->mail->setFrom($config['adminEmail'], $config['letterHeadLine']);
+		if( $config['mail_title'] ) {
+			$this->mail->setFrom($config['admin_mail'], $config['mail_title']);
 		} else {
-			$this->mail->setFrom( $config['adminEmail'] );			
+			$this->mail->setFrom($config['admin_mail'] );			
 		}
 		
-		if($config['sendMethod'] == "smtp") {
+		if($config['mail_metod'] == "smtp") {
 			$this->mail->isSMTP();
 			$this->mail->Timeout = 10;
-			$this->mail->Host = $config['sendHost'];
-			$this->mail->Port = intval( $config['SMTPport'] );
-			$this->mail->SMTPSecure = $config['SMTPsecProtocol'];
+			$this->mail->Host = $config['smtp_host'];
+			$this->mail->Port = intval( $config['smtp_port'] );
+			$this->mail->SMTPSecure = $config['smtp_secure'];
 			
 			if( $config['smtp_user'] ) {
 				$this->mail->SMTPAuth = true;
 				$this->mail->Username = $config['smtp_user'];
-				$this->mail->Password = $config['SMTPpass'];
+				$this->mail->Password = $config['smtp_pass'];
 			}
 			
-			if( $config['SMTPMail'] ) {
-				$this->mail->From = $config['SMTPMail'];
-				$this->mail->Sender = $config['SMTPMail'];
+			if( $config['smtp_mail'] ) {
+				$this->mail->From = $config['smtp_mail'];
+				$this->mail->Sender = $config['smtp_mail'];
 			}
 		}
 		
-		$this->mail->XMailer = "FoxesWorld | Arvind";
+		$this->mail->XMailer = "FoxesWorld CMS";
 		
 		if ( $is_html ) {
 			$this->mail->isHTML();
@@ -106,6 +103,9 @@ class ArvindMail {
 		if (!$this->mail->send()) {
 			$this->smtp_msg = $this->mail->ErrorInfo;
 			$this->send_error = true;
+			echo '{"message": "'.$this->smtp_msg.'", "type": "error"}';
+		} else {
+			//echo '{"message": "'.$this->smtp_msg.$to.'", "type": "success"}';
 		}
 		
 		$this->mail->clearAllRecipients();
@@ -113,16 +113,24 @@ class ArvindMail {
 	
 	}
 	
+	function getTemplate($name) {
+		ob_start();
+		include (FILES_DIR.'/mail/'.$name.".tpl");
+		$text = ob_get_clean();
+		return $text;
+    }
+	
 	function addAttachment($path, $name = '', $encoding = 'base64', $type = '', $disposition = 'attachment') {
 		$this->mail->addAttachment( $path, $name, $encoding, $type, $disposition );
 	}
 	
-	private static function IncludeMailModules(){
+	private static function IncludestartUpSoundModules(){
+		global $config;
 		$modulesDir = SCRIPTS_DIR.'modules/mailModules';
-		if(!is_dir($modulesDir)){
-			mkdir($modulesDir);
+			if(!is_dir($modulesDir)){
+				mkdir($modulesDir);
+			}
+		functions::includeModules($modulesDir, $config['modulesDebug']);
 		}
-		functions::includeModules($modulesDir, false);
-	}
 }
 ?>

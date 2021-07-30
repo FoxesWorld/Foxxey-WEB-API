@@ -22,12 +22,14 @@
 		die ('{"message": "Not in FOXXEY thread"}');
 	}
 
-	/* HOOKING MODULES */
-	functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug']);
+
 
 	foreach ($_GET as $key => $value) {
 		$requestTitle = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($key))));
 		$requestValue = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($value))));
+
+		  /* HOOKING MODULES */
+		  functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug']);
 
 		  /* ACTIONS */
 		  switch ($requestTitle) {

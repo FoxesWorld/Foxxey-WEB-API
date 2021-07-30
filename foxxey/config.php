@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.2.2 Alpha
+ Version: 0.1.2.3 Alpha
 -----------------------------------------------------
  Usage: WEB API settings
 =====================================================
@@ -64,14 +64,16 @@ $config = array(
 	'easterMusRarity'   => 50,
 	
 	/* E-mail */
-	'adminEmail'		=> 'lisssicin@ya.ru',
-	'letterHeadLine' 	=> 'FoxesWorld | Arvind',
-	'sendMethod' 		=> 'SMTP',
-	'sendHost'			=> 'smtp.yandex.ru',
-	'SMTPport'			=> 465,
-	'SMTPMail'			=> 'no-reply@foxesworld.ru',
-	'SMTPpass'			=> 'dvhbdxutiscpbmof',
-	'SMTPsecProtocol'	=> 'SSL',
+	'encoding' => 'UTF-8',
+	'admin_mail' => 'lisssicin@yandex.ru',
+	'mail_title' => 'Foxesworld',
+	'mail_metod' => 'smtp',
+	'smtp_host' => 'smtp.yandex.ru',
+	'smtp_port' => '465',
+	'smtp_user' => 'no-reply@foxesworld.ru',
+	'smtp_pass' => 'dvhbdxutiscpbmof',
+	'smtp_secure' => 'ssl',
+	'smtp_mail' => 'no-reply@foxesworld.ru',
 
 	/* Database Settings */
 	'db_host' 			=> 'localhost',
