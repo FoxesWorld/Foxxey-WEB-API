@@ -3,6 +3,9 @@ WEB API for Foxxey Launcher
 
 __TODO__
  - Fixes and optimisations
+ - Long Term Ban
+ - Analiasing login attempts
+ - Neuro System
 
 __WAS DONE__
  - Security
