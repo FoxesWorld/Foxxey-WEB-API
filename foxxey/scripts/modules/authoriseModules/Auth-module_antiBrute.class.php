@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: antiBrute.class.php
 -----------------------------------------------------
- Verssion: 0.1.3.3 Alpha
+ Verssion: 0.1.3.4 Alpha
 -----------------------------------------------------
  Usage: Prevent users bruting passwords
 =====================================================
@@ -108,10 +108,11 @@ if(!defined('Authorisation')) {
 
 		private function banIp(){
 			global $config;
+			$Logger = new Logger('AuthLog');
 			if($this->debug === true) {
 				echo "Banning ".$this->ip." till ".$config['bantime']."<br>";
 			}
-			functions::writeLog('Banning '.$this->ip.' for too many authorisation errors');
+			$Logger->WriteLine('Banning '.$this->ip.' for too many authorisation errors');
 			$query = "UPDATE `ipCheck` SET `time`=".$config['bantime']." WHERE ip = '".$this->ip."'";
 			$this->db::run($query);
 		}

@@ -17,12 +17,9 @@
 =====================================================
 */
 
-	header('Content-Type: text/html; charset=utf-8');
 	if(!defined('FOXXEY')) {
 		die ('{"message": "Not in FOXXEY thread"}');
 	}
-
-
 
 	foreach ($_GET as $key => $value) {
 		$requestTitle = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($key))));
@@ -80,6 +77,10 @@
 			   } else {
 					die('{"message": "Module skinViewer2D not found!", "desc": "Can`t show user how beautiful he is =("}');
 			   }
+		   break;
+		   
+		   default:
+			die('{"message": "Unknown request!"}');
 		   break;
 		}
 	}

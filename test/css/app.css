@@ -1,0 +1,9 @@
+.borderBlock {
+	border: 1px solid black;
+	border-radius: 10px;
+    width: fit-content;
+}
+
+.blockTitle {
+	margin: 5px 10px;
+}

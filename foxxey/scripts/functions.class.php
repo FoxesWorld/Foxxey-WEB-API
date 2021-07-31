@@ -137,11 +137,6 @@ if(!defined('FOXXEY')) {
 				}
 			}
 			
-			public static function writeLog($logText, $rewrite = null){
-				$line = '['.CURRENT_DATE.'] '.date('H:m:s').' '.$logText."\n";
-				file_put_contents(FILES_DIR.'/logs/AuthLog.log', $line, FILE_APPEND);
-			}
-			
 			public static function getUserName(){
 				global $config;
 						if(class_exists('randTexts')) {

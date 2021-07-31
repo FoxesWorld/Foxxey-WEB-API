@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.7.7 Experimental
+ Verssion: 0.1.8.7 Experimental
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -71,9 +71,10 @@ class Authorise {
 			$this->correctLogin = false;
 		}
 	
-		public function logIn(){
+		public function logIn() {
 			global $config, $message;
 			$units = 0;
+			$Logger = new Logger('AuthLog');
 
 			//FILTRATING INPUT DATA
 				$this->login = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->login)));
@@ -116,7 +117,7 @@ class Authorise {
 							if($config['useAntiBrute'] === true) {
 								$antiBrute = new antiBrute(REMOTE_IP, $config['antiBruteDebug']);
 							}
-							functions::writeLog('Incorrect login for '.REMOTE_IP.' as '.$this->login.' using `'.$this->pass.'`');
+							$Logger->WriteLine('Incorrect login for '.REMOTE_IP.' as '.$this->login.' using `'.$this->pass.'`');
 							exit('{"message": "'.$message['wrongLoginPass'].'"}');
 						} else {
 								// Checking HWID
@@ -134,7 +135,7 @@ class Authorise {
 								//==============
 
 						if($this->HWIDstatus === 'true'){ //If HWID is correct
-								functions::writeLog('Successful authorisation for '.$HWIDuser.' with the correct HWID');
+								$Logger->WriteLine('Successful authorisation for '.$HWIDuser.' with the correct HWID');
 								/* ISSUE!!! VAR ASSIGNMENT AGAIN! */
 								$this->webSiteFunc = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
 								$this->webSiteFunc->passwordReHash($this->pass, $this->realPass, $this->realName);
@@ -172,7 +173,7 @@ class Authorise {
 
 							die('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$units.', "hardwareId":  '.$this->HWIDstatus.'}');
 						} else {
-							functions::writeLog('Incorrect HWID for '.$this->login.' IP is - '.REMOTE_IP.' Bruted by '.$HWIDuser);
+							$Logger->WriteLine('Incorrect HWID for '.$this->login.' IP is - '.REMOTE_IP.' Bruted by '.$HWIDuser);
 							$hardwareCheck->renewHWID($this->realMail, REMOTE_IP, $this->login, $this->HWID);
 								if(class_exists('randTexts')) {
 									$this->randTexts = new randTexts('wrongHWID');

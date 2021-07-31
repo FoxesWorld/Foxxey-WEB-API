@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.4.6 Beta
+ Version: 0.1.4.7 Beta
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -69,12 +69,13 @@ class HWID extends Authorise{
 		private function checkMultiHWID(){
 			global $message;
 			$query = "SELECT * FROM `usersHWID` WHERE hwid = '".$this->HWID."'";
+			$Logger = new Logger('AuthLog');
 			$data = $this->launcherDB->getRow($query);
 			$checkHWID = $data['hwid'];
 			$existingName = $data['login'];
 			if($checkHWID !== null && $existingName !== $this->login) {
 					if($this->HWIDexists === null) {
-						functions::writeLog($existingName.' has tried to create a multi account with login: '.$this->login .', but was restricted to do that!');
+						$Logger->WriteLine($existingName.' has tried to create a multi account with login: '.$this->login .', but was restricted to do that!');
 						die('{"message": "'.$message['HWIDexists'].$existingName.'!"}');
 					}
 			}
