@@ -173,7 +173,7 @@ class Authorise {
 							die('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$units.', "hardwareId":  '.$this->HWIDstatus.'}');
 						} else {
 							functions::writeLog('Incorrect HWID for '.$this->login.' IP is - '.REMOTE_IP.' Bruted by '.$HWIDuser);
-							Authorise::sendHWIDmail($this->realMail, 'Смена HWID', REMOTE_IP, $this->login, $config['webserviceName']);
+							$hardwareCheck->renewHWID($this->realMail, REMOTE_IP, $this->login, $this->HWID);
 								if(class_exists('randTexts')) {
 									$this->randTexts = new randTexts('wrongHWID');
 									$this->HWIDerrorMessage = $this->randTexts->textOut();
@@ -194,14 +194,5 @@ class Authorise {
 				mkdir($modulesDir);
 			}
 			functions::includeModules($modulesDir, $config['modulesDebug']);
-		}
-		
-		private static function sendHWIDmail($sendTo, $sendTitle, $ip, $login, $credits){
-			$mail = new foxMail(1);
-			$mailTpl = $mail->getTemplate('changeHWID');
-				$replaceArr = array("{login}", "{IP}", "{toGetFromNikitaFox}", "{Credits}");
-				$replacerArr = array($login, $ip, 'Данные нового ПК (Система, процессор и так далее..)', $credits);
-				$sendText = str_replace($replaceArr, $replacerArr, $mailTpl);
-			$mail->send($sendTo, $sendTitle, $sendText);
 		}
 }

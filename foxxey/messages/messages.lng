@@ -23,11 +23,13 @@
 
 	$message = array(
 	/* AUTH */
-	'wrongLoginPass' => 'Неправильный логин или пароль',
-	'userNotFound'	 => 'Пользователь не найден',
-	'dataNotIsset'	 => 'Данные не введены',
-	'congrats'		 => 'Поздравляю, вы - Лис!',
+	'wrongLoginPass'   => 'Неправильный логин или пароль',
+	'userNotFound'	   => 'Пользователь не найден',
+	'dataNotIsset'	   => 'Данные не введены',
+	'congrats'		   => 'Поздравляю, вы - Лис!',
 	
 	/* HWID*/
-	'HWIDexists'	 => 'У тебя уже есть аккаунт - '
+	'HWIDexists'	   => 'У тебя уже есть аккаунт - ',
+	'HWIDrenew'		   => 'Обновление HWID',
+	'HWIDcrqstWasSent' => 'Запрос на смену HWID был отправлен ранее'
 	);

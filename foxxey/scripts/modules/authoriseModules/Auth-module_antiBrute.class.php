@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: antiBrute.class.php
 -----------------------------------------------------
- Verssion: 0.1.3.2 Alpha
+ Verssion: 0.1.3.3 Alpha
 -----------------------------------------------------
  Usage: Prevent users bruting passwords
 =====================================================
@@ -39,7 +39,7 @@ if(!defined('Authorisation')) {
 		 * @param $ip
 		 * @param bool $debug
 		 */
-		function __construct ($ip, $debug = false){
+		function __construct ($ip, $debug = false) {
 			global $config;
 			$this->ip = $ip;
 			$this->debug = $debug;
@@ -48,22 +48,19 @@ if(!defined('Authorisation')) {
 			$this->parseIpRow();
 
 			switch ($this->DBip) {
-				
 				case (REMOTE_IP):
 					$this->increaseAttempts();
 				break;
-				
+
 				default:
 					$this->insertIp();
 			}
-			
-			switch($this->DBattempts){
-				case ($this->maxAttempts):
-					$this->banIp();
-				break;
+
+			if($this->DBattempts >= $this->maxAttempts) {
+				$this->banIp();
 			}
 
-			if($this->DBtime > CURRENT_TIME){
+			if(functions::checkTime($this->DBtime) === false){
 				if(class_exists('randTexts')) {
 					$randTexts = new randTexts('antiBrute', $config['randTextsDebug']);
 					exit ('{"message": "'.$randTexts->textOut().'"}');
@@ -95,7 +92,7 @@ if(!defined('Authorisation')) {
 
 		private function insertIp(){
 			if(!$this->DBip) {
-				
+
 				if($this->debug === true) {
 					echo "Adding ".$this->ip." to DB";
 				}

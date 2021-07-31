@@ -153,6 +153,22 @@ if(!defined('FOXXEY')) {
 						}
 				return $name;
 			}
+			
+			public static function checkTime ($timestamp) {
+				if($timestamp) {
+					switch ($timestamp){
+						case ($timestamp > CURRENT_TIME):
+							return false;
+						break;
+						
+						case ($timestamp < CURRENT_TIME):
+							return true;
+						break;
+					}
+				} else {
+					return null;
+				}
+			}
 
 			public static function display_error($error ='No errors', $error_num = 100500, $query) {
 				global $config;

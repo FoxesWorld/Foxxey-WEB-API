@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.3.6 Beta
+ Version: 0.1.4.6 Beta
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -80,7 +80,7 @@ class HWID extends Authorise{
 			}
 		}
 					
-		function checkHWID(){
+		public function checkHWID(){
 			$this->checkMultiHWID($this->HWID, $this->login);  //One account per PC
 			if($this->HWID !== $this->realHWID) {
 				$this->check = false;
@@ -121,4 +121,58 @@ class HWID extends Authorise{
 			
 			return $existingName;
 		}
+		
+		//renewHWID methods =====================
+		public function renewHWID($email, $ip, $login, $newHWID) {
+			global $message;
+			$lastSentRequest = $this->checkTokenTime($login);
+			$dayaWait = $lastSentRequest + 86400;
+
+			switch (functions::checkTime($dayaWait)) {
+				case false:
+					die('{"message": "'.$message['HWIDcrqstWasSent'].'"}');
+				break;
+				
+				case true:
+					$this->removeHWIDresetRequest($login, $newHWID);
+					$this->addDBtoken($login, $newHWID, $email, $ip);
+				break;
+				
+				default:
+					$this->addDBtoken($login, $newHWID, $email, $ip);
+				break;
+			}
+
+		}
+
+		private function addDBtoken($login, $newHWID, $email, $ip){
+			global $config, $message;
+			$hwidHash = functions::generateLoginHash();
+			$query = "INSERT INTO `HWIDrenew`(`login`, `newHWID`, `timestamp`, `hash`) VALUES ('".$login."','".$newHWID."','".CURRENT_TIME."','".$hwidHash."')";
+			$this->launcherDB->run($query);
+			$this->sendHWIDResetEmail($email, $message['HWIDrenew'], $ip, $login, $config['webserviceName'], $hwidHash);
+		}
+
+		private function checkTokenTime($login){
+			$query = "SELECT `timestamp` FROM `HWIDrenew` WHERE login = '".$login."'";
+			$data = $this->launcherDB->getRow($query);
+			$timestamp = intval($data['timestamp']);
+			
+			return $timestamp;
+		}
+
+		private function removeHWIDresetRequest($login, $newHWID){
+			$query = "DELETE FROM `HWIDrenew` WHERE login= '".$login."'";
+			$this->launcherDB->run($query);
+		}
+
+		private function sendHWIDResetEmail($sendTo, $sendTitle, $ip, $login, $credits, $hash){
+			$mail = new foxMail(1);
+			$mailTpl = $mail->getTemplate('changeHWID');
+				$replaceArr = array("{login}", "{IP}", "{toGetFromNikitaFox}", "{Credits}", "{resetHash}");
+				$replacerArr = array($login, $ip, 'Данные нового ПК (Система, процессор и так далее..)', $credits, $hash);
+				$sendText = str_replace($replaceArr, $replacerArr, $mailTpl);
+			$mail->send($sendTo, $sendTitle, $sendText);
+		}
+		//=================
 	}
