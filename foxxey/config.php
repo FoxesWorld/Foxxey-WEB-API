@@ -42,6 +42,7 @@ $config = array(
 	'debugStartUpSound' => false,
 	'antiBruteDebug'	=> false,
 	'randTextsDebug'	=> false,
+	'debugStartUpSound' => false,
 	
 	/* AUTHORISATION */
 		'checkHWID'    => true,
@@ -59,6 +60,7 @@ $config = array(
 			'maxLoginAttempts'	=> 1,
 	
 	/* startUpSound */
+	'mountDir' 			=> FILES_DIR."eventSounds",
 	'enableVoice' 		=> true,
 	'enableMusic' 		=> true,
 	'easterMusRarity'   => 50,

@@ -11,9 +11,9 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.2.18 Final
+ Version: 0.2.19 Final
 -----------------------------------------------------
- Usage: Sound generation
+ Usage: Current Event Sound generation
 =====================================================
 */
 if (!defined('FOXXEY')) {
@@ -31,7 +31,7 @@ if (!defined('FOXXEY')) {
 	class startUpSound {
 	
 		/* Base utils */
-		private static $AbsolutesoundPath = SITE_ROOT."/eventSounds";
+		private static $AbsolutesoundPath;
 		private static $currentDate = CURRENT_DATE;
 		private static $musMountPoint = 'mus';
 		private static $eventNow = 'common';
@@ -65,7 +65,9 @@ if (!defined('FOXXEY')) {
 		
 		//Initialisation
 		function __construct($debug = false) {
+			global $config;
 			startUpSound::IncludestartUpSoundModules();
+			startUpSound::$AbsolutesoundPath = $config['mountDir'];
 			startUpSound::$debug = $debug;
 			$this->eventNow();
 			$this->generateMusic(static::$debug);
@@ -209,10 +211,9 @@ if (!defined('FOXXEY')) {
 			$minRange = 1;
 			$maxRange = 1;
 			$easterCheck;
-			
-			$this->easter($config['easterMusRarity'], static::$debug, 'music');
-			if($config['enableMusic'] === true) {
 
+			if($config['enableMusic'] === true) {
+			$this->easter($config['easterMusRarity'], static::$debug, 'music');
 					if(static::$musPerEvent === true) {
 						$currentMusFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$musMountPoint.static::$easter;
 					} else {
@@ -245,11 +246,11 @@ if (!defined('FOXXEY')) {
 					$mp3MusFile = new MP3File(static::$musFileAbsolute);
 					startUpSound::$durationMus = $mp3MusFile->getDurationEstimate();
 				} else {
-					static::$selectedMusic = "musicOff";
+					startUpSound::$selectedMusic = "musicOff";
 				}
 
 			} else {
-				static::$selectedMusic = "musicOff";
+				startUpSound::$selectedMusic = "musicOff";
 			}
 				if($debug === true) {
 						$output =
@@ -277,8 +278,8 @@ if (!defined('FOXXEY')) {
 			$minRange = 1;
 			$easterCheck;
 
-			$this->easter($config['easterMusRarity'], static::$debug, 'sound');
 			if($config['enableVoice'] === true) {
+				$this->easter($config['easterMusRarity'], static::$debug, 'sound');
 				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.static::$easter;			//Folder of Sounds
 
 				if(static::$isEasterSnd === 'true'){
@@ -306,11 +307,11 @@ if (!defined('FOXXEY')) {
 					$mp3SoundFile = new MP3File(static::$soundFileAbsolute);
 					startUpSound::$durationSound = $mp3SoundFile->getDurationEstimate();
 				} else {
-					static::$selectedSound = 'soundOff';
+					startUpSound::$selectedSound = 'soundOff';
 				}
 
 			} else {
-				static::$selectedSound = 'soundOff';
+				startUpSound::$selectedSound = 'soundOff';
 			}
 				if($debug == true) {
 					$output =
