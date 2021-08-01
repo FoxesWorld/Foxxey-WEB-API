@@ -6,6 +6,7 @@ __TODO__
  - Long Term Ban
  - Analiasing login attempts
  - Neuro System
+ - Out Encryption by a daily security Key
 
 __WAS DONE__
  - Security
