@@ -5,15 +5,15 @@
 -----------------------------------------------------
  https://Foxesworld.ru/
 -----------------------------------------------------
- Copyright (c) 2016-2021  FoxesWorld
+ Copyright (c) 2016-2020  FoxesWorld
 -----------------------------------------------------
  This code is private
 -----------------------------------------------------
  File: geoIP.class.php
 -----------------------------------------------------
- Version: 0.1.6 Alpha
+ Version: 0.0.5 Alpha
 -----------------------------------------------------
- Usage: Scanning user's ip
+ scanning user's ip
 =====================================================
 */
 if(!defined('Authorisation')) {
@@ -25,7 +25,6 @@ class geoPlugin extends Authorise {
 	
     //the geoPlugin server
     var $host = 'http://www.geoplugin.net/php.gp?ip={IP}&base_currency={CURRENCY}';
-	private static $db;
  
     var $currency = 'USD';
     var $ip = null;
@@ -41,15 +40,13 @@ class geoPlugin extends Authorise {
     var $currencyCode = null;
     var $currencySymbol = null;
     var $currencyConverter = null;
-	
-	private static $Logger;
  
 	/**
     * geoPlugin constructor.
     * @param null $ip
     */
     function __construct($ip = null) {
-        global $_SERVER, $config;
+        global $_SERVER;
  
         if (is_null($ip)) {
             $ip = $_SERVER['REMOTE_ADDR'];
@@ -60,8 +57,6 @@ class geoPlugin extends Authorise {
         $data = array();
         $response = $this->fetch($host);
         $data = unserialize($response);
-		geoPlugin::$db = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);
-		geoPlugin::$Logger = new Logger('AuthLog');
  
         $this->ip = $ip;
         $this->city = $data['geoplugin_city'];
@@ -131,17 +126,19 @@ class geoPlugin extends Authorise {
 	private static function getIP($ip,$ipLocation,$ipRegion,$log=false){
 		global $config;
 		if($ip){
+			$db = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);
 			if(!isset($_COOKIE['ipAdded']) && !isset($_SESSION['ipAdded'])){
 				$query = "SELECT * FROM `ipDatabase` WHERE ip = '$ip'";
-				$data = geoPlugin::$db->getValue($query);
+				$data = $db->getValue($query);
 				if (!isset($data) || $data === false) {
+					//$date="[".date("d m Y H:i")."] ";
 						if(!$ipLocation){
 							$ipLocation = 'Ниоткудинск';
 						}
 						if(!$ipRegion){
 							$ipRegion = 'Страна дураков';
 						}					
-					geoPlugin::$db->run("INSERT INTO `ipDatabase`(`ipLocation`, `ipRegion`, `ip`) VALUES ('$ipLocation','$ipRegion','$ip')");  
+					$db->run("INSERT INTO `ipDatabase`(`ipLocation`, `ipRegion`, `ip`) VALUES ('$ipLocation','$ipRegion','$ip')");  
 					geoPlugin::addCityCount($ipRegion);
 					if($log === true){
 						echo 'Adding '.$ip.' - '.$ipLocation.'('.$ipRegion.') '.'to IP database';
@@ -168,16 +165,15 @@ class geoPlugin extends Authorise {
 
 	private static function addCityCount($city){
 		global $config;
+		$db = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);
 		$query = "SELECT * FROM ipCity WHERE cityName = '$city'";
-		$data = geoPlugin::$db->getValue($query);  
+		$data = $db->getValue($query);  
 		
 		if(!isset($data) || $data === false){
-			static::$Logger->WriteLine('Adding `'.$city.'` Wow new login city!');
 			$query = "INSERT INTO `ipCity`(`cityName`) VALUES ('$city')";
 		} else {
-			static::$Logger->WriteLine('Oh, another one from `'.$city.'`... Well, I know what to do with you..');
 			$query = "UPDATE `ipCity` SET `cityCount`= cityCount+1 WHERE cityName = '$city'";	
 		}
-		geoPlugin::$db->run($query);
+		$db->run($query);
 	}
 }

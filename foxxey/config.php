@@ -42,9 +42,8 @@ $config = array(
 	'debugStartUpSound' => false,
 	'antiBruteDebug'	=> false,
 	'randTextsDebug'	=> false,
-	'debugStartUpSound' => false,
 	
-	/* AUTHORISATION */
+	/* AUTHORISATION Modules */
 		'checkHWID'    => true,
 		'geoIPcheck'   => true,
 		'useAntiBrute' => true,

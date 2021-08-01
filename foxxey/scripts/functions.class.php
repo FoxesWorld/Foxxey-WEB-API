@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions,class.php
 -----------------------------------------------------
- Version: 0.1.4.1 Experimental
+ Version: 0.1.4.2 Experimental
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
@@ -51,21 +51,6 @@ if(!defined('FOXXEY')) {
 					}
 			return $answer;
 		}
-
-		public function passwordReHash($pass, $realPass, $realName){
-			global $config;
-			//$db = new db($config['db_user'],$config['db_pass'],$config['db_database']);
-			if (password_needs_rehash($realPass, PASSWORD_DEFAULT)) {
-				session_regenerate_id();
-				$this->realPass = password_hash($this->pass, PASSWORD_DEFAULT);
-				$new_pass_hash = 'password='.$this->db->safesql($realPass).', ';
-			} else {
-				$new_pass_hash = '';
-			}
-
-			$hash = functions::generateLoginHash();
-			$this->db->run("UPDATE LOW_PRIORITY dle_users SET ".$new_pass_hash." hash='".$hash."', lastdate='".CURRENT_TIME."' WHERE name='".$realName."'");
-		}
 		
 		/* STATIC FUNCTIONS  (NO DB NEEDED)*/
 
@@ -85,30 +70,50 @@ if(!defined('FOXXEY')) {
 				return $hash;
 			}
 			
+			public static function passwordReHash($pass, $realPass, $realName){
+				global $config;
+				$db = new db($config['db_user'],$config['db_pass'],$config['db_database']);
+				if (password_needs_rehash($realPass, PASSWORD_DEFAULT)) {
+					session_regenerate_id();
+					$this->realPass = password_hash($this->pass, PASSWORD_DEFAULT);
+					$new_pass_hash = 'password='.$db->safesql($realPass).', ';
+				} else {
+					$new_pass_hash = '';
+				}
+
+				$hash = functions::generateLoginHash();
+				$db->run("UPDATE LOW_PRIORITY dle_users SET ".$new_pass_hash." hash='".$hash."', lastdate='".CURRENT_TIME."' WHERE name='".$realName."'");
+			}
+			
 			public static function includeModules($dirInclude, $debug = false){
 				$count = 1;
+				$IncludingText = '';
 				$dir = opendir($dirInclude);
 				if($debug === true){
-					echo '<div style="width: fit-content;"><b>Modules to include: </b> <hr style="margin: 0;">';
+					echo '<div style="width: fit-content; margin: 0px 5px 15px;"><b>Modules to include: </b> <hr style="margin: 0;">';
 				}
 				while($file = readdir($dir)){
 					if($file == '.' || $file == '..'){
 						continue;
 					} else {
 						if(!is_dir($dirInclude.'/'.$file)) {
+							if(strpos($file, '-')) {
+								$moduleName = explode ('-', $file);
+								$IncludingText = ' SubModule of - '.$moduleName[0];
+							}
 
 							if(strpos($file, 'module') !== false) {
 								require ($dirInclude.'/'.$file);
 
 									if($debug === true){
-										echo "<b>".$count."</b> Including ".$file."<br>";
+										echo "<b>".$count."</b>".$IncludingText." Including ".$file."<br>";
 										$count ++;
 									}
 
 							} else {
 
 								if($debug === true){
-									echo "<b>".$count."</b> ".$file." was not included as not the valid <br>";
+									echo "<b>".$count."</b>".$IncludingText.' '.$file." was not included as not the valid <br>";
 								}
 							}
 						}
@@ -149,6 +154,18 @@ if(!defined('FOXXEY')) {
 				return $name;
 			}
 			
+			public static function wrongHWIDmessage(){
+				global $config;
+						if(class_exists('randTexts')) {
+							$randTexts = new randTexts('wrongHWID', $config['randTextsDebug']);
+							$name = $randTexts->textOut();
+						} else {
+							echo '{"message": "Module randTexts not found!", "desc": "Can`t say user how wrong he is!"},';
+							$name = 'Incorrect HWID';
+						}
+				return $name;
+			}
+			
 			public static function checkTime ($timestamp) {
 				if($timestamp) {
 					switch ($timestamp){
@@ -170,7 +187,7 @@ if(!defined('FOXXEY')) {
 					$error = htmlspecialchars($error, ENT_QUOTES, 'ISO-8859-1');
 					$trace = debug_backtrace();
 
-					$level = 0;
+					$level = 1;
 					if ($trace[1]['function'] == "query" ) $level = 1;
 					$trace[$level]['file'] = str_replace(ROOT_DIR, "", $trace[$level]['file']);
 
@@ -220,9 +237,9 @@ if(!defined('FOXXEY')) {
 								<div style="width: 700px;margin: 20px; border: 1px solid #D9D9D9; background-color: #F1EFEF; -moz-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; -moz-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3); -webkit-box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3); box-shadow: 0px 0px 8px rgba(0, 0, 0, 0.3);" >
 									<div class="top" >MySQ: Error! '.$config['webserviceName'].'</div>
 									<div class="box" ><b>MySQL error</b> in file: <b>'.$trace[$level]['file'],'</b> at line <b>'.$trace[$level]['line'].'</b></div>
-									<div class="box" >Error Number: <b>'.$error_num.'</b></div>
-									<div class="box" >The Error returned was: <b>'.$error.'</b></div>
-									<div class="box" ><b>SQL query:</b><br />'.$query.'</div>
+									<div class="box" >Error Number: <b> '.$error_num.'</b></div>
+									<div class="box" >The Error returned was: <b> '.$error.'</b></div>
+									<div class="box" ><b>SQL query:</b> '.$query.'</div>
 									</div>		
 							</body>
 							</html>

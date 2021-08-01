@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.8.7 Experimental
+ Verssion: 0.1.9.0 Beta
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -23,11 +23,6 @@
 	} else {
 		define('Authorisation', true);
 	}
-	
-	/* 
-	 * TODO
-	 * - Fix bad code with multi calling DB!!!
-	 */
 
 class Authorise {
 	
@@ -94,6 +89,7 @@ class Authorise {
 				if($config['geoIPcheck'] === true) {
 					if(class_exists('geoPlugin')) {
 						$geoplugin = new geoPlugin();
+						$Logger->WriteLine($this->realName.' attemping to log from ['.$geoplugin->countryCode.']'.$geoplugin->countryName .' '.$geoplugin->city.'...');
 					} else {
 						echo '{"message": "Module geoPlugin not found!", "desc": "Can`t get user login location!"},';
 					}
@@ -131,14 +127,15 @@ class Authorise {
 										$this->HWIDstatus = 'true';
 										echo '{"message": "Module HWID not found!", "desc": "Can`t check user`s HWID validity!"},';
 									}
+								} else {
+									$this->HWIDstatus = 'true';
+									$HWIDuser = $this->login;
 								}
 								//==============
 
 						if($this->HWIDstatus === 'true'){ //If HWID is correct
 								$Logger->WriteLine('Successful authorisation for '.$HWIDuser.' with the correct HWID');
-								/* ISSUE!!! VAR ASSIGNMENT AGAIN! */
-								$this->webSiteFunc = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
-								$this->webSiteFunc->passwordReHash($this->pass, $this->realPass, $this->realName);
+								functions::passwordReHash($this->pass, $this->realPass, $this->realName);
 
 								//GETTING PERSONAL DATA
 								$this->fullname  = json_decode($this->webSiteFunc->getUserData($this->login, 'fullname'))	-> fullname   ?? functions::getUserName();
@@ -174,7 +171,11 @@ class Authorise {
 							die('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$units.', "hardwareId":  '.$this->HWIDstatus.'}');
 						} else {
 							$Logger->WriteLine('Incorrect HWID for '.$this->login.' IP is - '.REMOTE_IP.' Bruted by '.$HWIDuser);
-							$hardwareCheck->renewHWID($this->realMail, REMOTE_IP, $this->login, $this->HWID);
+								if($config['checkHWID'] === true) {
+									if(class_exists('HWID')) {
+										$hardwareCheck->renewHWID($this->realMail, REMOTE_IP, $this->login, $this->HWID);
+									}
+								}
 								if(class_exists('randTexts')) {
 									$this->randTexts = new randTexts('wrongHWID');
 									$this->HWIDerrorMessage = $this->randTexts->textOut();

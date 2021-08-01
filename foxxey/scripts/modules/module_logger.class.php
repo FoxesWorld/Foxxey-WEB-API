@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: module_logger.class.php
 -----------------------------------------------------
- Verssion: 0.1.0.0 Alpha
+ Verssion: 0.1.0.1 Alpha
 -----------------------------------------------------
  Usage: Writes a logFile
 =====================================================
@@ -30,6 +30,10 @@ class Logger {
 				$this->file = FILES_DIR.'/logs/AuthLog.log';
 			break;
 			
+			case 'Error':
+				$this->file = FILES_DIR.'/logs/Errors.log';
+			break;
+			
 			default:
 				die('{"message": "Unknown log operation"}');
 		}
@@ -40,7 +44,7 @@ class Logger {
         if($fp) {
             fwrite($fp,$this->logDate.$text . "\n");
         } else {
-            $this->error = "Ошибка записи в лог-файл";
+            $this->error = "Error writing logFile";
         }
         fclose($fp);
     }
@@ -49,7 +53,7 @@ class Logger {
         if(file_exists($this->file)) {
             return file_get_contents($this->file);
         } else {
-            $this->error = "Лог-файл не существует";
+            $this->error = "LogFile already created";
         }
     }
 
@@ -59,7 +63,7 @@ class Logger {
         {
             ftruncate($fp,0);
         } else {
-            $this->error = "Ошибка чтени€ лог-файла";
+            $this->error = "Error reading LogFile";
         }
         fclose($fp);
     }
