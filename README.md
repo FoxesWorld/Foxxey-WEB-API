@@ -7,6 +7,7 @@ __TODO__
  - Analiasing login attempts
  - Neuro System
  - Out Encryption by a daily security Key
+ - Modules SingleLoad
 
 __WAS DONE__
  - Security
