@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions,class.php
 -----------------------------------------------------
- Version: 0.1.4.2 Experimental
+ Version: 0.1.4.3 Experimental
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
@@ -50,6 +50,34 @@ if(!defined('FOXXEY')) {
 						$answer = "{'type', 'error', 'message', 'login not found'}";
 					}
 			return $answer;
+		}
+		
+		public function confirmHWIDchange($hash){
+			global $config;
+			$hash = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($hash))));
+			$query = "SELECT * FROM HWIDrenew WHERE hash = '".$hash."'";
+			$data = $this->db->getRow($query);
+				if($data) {
+					$timestamp = $data['timestamp'];
+					if(functions::checkTime($timestamp) === true){
+						$login = $data['login'];
+						$hwidNew = $data['newHWID'];
+						$this->changeNewHWID($login, $hwidNew);
+					} else {
+						die('{"message": "Token is old!"}');
+					}
+				} else {
+					die('{"message": "Canot find this hash"}');
+				}
+		}
+		
+		private function changeNewHWID($login, $hwidNew) {
+			$queryChange = "UPDATE usersHWID SET `hwid`='".$hwidNew."' WHERE login = '".$login."'";
+			$queryDelete = "DELETE FROM HWIDrenew WHERE login = '".$login."'";
+			$data = $this->db->run($queryChange.';'.$queryDelete);
+			if(!$data){
+				die('{"message": "Couldn`t change new HWID"}');
+			}
 		}
 		
 		/* STATIC FUNCTIONS  (NO DB NEEDED)*/

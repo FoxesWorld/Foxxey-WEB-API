@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: actionScript.php
 -----------------------------------------------------
- Version: 0.1.3.2 Experimental
+ Version: 0.1.3.3 Experimental
 -----------------------------------------------------
  Usage: Hooks other classes/modules we have & ACTIONS
 =====================================================
@@ -41,7 +41,7 @@
 				   die('{"message": "Module Authorise not found!", "desc": "Can`t authorise user!"}');
 			   }
 		   break;
-					   
+		   
 		   case 'startUpSound':
 			   if(class_exists('startUpSound')) {
 					$startSound = new startUpSound($config['debugStartUpSound']);
@@ -77,6 +77,11 @@
 			   } else {
 					die('{"message": "Module skinViewer2D not found!", "desc": "Can`t show user how beautiful he is =("}');
 			   }
+		   break;
+		   
+		   case 'changeHWID':
+				$hashUpdate  = new functions($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
+				$hashUpdate->confirmHWIDchange($requestValue);
 		   break;
 		   
 		   default:
