@@ -2,14 +2,15 @@
 WEB API for Foxxey Launcher
 
 __TODO__
+ - DB preparing
  - Fixes and optimisations
- - Long Term Ban
  - Analiasing login attempts
  - Neuro System
  - Out Encryption by a daily security Key
  - Modules SingleLoad
 
 __WAS DONE__
+ - Long Term Ban
  - Security
  - Debug logging
  - Balance parser
