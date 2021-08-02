@@ -2,7 +2,6 @@
 WEB API for Foxxey Launcher
 
 __TODO__
- - DB preparing
  - Init class
  - Fixes and optimisations
  - Analiasing login attempts
@@ -11,6 +10,7 @@ __TODO__
  - Modules SingleLoad
 
 __WAS DONE__
+ - DB preparing
  - Long Term Ban
  - Security
  - Debug logging
