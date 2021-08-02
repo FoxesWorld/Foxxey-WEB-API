@@ -20,11 +20,14 @@
 	if(!defined('FOXXEY')) {
 		die ('{"message": "Not in FOXXEY thread"}');
 	}
+
   /* HOOKING MODULES */
   functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug']);
   $longTermBan = new longTermBan(REMOTE_IP);
-  if($longTermBan->checkBan() === false) {
 
+  if($longTermBan->checkBan() === false) {
+	$dbPrepare = new dbPrepare();
+	$dbPrepare->dbPrepare();
 	foreach ($_GET as $key => $value) {
 		$requestTitle = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($key))));
 		$requestValue = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($value))));
