@@ -3,6 +3,7 @@ WEB API for Foxxey Launcher
 
 __TODO__
  - DB preparing
+ - Init class
  - Fixes and optimisations
  - Analiasing login attempts
  - Neuro System
