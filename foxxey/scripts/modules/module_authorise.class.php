@@ -40,6 +40,7 @@ class Authorise {
 		private $randTexts;
 		private $noName;
 		private $HWIDerrorMessage;
+		private static $LoggerAuth;
 
 		/* USERDATA */
 		private $realName;
@@ -58,8 +59,11 @@ class Authorise {
 		function __construct($login, $pass, $HWID){
 			global $config;
 			Authorise::IncludeAuthModules();
-			$this->webSiteFunc  = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
-
+			try {
+				$this->webSiteFunc  = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
+			} catch(PDOException $pe) {
+				
+			}
 			$this->login = $login;
 			$this->pass = $pass;
 			$this->HWID = $HWID;
@@ -69,7 +73,7 @@ class Authorise {
 		public function logIn() {
 			global $config, $message;
 			$units = 0;
-			$Logger = new Logger('AuthLog');
+			Authorise::$LoggerAuth = new Logger('AuthLog');
 
 			//FILTRATING INPUT DATA
 				$this->login = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->login)));
@@ -89,7 +93,7 @@ class Authorise {
 				if($config['geoIPcheck'] === true) {
 					if(class_exists('geoPlugin')) {
 						$geoplugin = new geoPlugin();
-						$Logger->WriteLine($this->realName.' attemping to log from ['.$geoplugin->countryCode.']'.$geoplugin->countryName .' '.$geoplugin->city.'...');
+						static::$LoggerAuth->WriteLine($this->realName.' attemping to log from ['.$geoplugin->countryCode.']'.$geoplugin->countryName .' '.$geoplugin->city.'...');
 					} else {
 						echo '{"message": "Module geoPlugin not found!", "desc": "Can`t get user login location!"},';
 					}
@@ -113,14 +117,14 @@ class Authorise {
 							if($config['useAntiBrute'] === true) {
 								$antiBrute = new antiBrute(REMOTE_IP, $config['antiBruteDebug']);
 							}
-							$Logger->WriteLine('Incorrect login for '.REMOTE_IP.' as '.$this->login.' using `'.$this->pass.'`');
+							static::$LoggerAuth->WriteLine('Incorrect login for '.REMOTE_IP.' as '.$this->login.' using `'.$this->pass.'`');
 							exit('{"message": "'.$message['wrongLoginPass'].'"}');
 						} else {
 								// Checking HWID
 								if($config['checkHWID'] === true) {
 									if(class_exists('HWID')) {
 										$hardwareCheck = new HWID($this->login, $this->HWID, $config['HWIDdebug']);
-										$HWIDuser = $hardwareCheck->getUserNameByHWID() ?? 'Unknown bruter - `'.$this->HWID.'`';
+										$HWIDuser = $hardwareCheck->getUserNameByHWID() ?? $this->login;
 
 										$this->HWIDstatus = $hardwareCheck->checkHWID() ? 'true' : 'false';
 									} else {
@@ -134,7 +138,7 @@ class Authorise {
 								//==============
 
 						if($this->HWIDstatus === 'true'){ //If HWID is correct
-								$Logger->WriteLine('Successful authorisation for '.$HWIDuser.' with the correct HWID');
+								static::$LoggerAuth->WriteLine('Successful authorisation for '.$HWIDuser.' with the correct HWID');
 								functions::passwordReHash($this->pass, $this->realPass, $this->realName);
 
 								//GETTING PERSONAL DATA
@@ -170,7 +174,7 @@ class Authorise {
 
 							die('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$units.', "hardwareId":  '.$this->HWIDstatus.'}');
 						} else {
-							$Logger->WriteLine('Incorrect HWID for '.$this->login.' IP is - '.REMOTE_IP.' Bruted by '.$HWIDuser);
+							static::$LoggerAuth->WriteLine('Incorrect HWID for '.$this->login.' IP is - '.REMOTE_IP.' Bruted by '.$HWIDuser);
 								if($config['checkHWID'] === true) {
 									if(class_exists('HWID')) {
 										$hardwareCheck->renewHWID($this->realMail, REMOTE_IP, $this->login, $this->HWID);

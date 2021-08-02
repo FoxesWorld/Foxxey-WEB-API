@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: antiBrute.class.php
 -----------------------------------------------------
- Verssion: 0.1.3.4 Alpha
+ Verssion: 0.1.3.5 Alpha
 -----------------------------------------------------
  Usage: Prevent users bruting passwords
 =====================================================
@@ -71,7 +71,7 @@ if(!defined('Authorisation')) {
 		}
 
 		public function parseIpRow(){
-			$query = "SELECT * FROM ipCheck WHERE ip = '".$this->ip."'";
+			$query = "SELECT * FROM antiBrute WHERE ip = '".$this->ip."'";
 			$data = $this->db->getRow($query);
 			$this->DBip = $data['ip']			  ?? null;
 			$this->DBid = $data['id'] 			  ?? null;
@@ -96,13 +96,13 @@ if(!defined('Authorisation')) {
 				if($this->debug === true) {
 					echo "Adding ".$this->ip." to DB";
 				}
-				$query = "INSERT INTO `ipCheck`(`ip`) VALUES ('".$this->ip."')";
+				$query = "INSERT INTO `antiBrute`(`ip`) VALUES ('".$this->ip."')";
 				$this->db::run($query);
 			}
 		}
 
 		private function increaseAttempts(){
-			$query = "UPDATE `ipCheck` SET `attempts`=attempts+1 WHERE ip = '".$this->ip."'";
+			$query = "UPDATE `antiBrute` SET `attempts`=attempts+1 WHERE ip = '".$this->ip."'";
 			$this->db::run($query);
 		}
 
@@ -113,11 +113,11 @@ if(!defined('Authorisation')) {
 				echo "Banning ".$this->ip." till ".$config['bantime']."<br>";
 			}
 			$Logger->WriteLine('Banning '.$this->ip.' for too many authorisation errors');
-			$query = "UPDATE `ipCheck` SET `time`=".$config['bantime']." WHERE ip = '".$this->ip."'";
+			$query = "UPDATE `antiBrute` SET `time`=".$config['bantime']." WHERE ip = '".$this->ip."'";
 			$this->db::run($query);
 		}
 
 		private function removeRow(){
-			$this->db->run("DELETE FROM ipCheck WHERE time < '".CURRENT_TIME."';");
+			$this->db->run("DELETE FROM antiBrute WHERE time < '".CURRENT_TIME."';");
 		}
 	}

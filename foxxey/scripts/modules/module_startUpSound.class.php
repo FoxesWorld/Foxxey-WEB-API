@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.2.19 Final
+ Version: 0.2.20 Final
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -221,14 +221,14 @@ if (!defined('FOXXEY')) {
 					}
 					
 					if(static::$isEasterMus === 'true'){
-						$easterCheck = functions::countFilesNum($currentMusFolder, '.mp3');
+						$easterCheck = count(functions::filesInDirArray($currentMusFolder, '.mp3'));
 						if($easterCheck < 1){
 							$currentMusFolder = str_replace('/easter', "", $currentMusFolder);
 							startUpSound::$easterMusWarn = '<b style="color: red;">Esater Mus not found, using common</b><br>';
 						}
 					}
 
-					startUpSound::$musFilesNum = functions::countFilesNum($currentMusFolder, '.mp3'); //Count of music
+					startUpSound::$musFilesNum = count(functions::filesInDirArray($currentMusFolder, '.mp3')); //Count of music
 					$maxRange = startUpSound::$musFilesNum;										
 				
 				if(isset(static::$musRange) && static::$musRange !== 0) {
@@ -280,16 +280,16 @@ if (!defined('FOXXEY')) {
 
 			if($config['enableVoice'] === true) {
 				$this->easter($config['easterMusRarity'], static::$debug, 'sound');
-				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.static::$easter;			//Folder of Sounds
+				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.static::$easter;	//Folder of Sounds
 
 				if(static::$isEasterSnd === 'true'){
-					$easterCheck = functions::countFilesNum($currentSoundFolder, '.mp3');
+					$easterCheck = count(functions::filesInDirArray($currentSoundFolder, '.mp3'));
 					if($easterCheck < 1){
 						$currentSoundFolder = str_replace('/easter', "", $currentSoundFolder);
 						startUpSound::$easterSndWarn = '<b style="color: red;">Esater Snd not found, using common</b><br>';
 					}
 				}
-				startUpSound::$soundFilesNum = functions::countFilesNum($currentSoundFolder, '.mp3');			//Count of Sounds
+				startUpSound::$soundFilesNum = count(functions::filesInDirArray($currentSoundFolder, '.mp3'));	//Count of Sounds
 
 				if(isset(static::$soundRange) && static::$soundRange !== 0) {
 					$RandSoundFile = $this->genRange('voice', static::$soundRange);

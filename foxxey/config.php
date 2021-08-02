@@ -93,7 +93,7 @@ $config = array(
 	'db_columnMail' 	=> 'email',
 	
 	/* Skins */
-	'skinsAbsolute' 	=> SITE_ROOT.'/MinecraftSkins/',
-	'cloaksAbsolute'	=> SITE_ROOT.'/MinecraftCloaks/');
+	'skinsAbsolute' 	=> FILES_DIR.'uploads/MinecraftSkins/',
+	'cloaksAbsolute'	=> FILES_DIR.'uploads/MinecraftCloaks/');
 	
 require (SITE_ROOT.'/messages/messages.lng');

@@ -20,13 +20,14 @@
 	if(!defined('FOXXEY')) {
 		die ('{"message": "Not in FOXXEY thread"}');
 	}
+  /* HOOKING MODULES */
+  functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug']);
+  $longTermBan = new longTermBan(REMOTE_IP);
+  if($longTermBan->checkBan() === false) {
 
 	foreach ($_GET as $key => $value) {
 		$requestTitle = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($key))));
 		$requestValue = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($value))));
-
-		  /* HOOKING MODULES */
-		  functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug']);
 
 		  /* ACTIONS */
 		  switch ($requestTitle) {
@@ -58,7 +59,7 @@
 			   if(class_exists('skinViewer2D')) {
 				header("Content-type: image/png");
 				$show = $_GET['show'] ?? null;
-				$file_name = $_GET['file_name'] ?? null;
+				$file_name = $_GET['filename'] ?? null;
 				$name =  empty($file_name) ? 'default' : $file_name;
 					$skin =  $config['skinsAbsolute'] . $name . '.png';
 					$cloak = $config['cloaksAbsolute'] . $name . '.png';
@@ -84,9 +85,17 @@
 				$hashUpdate->confirmHWIDchange($requestValue);
 		   break;
 		   
+		   case 'tess':
+			$longTermBan = new longTermBan(REMOTE_IP,'1m');
+			$longTermBan->banIP();
+		   break;
+		   
 		   default:
 			die('{"message": "Unknown request!"}');
 		   break;
 		}
 	}
 	/* ACTIONS */
+  } else {
+	  die('{"message": "Get Rekt!"}');
+  }

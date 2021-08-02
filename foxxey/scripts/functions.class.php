@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions,class.php
 -----------------------------------------------------
- Version: 0.1.4.3 Experimental
+ Version: 0.1.6.3 Experimental
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
@@ -113,28 +113,31 @@ if(!defined('FOXXEY')) {
 				$db->run("UPDATE LOW_PRIORITY dle_users SET ".$new_pass_hash." hash='".$hash."', lastdate='".CURRENT_TIME."' WHERE name='".$realName."'");
 			}
 			
-			public static function includeModules($dirInclude, $debug = false){
+			//To update with FilesDirArray method
+			public static function includeModules($dirInclude, $debug = false) {
 				$count = 1;
 				$IncludingText = '';
 				$dir = opendir($dirInclude);
 				if($debug === true){
 					echo '<div style="width: fit-content; margin: 0px 5px 15px;"><b>Modules to include: </b> <hr style="margin: 0;">';
 				}
+
 				while($file = readdir($dir)){
 					if($file == '.' || $file == '..'){
 						continue;
 					} else {
 						if(!is_dir($dirInclude.'/'.$file)) {
 							if(strpos($file, '-')) {
-								$moduleName = explode ('-', $file);
-								$IncludingText = ' SubModule of - '.$moduleName[0];
+								$IncludingText = ' SubModule ';
+							} else {
+								$IncludingText = ' Module ';
 							}
 
 							if(strpos($file, 'module') !== false) {
 								require ($dirInclude.'/'.$file);
 
 									if($debug === true){
-										echo "<b>".$count."</b>".$IncludingText." Including ".$file."<br>";
+										echo "<b>".$count."</b> Including ".$IncludingText.' '.$file."<br>";
 										$count ++;
 									}
 
@@ -153,47 +156,6 @@ if(!defined('FOXXEY')) {
 				}
 			}
 			
-			public static function countFilesNum($dirPath, $fileMask){
-				$count = 0;
-				if(is_dir($dirPath)) {
-					$dir = opendir($dirPath);
-					while($file = readdir($dir)){
-						if($file == '.' || $file == '..' || is_dir($dir.'/' . $file)){
-							continue;
-						} elseif(strpos($file, $fileMask)){
-							$count++;
-						}
-					}
-					return $count;
-				} else {
-					return false;
-				}
-			}
-			
-			public static function getUserName(){
-				global $config;
-						if(class_exists('randTexts')) {
-							$randTexts = new randTexts('noName', $config['randTextsDebug']);
-							$name = $randTexts->textOut();
-						} else {
-							echo '{"message": "Module randTexts not found!", "desc": "Can`t say an unknown user who is he today!"},';
-							$name = 'Unnamed user';
-						}
-				return $name;
-			}
-			
-			public static function wrongHWIDmessage(){
-				global $config;
-						if(class_exists('randTexts')) {
-							$randTexts = new randTexts('wrongHWID', $config['randTextsDebug']);
-							$name = $randTexts->textOut();
-						} else {
-							echo '{"message": "Module randTexts not found!", "desc": "Can`t say user how wrong he is!"},';
-							$name = 'Incorrect HWID';
-						}
-				return $name;
-			}
-			
 			public static function checkTime ($timestamp) {
 				if($timestamp) {
 					switch ($timestamp){
@@ -209,26 +171,119 @@ if(!defined('FOXXEY')) {
 					return null;
 				}
 			}
+			
+			public static function shortDateToUnix($tempTime){
+				
+				$timeToBan = intval($tempTime);
+				$duraion = 60;
 
-			public static function display_error($error ='No errors', $error_num = 100500, $query) {
-				global $config;
-					$error = htmlspecialchars($error, ENT_QUOTES, 'ISO-8859-1');
-					$trace = debug_backtrace();
+				switch($tempTime){
+					
+					case (strpos($tempTime, 'm') === 1):
+						$duraion = 60;
+					break;
+					
+					case (strpos($tempTime, 'h') === 1):
+						$duraion = 3600;
+					break;
+					
+					case (strpos($tempTime, 'd') === 1):
+						$duraion = 86400;
+					break;
+					
+					case (strpos($tempTime, 'w') === 1):
+						$duraion = 604800;
+					break;
+					
+					case (strpos($tempTime, 'm') === 1):
+						$duraion = 2629743;
+					break;
+					
+					case (strpos($tempTime, 'y') === 1):
+						$duraion = 31556926;
+					break;
+				}
+					$totalTime = $duraion * $timeToBan + CURRENT_TIME;
+					
+					return $totalTime;
+		}
+			
+		public static function filesInDirArray ($dir, $fileMask){
+			$files = array();
+			$openDir = opendir($dir);
+			while($file = readdir($openDir)){
+				if($file == '.' || $file == '..'){
+					continue;
+				} else {
+					if(strpos($file, $fileMask)){
+						$files[] = $file;
+					}
+				}
+			}
+			return $files;
+		}
+			
+		//DEPRECATED
+		public static function countFilesNum($dirPath, $fileMask){
+			$count = 0;
+			if(is_dir($dirPath)) {
+				$dir = opendir($dirPath);
+				while($file = readdir($dir)){
+					if($file == '.' || $file == '..' || is_dir($dir.'/' . $file)){
+						continue;
+					} elseif(strpos($file, $fileMask)){
+						$count++;
+					}
+				}
+				return $count;
+			} else {
+				return false;
+			}
+		}
+		
+		public static function getUserName(){
+			global $config;
+					if(class_exists('randTexts')) {
+						$randTexts = new randTexts('noName', $config['randTextsDebug']);
+						$name = $randTexts->textOut();
+					} else {
+						echo '{"message": "Module randTexts not found!", "desc": "Can`t say an unknown user who is he today!"},';
+						$name = 'Unnamed user';
+					}
+			return $name;
+		}
+		
+		public static function wrongHWIDmessage(){
+			global $config;
+					if(class_exists('randTexts')) {
+						$randTexts = new randTexts('wrongHWID', $config['randTextsDebug']);
+						$name = $randTexts->textOut();
+					} else {
+						echo '{"message": "Module randTexts not found!", "desc": "Can`t say user how wrong he is!"},';
+						$name = 'Incorrect HWID';
+					}
+			return $name;
+		}
 
-					$level = 1;
-					if ($trace[1]['function'] == "query" ) $level = 1;
-					$trace[$level]['file'] = str_replace(ROOT_DIR, "", $trace[$level]['file']);
+		public static function display_error($error ='No errors', $error_num = 100500, $query) {
+			global $config;
+				$error = htmlspecialchars($error, ENT_QUOTES, 'ISO-8859-1');
+				$trace = debug_backtrace();
+
+				$level = 1;
+				if ($trace[1]['function'] == "query" ) $level = 1;
+				$trace[$level]['file'] = str_replace(ROOT_DIR, "", $trace[$level]['file']);
 
 					echo '
-							<?xml version="1.0" encoding="iso-8859-1"?>
-							<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-							<html xmlns="http://www.w3.org/1999/xhtml">
-							<head>
-							<title>MySQL Fatal Error '.$config['webserviceName'].'</title>
-							<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
-							<style type="text/css">
-							<!--
-							body {
+						<?xml version="1.0" encoding="iso-8859-1"?>
+						<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+						<html xmlns="http://www.w3.org/1999/xhtml">
+						<head>
+						<title>MySQL Fatal Error '.$config['webserviceName'].'</title>
+						<meta http-equiv="Content-Type" content="text/html; charset=windows-1251" />
+						<style type="text/css">
+						<!--
+						body {
 								font-family: Verdana, Arial, Helvetica, sans-serif;
 								font-size: 11px;
 								font-style: normal;
