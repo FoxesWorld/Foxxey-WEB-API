@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: foxCheck.class.php
 -----------------------------------------------------
- Version: 0.1.0.1 Alpha
+ Version: 0.1.1.1 Final
 -----------------------------------------------------
  Usage: Check if user is a fox
 =====================================================
@@ -25,6 +25,7 @@ if(!defined('Authorisation')) {
 		private $debug;
 		private $foxCheckStatus = false;
 		private $checkStatusDB;
+		private $Logger;
 		private $db;
 		
 		 /**
@@ -32,11 +33,12 @@ if(!defined('Authorisation')) {
 		 * @param $login
 		 * @param bool $debug
 		 */
-		function __construct($login, $debug = false){
+		function __construct($login, $debug = false, $db, $Logger){
 			global $config;
 			$this->debug = $debug;
 			$this->login = $login;
-			$this->db = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata'], $config['db_host']);
+			$this->db = $db;
+			$this->Logger = $Logger;
 		}
 		
 		function checkFox(){
@@ -50,6 +52,7 @@ if(!defined('Authorisation')) {
 						if($this->debug === true) { 
 							echo "Login ".$this->login." has passed check <br> <b>Mein Lieblingsfuchs</b><br>
 							 but is not in DB tabble<br>";
+							 $this->Logger->WriteLine("Login ".$this->login." has passed check | Mein Lieblingsfuchs");
 						}
 						$this->foxCheckStatus = true;
 						$this->insertFox();
@@ -62,8 +65,9 @@ if(!defined('Authorisation')) {
 					}
 				} else {
 					if($this->debug === true) { 
-						echo $this->login." does not equals a Fox";
+						echo $this->login." is already added";
 					}
+					//$this->Logger->WriteLine($this->login." does not equals a Fox");
 				}
 			}
 
@@ -82,6 +86,7 @@ if(!defined('Authorisation')) {
 			if($this->debug === true) {
 				echo "Adding a new fox - ".$this->login;
 			}
+			$this->Logger->WriteLine("Adding a new fox - ".$this->login);
 			$query = "INSERT INTO `foxBonus`(`login`) VALUES ('".$this->login."')";
 			$this->db->run($query);
 		}

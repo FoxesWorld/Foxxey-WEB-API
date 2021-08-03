@@ -11,11 +11,15 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.9.0 Beta
+ Verssion: 0.1.12.1 Beta
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
 */
+
+/* TODO
+ * Userbalance&GeoIP doesn't recieve $userDataDB Var
+ */
 
 	header('Content-Type: text/html; charset=utf-8');
 	if(!defined('FOXXEY')) {
@@ -33,10 +37,11 @@ class Authorise {
 		
 		/* INTERNAL */
 		private $correctLogin;
+		private $ip;
 		private $HWIDstatus;
 		private $database;
 		private $webSiteFunc;
-		private $udataDB;
+		private $launcherDB;
 		private $randTexts;
 		private $noName;
 		private $HWIDerrorMessage;
@@ -56,7 +61,7 @@ class Authorise {
 		 * @param $pass
 		 * @param $HWID
 		 */
-		function __construct($login, $pass, $HWID){
+		function __construct($login, $pass, $HWID, $launcherDB, $userDataDB, $ip){
 			global $config;
 			Authorise::IncludeAuthModules();
 			try {
@@ -64,6 +69,9 @@ class Authorise {
 			} catch(PDOException $pe) {
 				
 			}
+			$this->launcherDB = $launcherDB;
+			$this->ip = $ip;
+			$this->userDataDB = $userDataDB;
 			$this->login = $login;
 			$this->pass = $pass;
 			$this->HWID = $HWID;
@@ -92,7 +100,7 @@ class Authorise {
 				//Getting user login location
 				if($config['geoIPcheck'] === true) {
 					if(class_exists('geoPlugin')) {
-						$geoplugin = new geoPlugin();
+						$geoplugin = new geoPlugin($this->ip);
 						static::$LoggerAuth->WriteLine($this->realName.' attemping to log from ['.$geoplugin->countryCode.']'.$geoplugin->countryName .' '.$geoplugin->city.'...');
 					} else {
 						echo '{"message": "Module geoPlugin not found!", "desc": "Can`t get user login location!"},';
@@ -115,15 +123,15 @@ class Authorise {
 
 						if(!$this->correctLogin) { //If Login is incorrect
 							if($config['useAntiBrute'] === true) {
-								$antiBrute = new antiBrute(REMOTE_IP, $config['antiBruteDebug']);
+								$antiBrute = new antiBrute($this->ip, $this->launcherDB, $config['antiBruteDebug']);
 							}
-							static::$LoggerAuth->WriteLine('Incorrect login for '.REMOTE_IP.' as '.$this->login.' using `'.$this->pass.'`');
+							static::$LoggerAuth->WriteLine('Incorrect login for '.$this->ip.' as '.$this->login.' using `'.$this->pass.'`');
 							exit('{"message": "'.$message['wrongLoginPass'].'"}');
 						} else {
 								// Checking HWID
 								if($config['checkHWID'] === true) {
 									if(class_exists('HWID')) {
-										$hardwareCheck = new HWID($this->login, $this->HWID, $config['HWIDdebug']);
+										$hardwareCheck = new HWID($this->login, $this->HWID, $this->launcherDB, $config['HWIDdebug']);
 										$HWIDuser = $hardwareCheck->getUserNameByHWID() ?? $this->login;
 
 										$this->HWIDstatus = $hardwareCheck->checkHWID() ? 'true' : 'false';
@@ -161,7 +169,7 @@ class Authorise {
 							// Fox checking
 							if($config['foxChecking'] === true) {
 								if(class_exists('foxCheck')) {
-									$checkFox = new foxCheck($this->login, $config['foxCheckDebug']);
+									$checkFox = new foxCheck($this->login, $config['foxCheckDebug'], $this->userDataDB, static::$LoggerAuth);
 									if($checkFox->checkFox() === true){
 										$balance->addUnitsPrize($this->login);
 										echo '{"message": "'.$message['congrats'].'"},';
@@ -174,10 +182,11 @@ class Authorise {
 
 							die('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$units.', "hardwareId":  '.$this->HWIDstatus.'}');
 						} else {
-							static::$LoggerAuth->WriteLine('Incorrect HWID for '.$this->login.' IP is - '.REMOTE_IP.' Bruted by '.$HWIDuser);
+							require (SCRIPTS_DIR.'modules/module_foxMail.class.php');
+							static::$LoggerAuth->WriteLine('Incorrect HWID for '.$this->login.' IP is - '.$this->ip.' Bruted by '.$HWIDuser);
 								if($config['checkHWID'] === true) {
 									if(class_exists('HWID')) {
-										$hardwareCheck->renewHWID($this->realMail, REMOTE_IP, $this->login, $this->HWID);
+										$hardwareCheck->renewHWID($this->realMail, $this->ip, $this->login, $this->HWID);
 									}
 								}
 								if(class_exists('randTexts')) {

@@ -23,10 +23,10 @@
 		private $toDate;
 		private $db;
 		
-		function __construct ($ip, $toDate = null) {
+		function __construct ($ip, $db, $toDate = null) {
 			global $config;
 			
-			$this->db = new db($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
+			$this->db = $db;
 			$this->ip = $ip;
 			if($toDate !== null) {
 				$this->toDate = $toDate;
@@ -36,11 +36,11 @@
 		}
 		
 		public function banIP() {
-			if($this->checkBan($this->ip) === false) {
-			$query = "INSERT INTO `fullBlock`(`ip`, `temptime`) VALUES ('".$this->ip."',".$this->banTime.")";
-			$this->db::run($query);
 			$Logger = new Logger('AuthLog');
-			$Logger->WriteLine('Banning '.$this->ip.' on '.$this->toDate);
+				if($this->checkBan($this->ip) === false) {
+				$query = "INSERT INTO `fullBlock`(`ip`, `temptime`) VALUES ('".$this->ip."',".$this->banTime.")";
+				$this->db::run($query);
+				$Logger->WriteLine('Banning '.$this->ip.' on '.$this->toDate);
 			} else {
 				$Logger->WriteLine('The '.$this->ip.' ip has tryed to interract with Foxxey but is banned =( ');
 				//die('{"message": "Ip '.$this->ip.' is already baned! Rest In Peace :3"}');

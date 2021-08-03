@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions,class.php
 -----------------------------------------------------
- Version: 0.1.6.3 Experimental
+ Version: 0.1.7.4 Beta
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
@@ -36,7 +36,7 @@ if(!defined('FOXXEY')) {
 
 			$this->db = new db($this->dbUser,$this->dbPass,$this->dbName, $this->dbHost);
 		}
-		
+
 		/* ALL NON-STATIC FUNCTIONS REQUIRE DB */
 
 		public function getUserData($login,$data){
@@ -51,7 +51,7 @@ if(!defined('FOXXEY')) {
 					}
 			return $answer;
 		}
-		
+
 		public function confirmHWIDchange($hash){
 			global $config;
 			$hash = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($hash))));
@@ -70,7 +70,7 @@ if(!defined('FOXXEY')) {
 					die('{"message": "Canot find this hash"}');
 				}
 		}
-		
+
 		private function changeNewHWID($login, $hwidNew) {
 			$queryChange = "UPDATE usersHWID SET `hwid`='".$hwidNew."' WHERE login = '".$login."'";
 			$queryDelete = "DELETE FROM HWIDrenew WHERE login = '".$login."'";
@@ -79,7 +79,7 @@ if(!defined('FOXXEY')) {
 				die('{"message": "Couldn`t change new HWID"}');
 			}
 		}
-		
+
 		/* STATIC FUNCTIONS  (NO DB NEEDED)*/
 
 			static function generateLoginHash(){
@@ -97,7 +97,7 @@ if(!defined('FOXXEY')) {
 
 				return $hash;
 			}
-			
+
 			public static function passwordReHash($pass, $realPass, $realName){
 				global $config;
 				$db = new db($config['db_user'],$config['db_pass'],$config['db_database']);
@@ -112,50 +112,33 @@ if(!defined('FOXXEY')) {
 				$hash = functions::generateLoginHash();
 				$db->run("UPDATE LOW_PRIORITY dle_users SET ".$new_pass_hash." hash='".$hash."', lastdate='".CURRENT_TIME."' WHERE name='".$realName."'");
 			}
-			
-			//To update with FilesDirArray method
-			public static function includeModules($dirInclude, $debug = false) {
+
+			public static function includeModules($dirInclude, $debug = false, $modulesArray = null) {
 				$count = 1;
 				$IncludingText = '';
-				$dir = opendir($dirInclude);
-				if($debug === true){
-					echo '<div style="width: fit-content; margin: 0px 5px 15px;"><b>Modules to include: </b> <hr style="margin: 0;">';
-				}
-
-				while($file = readdir($dir)){
-					if($file == '.' || $file == '..'){
-						continue;
-					} else {
-						if(!is_dir($dirInclude.'/'.$file)) {
-							if(strpos($file, '-')) {
-								$IncludingText = ' SubModule ';
-							} else {
-								$IncludingText = ' Module ';
-							}
-
-							if(strpos($file, 'module') !== false) {
-								require ($dirInclude.'/'.$file);
-
-									if($debug === true){
-										echo "<b>".$count."</b> Including ".$IncludingText.' '.$file."<br>";
-										$count ++;
-									}
-
-							} else {
-
-								if($debug === true){
-									echo "<b>".$count."</b>".$IncludingText.' '.$file." was not included as not the valid <br>";
-								}
-							}
+				if($debug === true){ $visualCounter = 1; echo '<div style="width: fit-content; margin: 0px 5px 15px;"><b>Modules to include: </b> <hr style="margin: 0;">';}
+				switch ($modulesArray) {
+					case null:
+						$filesAray = functions::filesInDirArray($dirInclude,'.php');
+						$count = count($filesAray);
+						for($i = 0; $i < $count; $i++){
+							if($debug === true){ echo '<b>'.$visualCounter.'</b> '.$filesAray[$i].'<br>';$visualCounter++;}
+							require ($dirInclude.'/'.$filesAray[$i]);
+							
 						}
-					}
+					break;
+					
+					case is_array($modulesArray):
+						$count = count($modulesArray);
+						for($i = 0; $i < $count; $i++){
+							if($debug === true){echo '<b>'.$visualCounter.'</b> '.$modulesArray[$i].'<br>';$visualCounter++;}
+							require ($dirInclude.'/'.$modulesArray[$i]);
+						}	
+					break;
 				}
-				if($debug === true){
-					$count--;
-					echo '<hr style="margin: 0;"> Total modules: <b>'.$count.'</b></div>';
-				}
+				if($debug === true){echo'<hr style="margin: 0;"> Total modules: <b>'.$count.'</b></div>';}
 			}
-			
+
 			public static function checkTime ($timestamp) {
 				if($timestamp) {
 					switch ($timestamp){
@@ -171,7 +154,7 @@ if(!defined('FOXXEY')) {
 					return null;
 				}
 			}
-			
+
 			public static function shortDateToUnix($tempTime){
 				
 				$timeToBan = intval($tempTime);
@@ -222,25 +205,7 @@ if(!defined('FOXXEY')) {
 			}
 			return $files;
 		}
-			
-		//DEPRECATED
-		public static function countFilesNum($dirPath, $fileMask){
-			$count = 0;
-			if(is_dir($dirPath)) {
-				$dir = opendir($dirPath);
-				while($file = readdir($dir)){
-					if($file == '.' || $file == '..' || is_dir($dir.'/' . $file)){
-						continue;
-					} elseif(strpos($file, $fileMask)){
-						$count++;
-					}
-				}
-				return $count;
-			} else {
-				return false;
-			}
-		}
-		
+
 		public static function getUserName(){
 			global $config;
 					if(class_exists('randTexts')) {
@@ -252,7 +217,7 @@ if(!defined('FOXXEY')) {
 					}
 			return $name;
 		}
-		
+
 		public static function wrongHWIDmessage(){
 			global $config;
 					if(class_exists('randTexts')) {

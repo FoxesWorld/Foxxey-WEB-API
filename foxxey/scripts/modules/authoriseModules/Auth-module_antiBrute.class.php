@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: antiBrute.class.php
 -----------------------------------------------------
- Verssion: 0.1.3.5 Alpha
+ Verssion: 0.1.4.5 Final
 -----------------------------------------------------
  Usage: Prevent users bruting passwords
 =====================================================
@@ -39,12 +39,12 @@ if(!defined('Authorisation')) {
 		 * @param $ip
 		 * @param bool $debug
 		 */
-		function __construct ($ip, $debug = false) {
+		function __construct ($ip, $db, $debug = false) {
 			global $config;
 			$this->ip = $ip;
+			$this->db = $db;
 			$this->debug = $debug;
 			$this->maxAttempts = $config['maxLoginAttempts'];
-			$this->db = new db($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
 			$this->parseIpRow();
 
 			switch ($this->DBip) {

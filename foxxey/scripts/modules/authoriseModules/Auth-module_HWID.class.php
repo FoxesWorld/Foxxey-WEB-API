@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.4.8 Beta
+ Version: 0.1.5.8 Beta
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -36,9 +36,10 @@ class HWID extends Authorise{
 		 * @param $HWID
 		 * @param bool $debug
 		 */				
-		function __construct($login, $HWID, $debug = false){
+		function __construct($login, $HWID, $db, $debug = false){
 			global $config;
 			$this->debug = $debug;
+			$this->launcherDB = $db;
 			$this->check = false;
 			$this->login = $login;
 			$this->HWID = $HWID;
@@ -48,7 +49,6 @@ class HWID extends Authorise{
 					
 		function getHWID(){
 				global $config;
-				$this->launcherDB = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);
 				$query = "SELECT * FROM usersHWID WHERE login = '".$this->login."'";
 				$selectedValue = $this->launcherDB->getRow($query);
 				$this->realHWID = $selectedValue["hwid"];
