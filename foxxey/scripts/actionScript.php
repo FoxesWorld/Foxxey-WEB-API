@@ -82,7 +82,7 @@
 							if (!skinViewer2D::isValidSkin($skin)) {
 								$skin = $config['skinsAbsolute'] . 'default.png';
 							}
-								
+
 							if ($show !== 'head') {
 								$side = isset($_GET['side']) ? $_GET['side'] : false;
 								$img = skinViewer2D::createPreview($skin, $cloak, $side);
@@ -101,8 +101,13 @@
 				   break;
 				   
 				   case 'testBan':
-					$longTermBan = new longTermBan(REMOTE_IP,$requestValue);
+					$longTermBan = new longTermBan($this->ip, $this->launcherDB, $requestValue);
 					$longTermBan->banIP();
+				   break;
+				   
+				   case 'randPhrase':
+						$randTexts = new randTexts($requestValue);
+						die($randTexts->textOut());
 				   break;
 				   
 				   default:

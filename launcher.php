@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: launcher.php
 -----------------------------------------------------
- Version: 0.1.1.1 Experimental
+ Version: 0.1.2.0 Experimental
 -----------------------------------------------------
  Usage: All the functions of Foxxey can be obtained in here
 =====================================================
@@ -23,13 +23,12 @@ header("Access-Control-Allow-Credentials: true");
 Error_Reporting(E_ALL);
 Ini_Set('display_errors', true);
 session_start();
+define('REMOTE_IP',   getenv('REMOTE_ADDR'));
 //==============================
 	if($_REQUEST) {
 		define  ('FOXXEY',true);
-		require ('foxxey/config.php');
-		require (SCRIPTS_DIR.'database.class.php');
-		require (SCRIPTS_DIR.'functions.class.php');
-		require (SCRIPTS_DIR.'actionScript.php');
+		require ('foxxey/init.php');
+		$init = new init(REMOTE_IP);
 	} else  {
 		die('{"message": "No sent request"}');
 	}

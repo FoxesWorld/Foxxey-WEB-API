@@ -61,7 +61,8 @@
 				require(SCRIPTS_DIR.'actionScript.php');
 				$action = new actionScript($this->launcherDB, $this->userDataDB, $ip);
 			} else {
-				die('{"message": "Banned!"}');
+				$randTexts = new randTexts('banned');
+				die('{"message": "'.$randTexts->textOut().'"}');
 			}
 		}
 	}

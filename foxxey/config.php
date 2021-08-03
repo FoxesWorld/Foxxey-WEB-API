@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.2.3 Alpha
+ Version: 0.1.2.4 Alpha
 -----------------------------------------------------
  Usage: WEB API settings
 =====================================================
@@ -25,7 +25,6 @@ if(!defined('FOXXEY')) {
 	define('SCRIPTS_DIR', ROOT_DIR.'/'.webDir.'/scripts/');
 	define('FILES_DIR',   ROOT_DIR.'/files/');
 	define('SITE_ROOT',   ROOT_DIR.'/'.webDir);
-	define('REMOTE_IP',   getenv('REMOTE_ADDR'));
 	define('CURRENT_TIME',time());
 	define('CURRENT_DATE',date("d.m.Y"));
 
@@ -46,12 +45,12 @@ $config = array(
 	/* AUTHORISATION Modules */
 		'checkHWID'    => true,
 		'geoIPcheck'   => true,
-		'useAntiBrute' => true,
+		'useAntiBrute' => false,
 		'getBalance'   => true,
 		'foxChecking'  => true,
 			
 		/* FOX CHECK*/
-			'FoxArray' => array('Fox', 'foX', 'fOx', 'FOX', 'fox', 'Foxes', 'foxes', 'Lis', 'lis', 'Renard', 'Fuchs'),
+			'FoxArray' 			=> array('Fox', 'foX', 'fOx', 'FOX', 'fox', 'Foxes', 'foxes', 'Lis', 'lis', 'Renard', 'Fuchs'),
 			'rewardAmmount'		=> 50,
 		
 		/* ANTI BRUTE */
@@ -59,22 +58,22 @@ $config = array(
 			'maxLoginAttempts'	=> 1,
 	
 	/* startUpSound */
-	'mountDir' 			=> FILES_DIR."eventSounds",
+	'mountDir' 			=> SITE_ROOT."/foxxeyData/eventSounds",
 	'enableVoice' 		=> true,
 	'enableMusic' 		=> true,
 	'easterMusRarity'   => 50,
 	
 	/* E-mail */
-	'encoding' => 'UTF-8',
-	'admin_mail' => 'lisssicin@yandex.ru',
-	'mail_title' => 'Foxesworld',
-	'mail_metod' => 'smtp',
-	'smtp_host' => 'smtp.yandex.ru',
-	'smtp_port' => '465',
-	'smtp_user' => 'no-reply@foxesworld.ru',
-	'smtp_pass' => 'dvhbdxutiscpbmof',
-	'smtp_secure' => 'ssl',
-	'smtp_mail' => 'no-reply@foxesworld.ru',
+	'encoding' 			=> 'UTF-8',
+	'admin_mail' 		=> 'lisssicin@yandex.ru',
+	'mail_title' 		=> 'Foxesworld',
+	'mail_metod' 		=> 'smtp',
+	'smtp_host' 		=> 'smtp.yandex.ru',
+	'smtp_port' 		=> '465',
+	'smtp_user' 		=> 'no-reply@foxesworld.ru',
+	'smtp_pass' 		=> 'dvhbdxutiscpbmof',
+	'smtp_secure' 		=> 'ssl',
+	'smtp_mail' 		=> 'no-reply@foxesworld.ru',
 
 	/* Database Settings */
 	'db_host' 			=> 'localhost',

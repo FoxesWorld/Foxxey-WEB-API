@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.2.20 Final
+ Version: 0.2.23.1 Post Final
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -46,6 +46,7 @@ if (!defined('FOXXEY')) {
 		private static $musFileAbsolute;		//Absolute musFilePath
 		private static $durationMus = 0;		//Duration of a musFile
 		private static $musMd5;					//musFile md5
+		private static $musAdditionalData;		//Comment 
 		private static $musRange;				//Range of muic files
 		private static $isEasterMus = 'false';	//Is the mus is easter
 		private static $easterMusWarn;			//Warn message if easter not found
@@ -55,6 +56,7 @@ if (!defined('FOXXEY')) {
 		private static $soundFileAbsolute;		//Absolute soundFilePath
 		private static $durationSound = 0;		//Duration of a soundFile
 		private static $soundMd5;				//soundFile md5
+		private static $soundAdditionalData;	//Comment
 		private static $soundRange;				//Range of sound files
 		private static $isEasterSnd = 'false';	//Is the sound is easter
 		private static $easterSndWarn;			//Warn message if easter not found
@@ -243,8 +245,10 @@ if (!defined('FOXXEY')) {
 				
 				if(file_exists(static::$musFileAbsolute)) {
 					startUpSound::$musMd5 = md5_file(static::$musFileAbsolute);
-					$mp3MusFile = new MP3File(static::$musFileAbsolute);
-					startUpSound::$durationMus = $mp3MusFile->getDurationEstimate();
+					$getid3 = new getID3();
+					$getid3->encoding = 'UTF-8';
+					$getid3->Analyze(static::$musFileAbsolute);
+					startUpSound::$durationMus = $this->getFileLength($getid3);
 				} else {
 					startUpSound::$selectedMusic = "musicOff";
 				}
@@ -304,8 +308,11 @@ if (!defined('FOXXEY')) {
 
 				if(file_exists(static::$soundFileAbsolute)) {
 					startUpSound::$soundMd5 = md5_file(static::$soundFileAbsolute);
-					$mp3SoundFile = new MP3File(static::$soundFileAbsolute);
-					startUpSound::$durationSound = $mp3SoundFile->getDurationEstimate();
+					$getid3 = new getID3();
+					$getid3->encoding = 'UTF-8';
+					$getid3->Analyze(static::$soundFileAbsolute);
+					startUpSound::$durationSound = $this->getFileLength($getid3);
+					startUpSound::$soundAdditionalData = $this->getAdditionalInfo($getid3);
 				} else {
 					startUpSound::$selectedSound = 'soundOff';
 				}
@@ -427,9 +434,22 @@ if (!defined('FOXXEY')) {
 					"selectedSound" 	=> static::$selectedSound,
 					"soundMd5" 			=> static::$soundMd5,
 					"MusicMd5" 			=> static::$musMd5,
+					"message"			=> static::$soundAdditionalData,
 					"eventName" 		=> static::$eventNow);
 
 			return json_encode($outputArray, JSON_UNESCAPED_SLASHES);
+		}
+		
+		private function getFileLength ($getid3){
+			$duration = $getid3->info['playtime_string'];
+			$time = str_replace(0, "",explode(':', $duration)[1]);
+			
+			return $time;
+		}
+		
+		private function getAdditionalInfo($getid3){
+			$soundAdditionalData = $getid3->info['tags']['id3v1']['comment'][0];
+			return $soundAdditionalData;
 		}
 		
 		private static function IncludestartUpSoundModules(){

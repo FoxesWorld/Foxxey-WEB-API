@@ -11,14 +11,14 @@
 -----------------------------------------------------
  File: messages.php
 -----------------------------------------------------
- Version: 0.1.0.1 Experimental
+ Version: 0.1.0.2 Experimental
 -----------------------------------------------------
  Usage: Some text used in API
 =====================================================
 */
 	header('Content-Type: text/html; charset=utf-8');
 	if(!defined('FOXXEY')) {
-		die ("Not a real Fox! =( HWID");
+		die ('{"message": "Not in a Foxxey Thread"}');
 	}
 
 	$message = array(

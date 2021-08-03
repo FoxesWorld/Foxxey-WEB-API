@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: randTexts.class.php
 -----------------------------------------------------
- Verssion: 0.1.2.0 Alpha
+ Verssion: 0.1.3.0 Alpha
 -----------------------------------------------------
  Usage: Generate random text to entertain user
 =====================================================
@@ -50,9 +50,15 @@ if (!defined('FOXXEY')) {
 		}
 
 		private function getTexts(){
-			$this->textArr = file($this->textsDir.$this->textToSend.'.txt');
-			$randWord = rand(0, count($this->textArr)-1);
-			return $this->textArr[$randWord];
+			$filePath = $this->textsDir.$this->textToSend.'.txt';
+			if(file_exists($filePath)) {
+				$this->textArr = file($filePath);
+				$randWord = rand(0, count($this->textArr)-1);
+				$answer = $this->textArr[$randWord];
+			} else {
+				$answer = '{"message": "File '.$filePath.' not found!"}';
+			}
+			return $answer;
 		}
 		
 		private function prepareWorkDir(){

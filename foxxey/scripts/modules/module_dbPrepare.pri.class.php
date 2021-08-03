@@ -18,7 +18,7 @@
 			$this->dbName = $config['dbname_launcher'];
 			$this->dbHost = $config['db_host'];
 
-			$this->dbQuery = file_get_contents(FILES_DIR."fox_launcher.sql");
+			$this->dbQuery = file_get_contents(SITE_ROOT."/foxxeyData/fox_launcher.sql");
 			$this->db = new db($this->dbUser, $this->dbPass, $this->dbName, $this->dbHost);
 		}
 		

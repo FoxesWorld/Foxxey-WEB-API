@@ -128,7 +128,7 @@ class foxMail {
 	
 	private static function IncludestartUpSoundModules(){
 		global $config;
-		$modulesDir = SCRIPTS_DIR.'modules/mailModules';
+		$modulesDir = SITE_ROOT.'/foxxeyData/mailModules';
 			if(!is_dir($modulesDir)){
 				mkdir($modulesDir);
 			}
