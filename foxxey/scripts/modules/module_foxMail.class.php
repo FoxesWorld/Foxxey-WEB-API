@@ -117,7 +117,7 @@ class foxMail {
 	
 	function getTemplate($name) {
 		ob_start();
-		include (FILES_DIR.'/mail/'.$name.".tpl");
+		include (FOXXEYDATA.'mail/'.$name.".tpl");
 		$text = ob_get_clean();
 		return $text;
     }
@@ -128,7 +128,7 @@ class foxMail {
 	
 	private static function IncludestartUpSoundModules(){
 		global $config;
-		$modulesDir = SITE_ROOT.'/foxxeyData/mailModules';
+		$modulesDir = SCRIPTS_DIR.'/modules/mailModules';
 			if(!is_dir($modulesDir)){
 				mkdir($modulesDir);
 			}

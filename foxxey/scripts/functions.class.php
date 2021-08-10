@@ -59,7 +59,7 @@ if(!defined('FOXXEY')) {
 			$data = $this->db->getRow($query);
 				if($data) {
 					$timestamp = $data['timestamp'];
-					if(functions::checkTime($timestamp) === true){
+					if(functions::checkTime($timestamp) === false){
 						$login = $data['login'];
 						$hwidNew = $data['newHWID'];
 						$this->changeNewHWID($login, $hwidNew);
@@ -82,6 +82,12 @@ if(!defined('FOXXEY')) {
 
 		/* STATIC FUNCTIONS  (NO DB NEEDED)*/
 
+
+			//Gets the version of Java
+			public static function scanRuntimeDir($input){
+				echo functions::getuserJre($input);
+			}
+			
 			static function generateLoginHash(){
 				if(function_exists('openssl_random_pseudo_bytes')) {
 					$stronghash = md5(openssl_random_pseudo_bytes(15));

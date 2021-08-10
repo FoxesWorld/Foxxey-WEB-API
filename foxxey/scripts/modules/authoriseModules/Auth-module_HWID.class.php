@@ -127,15 +127,21 @@ class HWID extends Authorise{
 		public function renewHWID($email, $ip, $login, $newHWID) {
 			global $message;
 			$lastSentRequest = $this->checkTokenTime($login);
-			$dayaWait = $lastSentRequest + 86400;
+			//$dayaWait = $lastSentRequest + 86400;
 
-			switch (functions::checkTime($dayaWait)) {
+			switch (functions::checkTime(intval($lastSentRequest))) {
+				
+				case null:
+					$this->addDBtoken($login, $newHWID, $email, $ip);
+				break;
+				
 				case false:
 					die('{"message": "'.$message['HWIDcrqstWasSent'].'"}');
 				break;
 				
+
 				case true:
-					$this->removeHWIDresetRequest($login, $newHWID);
+					$this->removeHWIDresetRequest($login);
 					$this->addDBtoken($login, $newHWID, $email, $ip);
 				break;
 				
@@ -149,20 +155,21 @@ class HWID extends Authorise{
 		private function addDBtoken($login, $newHWID, $email, $ip){
 			global $config, $message;
 			$hwidHash = functions::generateLoginHash();
-			$query = "INSERT INTO `HWIDrenew`(`login`, `newHWID`, `timestamp`, `hash`) VALUES ('".$login."','".$newHWID."','".CURRENT_TIME."','".$hwidHash."')";
+			$timeAwait = CURRENT_TIME + 86400;
+			$query = "INSERT INTO `HWIDrenew`(`login`, `newHWID`, `timestamp`, `hash`) VALUES ('".$login."','".$newHWID."','".$timeAwait."','".$hwidHash."')";
 			$this->launcherDB->run($query);
 			$this->sendHWIDResetEmail($email, $message['HWIDrenew'], $ip, $login, $config['webserviceName'], $hwidHash);
 		}
 
 		private function checkTokenTime($login){
-			$query = "SELECT `timestamp` FROM `HWIDrenew` WHERE login = '".$login."'";
+			$query = "SELECT `timestamp` FROM `HWIDrenew` WHERE login = '".$login."'; DELETE FROM `HWIDrenew` WHERE timestamp < ".CURRENT_TIME."";
 			$data = $this->launcherDB->getRow($query);
 			$timestamp = intval($data['timestamp']);
-			
+
 			return $timestamp;
 		}
 
-		private function removeHWIDresetRequest($login, $newHWID){
+		private function removeHWIDresetRequest($login){
 			$query = "DELETE FROM `HWIDrenew` WHERE login= '".$login."'";
 			$this->launcherDB->run($query);
 		}

@@ -25,6 +25,7 @@ if(!defined('FOXXEY')) {
 	define('SCRIPTS_DIR', ROOT_DIR.'/'.webDir.'/scripts/');
 	define('FILES_DIR',   ROOT_DIR.'/files/');
 	define('SITE_ROOT',   ROOT_DIR.'/'.webDir);
+	define('FOXXEYDATA',  SITE_ROOT.'/foxxeyData/');
 	define('CURRENT_TIME',time());
 	define('CURRENT_DATE',date("d.m.Y"));
 
@@ -41,6 +42,11 @@ $config = array(
 	'debugStartUpSound' => false,
 	'antiBruteDebug'	=> false,
 	'randTextsDebug'	=> false,
+	
+	/* Updater */
+	'launcherRepositoryPath' => FILES_DIR."Launcher.jar",
+	'updaterRepositoryPath'  => FILES_DIR."updater/",
+
 	
 	/* AUTHORISATION Modules */
 		'checkHWID'    => true,

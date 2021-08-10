@@ -70,7 +70,7 @@
 				   break;
 				   
 				   case 'show':
-					   require (SCRIPTS_DIR.'modules/module_SkinViewer2D.class.class.php');
+					   require (SCRIPTS_DIR.'modules/module_SkinViewer2D.class.php');
 					   if(class_exists('skinViewer2D')) {
 						header("Content-type: image/png");
 						$show = $_GET['show'] ?? null;
@@ -109,7 +109,7 @@
 						$randTexts = new randTexts($requestValue);
 						die($randTexts->textOut());
 				   break;
-				   
+
 				   default:
 					die('{"message": "Unknown request!"}');
 				   break;
