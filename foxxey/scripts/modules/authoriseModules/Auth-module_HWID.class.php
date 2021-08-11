@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.5.8 Beta
+ Version: 0.1.6.8 Beta
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -127,13 +127,8 @@ class HWID extends Authorise{
 		public function renewHWID($email, $ip, $login, $newHWID) {
 			global $message;
 			$lastSentRequest = $this->checkTokenTime($login);
-			//$dayaWait = $lastSentRequest + 86400;
 
 			switch (functions::checkTime(intval($lastSentRequest))) {
-				
-				case null:
-					$this->addDBtoken($login, $newHWID, $email, $ip);
-				break;
 				
 				case false:
 					die('{"message": "'.$message['HWIDcrqstWasSent'].'"}');
