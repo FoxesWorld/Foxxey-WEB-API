@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.5.0 Alpha
+ Version: 0.1.5.1 Alpha
 -----------------------------------------------------
  Usage: Initialising&Including modules
 =====================================================
@@ -20,7 +20,6 @@
 	if(!defined('FOXXEY')) {
 		die ('{"message": "Not in FOXXEY thread"}');
 	} else {
-		//die($_SERVER['DOCUMENT_ROOT'].'/foxxey/config.php');
 		require ($_SERVER['DOCUMENT_ROOT'].'/foxxey/config.php');
 		require (SCRIPTS_DIR.'database.class.php');
 		require (SCRIPTS_DIR.'functions.class.php');
@@ -41,7 +40,7 @@
 		protected $launcherDB;
 		protected $userDataDB;
 		//=========================
-		function __construct($ip, $initType = 'launcher') {
+		function __construct($ip, $initType) {
 			global $config;
 			switch($initType){
 				case 'launcher':
@@ -56,6 +55,7 @@
 								$this->otherModulles[] = $this->allModules[$i];
 							}
 						}
+
 					functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug'], $this->primaryModules);
 					$this->longTermBan = new longTermBan($ip, $this->launcherDB);
 					if($this->longTermBan->checkBan() === false) {
@@ -72,6 +72,9 @@
 				case 'updater':
 					require (SCRIPTS_DIR.'modules/module_updater.class.php');
 				break;
+				
+				default:
+					die('{"message": "Unknown init option - `'.$initType.'`"}');
 			}
 		}
 	}

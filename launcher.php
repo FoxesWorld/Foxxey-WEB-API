@@ -28,7 +28,7 @@ define('REMOTE_IP',   getenv('REMOTE_ADDR'));
 	if($_REQUEST) {
 		define  ('FOXXEY',true);
 		require ('foxxey/init.php');
-		$init = new init(REMOTE_IP);
+		$init = new init(REMOTE_IP, 'launcher');
 	} else  {
 		die('{"message": "No sent request"}');
 	}

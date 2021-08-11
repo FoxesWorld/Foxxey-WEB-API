@@ -16,6 +16,7 @@
  Usage: WEB API settings
 =====================================================
 */
+header("Content-Type: application/json; charset=UTF-8");
 if(!defined('FOXXEY')) {
 	die ('{"message": "Not in FOXXEY thread"}');
 }

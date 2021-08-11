@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.6.8 Beta
+ Version: 0.1.6.9 Beta
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -128,23 +128,12 @@ class HWID extends Authorise{
 			global $message;
 			$lastSentRequest = $this->checkTokenTime($login);
 
-			switch (functions::checkTime(intval($lastSentRequest))) {
-				
-				case false:
-					die('{"message": "'.$message['HWIDcrqstWasSent'].'"}');
-				break;
-				
-
-				case true:
-					$this->removeHWIDresetRequest($login);
-					$this->addDBtoken($login, $newHWID, $email, $ip);
-				break;
-				
-				default:
-					$this->addDBtoken($login, $newHWID, $email, $ip);
-				break;
+			if(functions::checkTime(intval($lastSentRequest)) === false) {
+				die('{"message": "'.$message['HWIDcrqstWasSent'].'"}');
+			} else {
+				$this->removeHWIDresetRequest($login);
+				$this->addDBtoken($login, $newHWID, $email, $ip);
 			}
-
 		}
 
 		private function addDBtoken($login, $newHWID, $email, $ip){
@@ -165,8 +154,12 @@ class HWID extends Authorise{
 		}
 
 		private function removeHWIDresetRequest($login){
+			try {
 			$query = "DELETE FROM `HWIDrenew` WHERE login= '".$login."'";
 			$this->launcherDB->run($query);
+			} catch (Exception $e) {
+				echo '{"message": "'.$e.'"}';
+			}
 		}
 
 		private function sendHWIDResetEmail($sendTo, $sendTitle, $ip, $login, $credits, $hash){
