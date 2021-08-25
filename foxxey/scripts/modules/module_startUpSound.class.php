@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.2.23.2 Post Final
+ Version: 0.2.23.3 Post Final
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -78,7 +78,7 @@ if (!defined('FOXXEY')) {
 			$this->maxDuration(static::$debug);
 		}
 		
-		//Function for getting the result of program work
+		//Function for getting the result of startUpSound work
 		public function generateAudio() {
 			if(static::$debug === false) {
 				echo $this->outputJson();
@@ -174,7 +174,6 @@ if (!defined('FOXXEY')) {
 							break;
 							
 						}
-					break;
 				}
 				$eventArray['eventNow']   = $eventName;
 				$eventArray['musRange']   = $musRange;

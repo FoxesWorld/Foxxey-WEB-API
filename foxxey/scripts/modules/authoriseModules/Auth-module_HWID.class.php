@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.8.10 Beta
+ Version: 0.1.9.10 Beta
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -136,7 +136,7 @@ class HWID extends Authorise{
 						$this->addDBtoken($login, $newHWID, $email, $ip);
 					}
 				} else {
-					die('{"message": "You already have an account - '.$this->getUserAccount($newHWID).'"}');
+					die('{"message": "'.$message['HWIDnotYours'].$this->getUserAccount($newHWID).'"}');
 				}
 			} else {
 				die('{"message": "User with HWID - `'.$newHWID.'` is already renewing it"}');

@@ -61,7 +61,7 @@ $config = array(
 			'rewardAmmount'		=> 50,
 		
 		/* ANTI BRUTE */
-			'bantime'			=> CURRENT_TIME + (100),
+			'bantime'			=> CURRENT_TIME + (120),
 			'maxLoginAttempts'	=> 1,
 	
 	/* startUpSound */

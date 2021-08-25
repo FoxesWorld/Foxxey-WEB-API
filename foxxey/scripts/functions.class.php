@@ -63,6 +63,7 @@ if(!defined('FOXXEY')) {
 						$login = $data['login'];
 						$hwidNew = $data['newHWID'];
 						$this->changeNewHWID($login, $hwidNew);
+						die('HWID changed succesfully!');
 					} else {
 						die('{"message": "Token is old!"}');
 					}
@@ -122,13 +123,13 @@ if(!defined('FOXXEY')) {
 			public static function includeModules($dirInclude, $debug = false, $modulesArray = null) {
 				$count = 1;
 				$IncludingText = '';
-				if($debug === true){ $visualCounter = 1; echo '<div style="width: fit-content; margin: 0px 5px 15px;"><b>Modules to include: </b> <hr style="margin: 0;">';}
+				if($debug === true){ $visualCounter = 1; echo "Modules to include: \n";}
 				switch ($modulesArray) {
 					case null:
 						$filesAray = functions::filesInDirArray($dirInclude,'.php');
 						$count = count($filesAray);
 						for($i = 0; $i < $count; $i++){
-							if($debug === true){ echo '<b>'.$visualCounter.'</b> '.$filesAray[$i].'<br>';$visualCounter++;}
+							if($debug === true){ echo $visualCounter.') '.$filesAray[$i]."\n";$visualCounter++;}
 							require ($dirInclude.'/'.$filesAray[$i]);
 							
 						}
@@ -137,12 +138,15 @@ if(!defined('FOXXEY')) {
 					case is_array($modulesArray):
 						$count = count($modulesArray);
 						for($i = 0; $i < $count; $i++){
-							if($debug === true){echo '<b>'.$visualCounter.'</b> '.$modulesArray[$i].'<br>';$visualCounter++;}
+							if($debug === true){
+								echo $visualCounter.' '.$modulesArray[$i]."\n";
+								$visualCounter++;
+							}
 							require ($dirInclude.'/'.$modulesArray[$i]);
 						}	
 					break;
 				}
-				if($debug === true){echo'<hr style="margin: 0;"> Total modules: <b>'.$count.'</b></div>';}
+				if($debug === true){echo 'Total modules: '.$count."\n\n";}
 			}
 
 			public static function checkTime ($timestamp) {
