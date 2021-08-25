@@ -1,24 +1,26 @@
-<!DOCTYPE html>
-
 <html>
     <head>
-        <title>Ttest LogTail</title>
+        <title>Test LogTail</title>
         <script type="text/javascript" src="jquery.min.js"></script>
-        <script type="text/javascript" src="logtail.js"></script>
-        <link href="css/animate.css" rel="stylesheet" type="text/css">
-		<link href="css/bootstrap.css" rel="stylesheet" type="text/css">
-		<link href="css/icons.css" rel="stylesheet" type="text/css">
-		<link href="css/app.css" rel="stylesheet" type="text/css">
-    </head>
-    <body>
-        <div id="header">
+        <link href="css/animate.css" rel="stylesheet" type="text/css" />
+		<link href="css/bootstrap.css" rel="stylesheet" type="text/css" />
+		<link href="css/icons.css" rel="stylesheet" type="text/css" />
+		<link href="css/app.css" rel="stylesheet" type="text/css" />
 
-           
-        </div>
-			<div style="margin: 10% auto 0;" class="borderBlock">
-				<h2 class="blockTitle">AuthLogs</h2>
-				<pre id="data">Loading...</pre>
-			</div>
-		<a id="pause" href='#'>Pause</a>
-    </body>
+    </head>
+		<main>
+
+				<div style="margin: 10% auto 0;" class="borderBlock">
+					<h2 class="blockTitle">AuthLogs</h2>
+					<pre id="data" url="https://api.foxesworld.ru/files/logs/AuthLog.log">
+						<code>
+							Loading...
+						</code>
+					</pre>
+				<button id="pause" href='#'>Pause</button>
+				</div>
+		</main>
+
+	<script type="text/javascript" src="logtail.js"></script>
+
 </html>

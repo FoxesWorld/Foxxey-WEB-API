@@ -52,7 +52,7 @@ $config = array(
 	/* AUTHORISATION Modules */
 		'checkHWID'    => true,
 		'geoIPcheck'   => true,
-		'useAntiBrute' => false,
+		'useAntiBrute' => true,
 		'getBalance'   => true,
 		'foxChecking'  => true,
 			

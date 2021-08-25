@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.12.1 Beta
+ Verssion: 0.1.13.2 Experimental
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -20,8 +20,7 @@
 /* TODO
  * Userbalance&GeoIP doesn't recieve $userDataDB Var
  */
-
-	header('Content-Type: text/html; charset=utf-8');
+	header("Content-Type: application/json; charset=UTF-8");
 	if(!defined('FOXXEY')) {
 		die ('{"message": "Not in FOXXEY thread"}');
 	} else {
@@ -121,18 +120,11 @@ class Authorise {
 							}
 						}
 
-						if(!$this->correctLogin) { //If Login is incorrect
-							if($config['useAntiBrute'] === true) {
-								$antiBrute = new antiBrute($this->ip, $this->launcherDB, $config['antiBruteDebug']);
-							}
-							static::$LoggerAuth->WriteLine('Incorrect login for '.$this->ip.' as '.$this->login.' using `'.$this->pass.'`');
-							exit('{"message": "'.$message['wrongLoginPass'].'"}');
-						} else {
-								// Checking HWID
+						// Checking HWID
 								if($config['checkHWID'] === true) {
 									if(class_exists('HWID')) {
 										$hardwareCheck = new HWID($this->login, $this->HWID, $this->launcherDB, $config['HWIDdebug']);
-										$HWIDuser = $hardwareCheck->getUserNameByHWID() ?? $this->login;
+										$HWIDuser = $hardwareCheck->getUserNameByHWID() ?? $this->HWID.' (No login with that HWID)';
 
 										$this->HWIDstatus = $hardwareCheck->checkHWID() ? 'true' : 'false';
 									} else {
@@ -143,7 +135,16 @@ class Authorise {
 									$this->HWIDstatus = 'true';
 									$HWIDuser = $this->login;
 								}
-								//==============
+						//==============
+
+						if(!$this->correctLogin) { //If Login is incorrect
+							if($config['useAntiBrute'] === true) {
+								$antiBrute = new antiBrute($this->ip, $this->launcherDB, $config['antiBruteDebug']);
+							}
+							static::$LoggerAuth->WriteLine('Incorrect login for '.$this->ip.' as '.$this->login.' using `'.$this->pass.'` Bruting by '.$HWIDuser);
+							exit('{"message": "'.$message['wrongLoginPass'].'"}');
+						} else {
+
 
 						if($this->HWIDstatus === 'true'){ //If HWID is correct
 								static::$LoggerAuth->WriteLine('Successful authorisation for '.$HWIDuser.' with the correct HWID');

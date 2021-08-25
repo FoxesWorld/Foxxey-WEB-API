@@ -11,11 +11,12 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.2.23.1 Post Final
+ Version: 0.2.23.2 Post Final
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
 */
+header("Content-Type: application/json; charset=UTF-8");
 if (!defined('FOXXEY')) {
 	die ('{"message": "Not in FOXXEY thread"}');
 } else {

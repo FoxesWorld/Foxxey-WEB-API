@@ -1,13 +1,11 @@
-/* Copyright (c) 2012: Daniel Richman. License: GNU GPL 3 */
-/* Additional features: Priyesh Patel                     */
 
-(function () {
+(function (url) {
 
 var dataelem = "#data";
 var pausetoggle = "#pause";
 var scrollelems = ["html", "body"];
 
-var url = "https://api.foxesworld.ru/files/logs/AuthLog.log";
+var url = $('#data').attr('url');
 var fix_rn = true;
 var load = 30 * 1024; /* 30KB */
 var poll = 1000; /* 1s */
@@ -19,7 +17,6 @@ var reverse = true;
 var log_data = "";
 var log_file_size = 0;
 
-/* :-( https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/parseInt */
 function parseInt2(value) {
     if(!(/^[0-9]+$/.test(value))) throw "Invalid integer " + value;
     var v = Number(value);
