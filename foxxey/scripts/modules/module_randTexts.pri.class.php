@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: randTexts.class.php
 -----------------------------------------------------
- Verssion: 0.1.3.0 Alpha
+ Verssion: 0.1.3.1 Alpha
 -----------------------------------------------------
  Usage: Generate random text to entertain user
 =====================================================
@@ -54,10 +54,11 @@ if (!defined('FOXXEY')) {
 			if(file_exists($filePath)) {
 				$this->textArr = file($filePath);
 				$randWord = rand(0, count($this->textArr)-1);
-				$answer = $this->textArr[$randWord];
+				$answer = str_replace("\n", "", $this->textArr[$randWord]);
 			} else {
 				$answer = '{"message": "File '.$filePath.' not found!"}';
 			}
+			$answer = substr($answer,0,-1);
 			return $answer;
 		}
 		

@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.6.9 Beta
+ Version: 0.1.7.10 Beta
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -127,12 +127,15 @@ class HWID extends Authorise{
 		public function renewHWID($email, $ip, $login, $newHWID) {
 			global $message;
 			$lastSentRequest = $this->checkTokenTime($login);
-
-			if(functions::checkTime(intval($lastSentRequest)) === false) {
-				die('{"message": "'.$message['HWIDcrqstWasSent'].'"}');
+			if($this->selectNewHWID($newHWID) === false) {
+				if(functions::checkTime(intval($lastSentRequest)) === false) {
+					die('{"message": "'.$message['HWIDcrqstWasSent'].'"}');
+				} else {
+					$this->removeHWIDresetRequest($login);
+					$this->addDBtoken($login, $newHWID, $email, $ip);
+				}
 			} else {
-				$this->removeHWIDresetRequest($login);
-				$this->addDBtoken($login, $newHWID, $email, $ip);
+				die('{"message": "User with HWID - `'.$newHWID.'` is already renewing it"}');
 			}
 		}
 
@@ -159,6 +162,16 @@ class HWID extends Authorise{
 			$this->launcherDB->run($query);
 			} catch (Exception $e) {
 				echo '{"message": "'.$e.'"}';
+			}
+		}
+		
+		private function selectNewHWID($HWID){
+			$query = "SELECT * FROM HWIDrenew WHERE `newHWID` = '".$HWID."'";
+			$data = $this->launcherDB->getRow($query);
+			if($data){
+				return true;
+			} else {
+				return false;
 			}
 		}
 

@@ -55,10 +55,7 @@ class updater {
 		}
 		
 		if($_REQUEST) {
-			die('{"filename": "'.$this->getuserJre(static::$updaterBitDepth, static::$osName, static::$JREversion).'",
-				   "hash": "Not readdy yet",
-				   "updaterTYpe": "notSent",
-				   "updaterUpdate": "don`t know"}');
+			die('{"filename": "'.$this->getuserJre(static::$updaterBitDepth, static::$osName, static::$JREversion).'","hash": "Not readdy yet","updaterTYpe": "notSent","updaterUpdate": "don`t know"}');
 			
 		}
 	}
