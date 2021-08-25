@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.7.10 Beta
+ Version: 0.1.8.10 Beta
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -128,15 +128,27 @@ class HWID extends Authorise{
 			global $message;
 			$lastSentRequest = $this->checkTokenTime($login);
 			if($this->selectNewHWID($newHWID) === false) {
-				if(functions::checkTime(intval($lastSentRequest)) === false) {
-					die('{"message": "'.$message['HWIDcrqstWasSent'].'"}');
+				if($this->getUserAccount($newHWID) == $login) { 
+					if(functions::checkTime(intval($lastSentRequest)) === false) {
+						die('{"message": "'.$message['HWIDcrqstWasSent'].'"}');
+					} else {
+						$this->removeHWIDresetRequest($login);
+						$this->addDBtoken($login, $newHWID, $email, $ip);
+					}
 				} else {
-					$this->removeHWIDresetRequest($login);
-					$this->addDBtoken($login, $newHWID, $email, $ip);
+					die('{"message": "You already have an account - '.$this->getUserAccount($newHWID).'"}');
 				}
 			} else {
 				die('{"message": "User with HWID - `'.$newHWID.'` is already renewing it"}');
 			}
+		}
+		
+		protected function getUserAccount($HWID){
+			$query = "SELECT * FROM `usersHWID` WHERE hwid = '".$HWID."';";
+			$data = $this->launcherDB->getRow($query);
+			$existingName = $data['login'];
+			
+			return $existingName;
 		}
 
 		private function addDBtoken($login, $newHWID, $email, $ip){
