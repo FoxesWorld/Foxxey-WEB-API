@@ -29,8 +29,8 @@
 	'congrats'		   => 'Поздравляю, вы - Лис!',
 	
 	/* HWID*/
-	'HWIDexists'	   => 'У тебя уже есть аккаунт - ',
-	'HWIDnotYours'	   => 'Это не твой аккаунт, твой аккаунт - ',
-	'HWIDrenew'		   => 'Обновление HWID',
-	'HWIDcrqstWasSent' => 'Запрос на смену HWID был отправлен ранее'
+	'HWIDexists'	   => 'У тебя уже есть аккаунт - {existingAccount}, используй его! Там уже многое достигнуто!',
+	'HWIDnotYours'	   => 'Это не твой аккаунт, твой аккаунт - {existingAccount}',
+	'HWIDrenew'		   => 'Обновление HWID {login}',
+	'HWIDcrqstWasSent' => 'Запрос на смену HWID для `{login}` был отправлен, проверьте почту!'
 	);

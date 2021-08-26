@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.5.1 Alpha
+ Version: 0.1.6.1 Alpha
 -----------------------------------------------------
  Usage: Initialising&Including modules
 =====================================================
@@ -42,39 +42,46 @@
 		//=========================
 		function __construct($ip, $initType) {
 			global $config;
-			switch($initType){
-				case 'launcher':
-					$this->userDataDB = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata']);
-					$this->launcherDB = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);
-					$this->allModules = functions::filesInDirArray(SCRIPTS_DIR.'modules','.php');
-
-						for($i = 0; $i < count($this->allModules); $i++){
-							if(strpos($this->allModules[$i],'.pri.')) {
-								$this->primaryModules[] = $this->allModules[$i];
-							} else {
-								$this->otherModulles[] = $this->allModules[$i];
-							}
-						}
-
-					functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug'], $this->primaryModules);
-					$this->longTermBan = new longTermBan($ip, $this->launcherDB);
-					if($this->longTermBan->checkBan() === false) {
+				
+				$this->userDataDB = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata']);
+				$this->launcherDB = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);
+			
+			//Modules Initialising
+			$this->modulesInit();
+			functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug'], $this->primaryModules);
+			$this->longTermBan = new longTermBan($ip, $this->launcherDB);
+			if($this->longTermBan->checkBan() === false) {
+				switch($initType){
+					case 'launcher':	
 						$dbPrepare = new dbPrepare;
 						$dbPrepare->dbPrepare();
 						require(SCRIPTS_DIR.'actionScript.php');
 						$action = new actionScript($this->launcherDB, $this->userDataDB, $ip);
-					} else {
-						$randTexts = new randTexts('banned');
-						die('{"message": "'.$randTexts->textOut().'"}');
-					}
-				break;
-				
-				case 'updater':
-					require (SCRIPTS_DIR.'modules/module_updater.class.php');
-				break;
-				
-				default:
-					die('{"message": "Unknown init option - `'.$initType.'`"}');
+					break;
+					
+					case 'updater':
+						require (SCRIPTS_DIR.'modules/module_updater.class.php');
+					break;
+					
+					default:
+						die('{"message": "Unknown init option - `'.$initType.'`"}');
+					break;
+				}						
+			} else {
+				$randTexts = new randTexts('banned');
+				die('{"message": "'.$randTexts->textOut().'"}');
+			}
+		}
+		
+		private function modulesInit() {
+			$this->allModules = functions::filesInDirArray(SCRIPTS_DIR.'modules','.php');
+
+			for($i = 0; $i < count($this->allModules); $i++){
+				if(strpos($this->allModules[$i],'.pri.')) {
+					$this->primaryModules[] = $this->allModules[$i];
+				} else {
+					$this->otherModulles[] = $this->allModules[$i];
+				}
 			}
 		}
 	}

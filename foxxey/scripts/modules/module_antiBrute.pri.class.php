@@ -11,16 +11,16 @@
 -----------------------------------------------------
  File: antiBrute.class.php
 -----------------------------------------------------
- Verssion: 0.1.4.5 Final
+ Verssion: 0.1.4.6 Final
 -----------------------------------------------------
  Usage: Prevent users bruting passwords
 =====================================================
 */
-if(!defined('Authorisation')) {
-	die('{"message": "Not in authorisation thread"}');
+if (!defined('FOXXEY')) {
+	die ('{"message": "Not in FOXXEY thread"}');
 }
 
-	class antiBrute extends Authorise {
+	class antiBrute {
 
 		private $debug;
 		private $ip;

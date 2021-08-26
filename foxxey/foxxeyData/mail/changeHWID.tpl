@@ -22,7 +22,7 @@
 
 		<li><b>HWID Data:</b> {toGetFromNikitaFox}</li>
 
-		<li><b>Ссылка для смены устройства:</b> {resetHash}</li>
+		<li><b>Ссылка для смены устройства:</b> <a class="daria-goto-anchor" target="_blank" rel="noopener noreferrer" href="{resetLink}">Подтвердимть смену</a></li>
 	</ul>
 </div>
 

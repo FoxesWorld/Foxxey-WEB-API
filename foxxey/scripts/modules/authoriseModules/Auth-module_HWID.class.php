@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.9.10 Beta
+ Version: 0.1.9.14 Beta
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -20,7 +20,7 @@ if(!defined('Authorisation')) {
 	die('{"message": "Not in authorisation thread"}');
 }
 
-class HWID extends Authorise{
+	class HWID extends Authorise {
 		
 		protected $login;
 		protected $HWID = "";		
@@ -44,7 +44,7 @@ class HWID extends Authorise{
 			$this->login = $login;
 			$this->HWID = $HWID;
 			$this->realHWID = $this->getHWID();
-			$this->HWIDisexists($login);
+			$this->HWIDisexists();
 		}
 					
 		function getHWID(){
@@ -74,10 +74,10 @@ class HWID extends Authorise{
 			$checkHWID = $data['hwid'];
 			$existingName = $data['login'];
 			if($checkHWID !== null && $existingName !== $this->login) {
-					if($this->HWIDexists === null) {
-						$Logger->WriteLine($existingName.' has tried to create a multi account with login: '.$this->login .', but was restricted to do that!');
-						die('{"message": "'.$message['HWIDexists'].$existingName.'!"}');
-					}
+				if($this->HWIDexists === null) {
+					$Logger->WriteLine($existingName.' has tried to create a multi account with login: '.$this->login .', but was restricted to do that!');
+					die('{"message": "'.str_replace('{existingAccount}', $existingName, $message['HWIDexists']).'"}');
+				}
 			}
 		}
 					
@@ -109,8 +109,8 @@ class HWID extends Authorise{
 			return $this->check;
 		}
 		
-		private function HWIDisexists($login){
-			$query = "SELECT * FROM `usersHWID` WHERE login = '".$login."'";
+		private function HWIDisexists(){
+			$query = "SELECT * FROM `usersHWID` WHERE login = '".$this->login."'";
 			$data = $this->launcherDB->getRow($query);
 			$this->HWIDexists = $data['hwid'];
 		}
@@ -128,27 +128,21 @@ class HWID extends Authorise{
 			global $message;
 			$lastSentRequest = $this->checkTokenTime($login);
 			if($this->selectNewHWID($newHWID) === false) {
-				if($this->getUserAccount($newHWID) == $login) { 
+				//If we dont find a user with an existing account to this HWID
+				if($this->getUserNameByHWID() == NULL) {
 					if(functions::checkTime(intval($lastSentRequest)) === false) {
-						die('{"message": "'.$message['HWIDcrqstWasSent'].'"}');
+						die('{"message": "'.str_replace('{login}', $login, $message['HWIDcrqstWasSent']).'"}');
 					} else {
 						$this->removeHWIDresetRequest($login);
 						$this->addDBtoken($login, $newHWID, $email, $ip);
 					}
 				} else {
-					die('{"message": "'.$message['HWIDnotYours'].$this->getUserAccount($newHWID).'"}');
+					//Else if user is trying to restore an account but already has another account to his HWID
+					die('{"message": "'.str_replace('{existingAccount}', $this->getUserNameByHWID(), $message['HWIDnotYours']).'"}');
 				}
 			} else {
-				die('{"message": "User with HWID - `'.$newHWID.'` is already renewing it"}');
+				die('{"message": "'.str_replace('{login}', $login, $message['HWIDcrqstWasSent']).'"}');
 			}
-		}
-		
-		protected function getUserAccount($HWID){
-			$query = "SELECT * FROM `usersHWID` WHERE hwid = '".$HWID."';";
-			$data = $this->launcherDB->getRow($query);
-			$existingName = $data['login'];
-			
-			return $existingName;
 		}
 
 		private function addDBtoken($login, $newHWID, $email, $ip){
@@ -157,7 +151,7 @@ class HWID extends Authorise{
 			$timeAwait = CURRENT_TIME + 86400;
 			$query = "INSERT INTO `HWIDrenew`(`login`, `newHWID`, `timestamp`, `hash`) VALUES ('".$login."','".$newHWID."','".$timeAwait."','".$hwidHash."')";
 			$this->launcherDB->run($query);
-			$this->sendHWIDResetEmail($email, $message['HWIDrenew'], $ip, $login, $config['webserviceName'], $hwidHash);
+			$this->sendHWIDResetEmail($email, str_replace('{login}', $login, $message['HWIDrenew']), $ip, $login, $config['webserviceName'], $hwidHash);
 		}
 
 		private function checkTokenTime($login){
@@ -190,7 +184,7 @@ class HWID extends Authorise{
 		private function sendHWIDResetEmail($sendTo, $sendTitle, $ip, $login, $credits, $hash){
 			$mail = new foxMail(1);
 			$mailTpl = $mail->getTemplate('changeHWID');
-				$replaceArr = array("{login}", "{IP}", "{toGetFromNikitaFox}", "{Credits}", "{resetHash}");
+				$replaceArr = array("{login}", "{IP}", "{toGetFromNikitaFox}", "{Credits}", "{resetLink}");
 				$replacerArr = array($login, $ip, 'Данные нового ПК (Система, процессор и так далее..)', $credits, 'https://api.foxesworld.ru/launcher.php?changeHWID='.$hash);
 				$sendText = str_replace($replaceArr, $replacerArr, $mailTpl);
 			$mail->send($sendTo, $sendTitle, $sendText);

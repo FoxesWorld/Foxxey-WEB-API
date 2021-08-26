@@ -16,7 +16,7 @@
  Usage: Global ACTIONS module hooking
 =====================================================
 */
-
+header("Content-Type: application/json; charset=UTF-8");
 	if(!defined('FOXXEY')) {
 		die ('{"message": "Not in FOXXEY thread"}');
 	}
@@ -96,6 +96,9 @@
 				   break;
 				   
 				   case 'changeHWID':
+				   			if($config['useAntiBrute'] === true) {
+								$antiBrute = new antiBrute($this->ip, $this->launcherDB, $config['antiBruteDebug']);
+							}
 						$hashUpdate  = new functions($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
 						$hashUpdate->confirmHWIDchange($requestValue);
 				   break;

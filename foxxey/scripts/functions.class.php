@@ -89,18 +89,18 @@ if(!defined('FOXXEY')) {
 				echo functions::getuserJre($input);
 			}
 			
-			static function generateLoginHash(){
+			static function generateLoginHash($length = 9){
 				if(function_exists('openssl_random_pseudo_bytes')) {
 					$stronghash = md5(openssl_random_pseudo_bytes(15));
 				} else {
-					$stronghash = md5(uniqid( mt_rand(), TRUE )); 
+					$stronghash = md5(uniqid(mt_rand(),TRUE)); 
 				}
 				$salt = sha1(str_shuffle("abcdefghjkmnpqrstuvwxyz0123456789").$stronghash);
 				$hash = '';					
-				for($i = 0; $i < 9; $i ++) {
+				for($i = 0; $i < $length; $i++) {
 					$hash .= $salt[mt_rand( 0, 39 )];
 				}
-				$hash = md5( $hash );
+				$hash = md5($hash);
 
 				return $hash;
 			}

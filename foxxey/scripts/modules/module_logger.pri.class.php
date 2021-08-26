@@ -11,13 +11,15 @@
 -----------------------------------------------------
  File: module_logger.class.php
 -----------------------------------------------------
- Verssion: 0.1.0.1 Alpha
+ Verssion: 0.1.0.2 Alpha
 -----------------------------------------------------
  Usage: Writes a logFile
 =====================================================
 */
 date_default_timezone_set('Europe/Moscow');
-    
+if (!defined('FOXXEY')) {
+	die ('{"message": "Not in FOXXEY thread"}');
+}
 class Logger {
     var $file;
     var $error;
