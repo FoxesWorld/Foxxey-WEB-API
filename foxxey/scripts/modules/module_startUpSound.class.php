@@ -461,3 +461,19 @@ if (!defined('FOXXEY')) {
 			functions::includeModules($modulesDir, $config['modulesDebug']);
 		}
 	}
+	/*	WIP (the future Eventsarray list)
+	$eventsArray = array(
+		'1m' => array(),
+		'2m' => array(),
+		'3m' => array(),
+		'4m' => array(),
+		'5m' => array(),
+		'6m' => array(),
+		'7m' => array(),
+		'8m' => array(),
+		'9m' => array(),
+		'10m' => array(),
+		'11m' => array(),
+		'12m' => array(),
+	);
+	*/

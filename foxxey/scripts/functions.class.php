@@ -139,7 +139,7 @@ if(!defined('FOXXEY')) {
 						$count = count($modulesArray);
 						for($i = 0; $i < $count; $i++){
 							if($debug === true){
-								echo $visualCounter.' '.$modulesArray[$i]."\n";
+								echo $visualCounter.') '.$modulesArray[$i]."\n";
 								$visualCounter++;
 							}
 							require ($dirInclude.'/'.$modulesArray[$i]);
