@@ -60,7 +60,7 @@
 					break;
 					
 					case 'updater':
-						require (SCRIPTS_DIR.'modules/module_updater.class.php');
+						require (SCRIPTS_DIR.'updater.class.php');
 					break;
 					
 					default:
@@ -75,7 +75,6 @@
 		
 		private function modulesInit() {
 			$this->allModules = functions::filesInDirArray(SCRIPTS_DIR.'modules','.php');
-			//die(var_dump($this->allModules));
 			for($i = 0; $i < count($this->allModules); $i++){
 				if(strpos($this->allModules[$i],'.wip.')) {
 					$this->wipModules[] = $this->allModules[$i];

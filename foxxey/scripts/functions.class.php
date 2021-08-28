@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions,class.php
 -----------------------------------------------------
- Version: 0.1.7.4 Beta
+ Version: 0.1.7.5 Beta
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
@@ -83,12 +83,6 @@ if(!defined('FOXXEY')) {
 
 		/* STATIC FUNCTIONS  (NO DB NEEDED)*/
 
-
-			//Gets the version of Java
-			public static function scanRuntimeDir($input){
-				echo functions::getuserJre($input);
-			}
-			
 			static function generateLoginHash($length = 9){
 				if(function_exists('openssl_random_pseudo_bytes')) {
 					$stronghash = md5(openssl_random_pseudo_bytes(15));
