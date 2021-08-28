@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.13.2 Experimental
+ Verssion: 0.1.13.3 Experimental
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -183,7 +183,6 @@ class Authorise {
 
 							die('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$units.', "hardwareId":  '.$this->HWIDstatus.'}');
 						} else {
-							require (SCRIPTS_DIR.'modules/module_foxMail.class.php');
 							static::$LoggerAuth->WriteLine('Incorrect HWID for '.$this->login.' IP is - '.$this->ip.' Bruted by '.$HWIDuser);
 								if($config['checkHWID'] === true) {
 									if(class_exists('HWID')) {

@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.6.1 Alpha
+ Version: 0.1.6.2 Alpha
 -----------------------------------------------------
  Usage: Initialising&Including modules
 =====================================================
@@ -31,8 +31,8 @@
 		private $longTermBan;
 		
 		//Modules==================
-		protected $primaryModules;
-		protected $otherModulles;
+		protected $wipModules;
+		protected $validModules;
 		protected $allModules;
 		//=========================
 		
@@ -48,7 +48,7 @@
 			
 			//Modules Initialising
 			$this->modulesInit();
-			functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug'], $this->primaryModules);
+			functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug'], $this->validModules);
 			$this->longTermBan = new longTermBan($ip, $this->launcherDB);
 			if($this->longTermBan->checkBan() === false) {
 				switch($initType){
@@ -75,12 +75,12 @@
 		
 		private function modulesInit() {
 			$this->allModules = functions::filesInDirArray(SCRIPTS_DIR.'modules','.php');
-
+			//die(var_dump($this->allModules));
 			for($i = 0; $i < count($this->allModules); $i++){
-				if(strpos($this->allModules[$i],'.pri.')) {
-					$this->primaryModules[] = $this->allModules[$i];
+				if(strpos($this->allModules[$i],'.wip.')) {
+					$this->wipModules[] = $this->allModules[$i];
 				} else {
-					$this->otherModulles[] = $this->allModules[$i];
+					$this->validModules[] = $this->allModules[$i];
 				}
 			}
 		}

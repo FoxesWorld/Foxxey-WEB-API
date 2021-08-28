@@ -43,8 +43,10 @@ header("Content-Type: application/json; charset=UTF-8");
 
 				  /* ACTIONS */
 				  switch ($requestTitle) {
+					  
+					//Authorising
 				   case 'auth':
-					   require (SCRIPTS_DIR.'modules/module_authorise.class.php');
+					   require (SCRIPTS_DIR.'actions/module_authorise.class.php');
 					   if(class_exists('Authorise')) {
 							$login		 = $_GET['login'] 		?? null;
 							$password 	 = $_GET['password'] 	?? null;
@@ -56,8 +58,9 @@ header("Content-Type: application/json; charset=UTF-8");
 					   }
 				   break;
 				   
+				   //startUpSound using
 				   case 'startUpSound':
-					   require (SCRIPTS_DIR.'modules/module_startUpSound.class.php');
+					   require (SCRIPTS_DIR.'actions/module_startUpSound.class.php');
 					   if(class_exists('startUpSound')) {
 							$startSound = new startUpSound($config['debugStartUpSound']);
 							die($startSound->generateAudio());
@@ -66,11 +69,13 @@ header("Content-Type: application/json; charset=UTF-8");
 					   }
 				   break;
 				   
+				   //WIP
 				   case 'API':
 				   break;
 				   
+				   //Getting user skin
 				   case 'show':
-					   require (SCRIPTS_DIR.'modules/module_SkinViewer2D.class.php');
+					   require (SCRIPTS_DIR.'actions/module_SkinViewer2D.class.php');
 					   if(class_exists('skinViewer2D')) {
 						header("Content-type: image/png");
 						$show = $_GET['show'] ?? null;
@@ -95,6 +100,7 @@ header("Content-Type: application/json; charset=UTF-8");
 					   }
 				   break;
 				   
+				   //Changing HWID
 				   case 'changeHWID':
 				   			if($config['useAntiBrute'] === true) {
 								$antiBrute = new antiBrute($this->ip, $this->launcherDB, $config['antiBruteDebug']);
@@ -103,18 +109,20 @@ header("Content-Type: application/json; charset=UTF-8");
 						$hashUpdate->confirmHWIDchange($requestValue);
 				   break;
 				   
+				   //Debug function
 				   case 'testBan':
 					$longTermBan = new longTermBan($this->ip, $this->launcherDB, $requestValue);
 					$longTermBan->banIP();
 				   break;
 				   
+				   //Debug function
 				   case 'randPhrase':
 						$randTexts = new randTexts($requestValue);
 						die($randTexts->textOut());
 				   break;
 
 				   default:
-					die('{"message": "Unknown request!"}');
+					die('{"message": "Unknown action request!"}');
 				   break;
 				}
 			}
