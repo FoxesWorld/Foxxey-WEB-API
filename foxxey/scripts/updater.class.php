@@ -11,7 +11,7 @@
 -----------------------------------------------------
  Файл: updater.php
 -----------------------------------------------------
- Версия: 0.3.5.2 Beta
+ Версия: 0.3.7.2 Beta
 -----------------------------------------------------
  Назначение: Проверка хеша лаунчера и апдейтера
 =====================================================
@@ -32,33 +32,35 @@ class updater {
 	private static $runnerHash;
 	private static $launcher_hash;
 	//private static $download;
+	
+	//Software status
+	private $updaterHashLocal;
+	private $launcherHashLocal;
+	private $updaterStatus;
+	private $launcherStatus;
+	//Software status
 
 	public function __construct($inputString, $debug = false) {
-
+		$inputString = json_decode($inputString, true);
 		updater::$updaterBitDepth = $inputString['b'];	//BitDepth
 		updater::$osName 		  = $inputString['n']; //OsName
 		updater::$JREversion 	  = $inputString['v'];   //JREversion
 		updater::$runnerHash 	  = $inputString['rnh'];   //Runner hash
-		updater::$launcher_hash   = $inputString['lch'] ?? null; //launcher hash
+		updater::$launcher_hash   = $inputString['lnh']; //launcher hash
 		updater::$runnerType      = $inputString['rnty'] ?? 'exe'; //RunnerType
 		//updater::$download 	   = $_GET['download'] ?? null; TO DOWNLOAD UPDATER
-		die(var_dump(static::$inputString));
+		//die(var_dump(static::$inputString));
 
 		if(static::$runnerHash !== null){
 			$this->updaterCheck($debug);
 		}
-		
+
 		if(static::$launcher_hash !== null){
-			$this->launcherHash();
-		}
-		//$this->downloadUpdater();
-		
-		if($debug === true) {
-			error_reporting(E_ALL);
+			$this->launcherCheck();
 		}
 		
 		if($_REQUEST) {
-			die('{"runtimeFname": "'.$this->getuserJre().'","runtimeHash": "Not readdy yet","runnerType": "notSent","updaterUpdateState": "don`t know"}');
+			$this->answerJson();
 		}
 	}
 	
@@ -77,14 +79,14 @@ class updater {
 						$fileName = $file.'.'.static::$runnerType;
 						$filePath = $config['updaterRepositoryPath'].$fileName;
 						if(file_exists($filePath)) {
-							$updaterHashLocal = md5_file($filePath);
-							switch($updaterHashLocal){
+							$this->updaterHashLocal = md5_file($filePath);
+							switch($this->updaterHashLocal){
 
-								case static::$runnerHash == $updaterHashLocal:
+								case static::$runnerHash == $this->updaterHashLocal:
 									$updateState = 'NO';
 								break;
 
-								case static::$runnerHash != $updaterHashLocal:
+								case static::$runnerHash != $this->updaterHashLocal:
 									$updateState = 'YES';
 								break;
 							}
@@ -98,10 +100,7 @@ class updater {
 						$updateState = "Unknown updater type!";
 					break;
 				}
-
-				$answer = array('fileName' => $fileName, 'fileHash' => @$updaterHashLocal, 'updateState' => $updateState);
-				$answer = json_encode($answer);
-				die($answer);
+				$this->updaterStatus = $updateState;
 			}
 		}  catch (Exception $e) {
 			die("File not found! ".$e);
@@ -112,17 +111,14 @@ class updater {
 	}
 	
 	//Checking launcher hash
-	private function launcherHash() {
+	private function launcherCheck() {
 		global $config;
 
 		if(isset(static::$launcher_hash)){
 			try {
-				$launcherRepositoryHash = md5_file($config['launcherRepositoryPath']);
-				$launcherState = static::$launcher_hash == $launcherRepositoryHash  ? "NO" : "YES";
-				$fileName = explode('/',$config['launcherRepositoryPath']); 
-				$answer = array('fileName' =>$fileName[2], 'hash' => $launcherRepositoryHash, 'updateState' => $launcherState, 'updateNotes' => 'Deploying');
-				$answer = json_encode($answer);
-				die($answer);
+				$this->launcherHashLocal = md5_file($config['launcherRepositoryPath']);
+				$launcherState = static::$launcher_hash == $this->launcherHashLocal  ? "NO" : "YES";
+				$this->launcherStatus = $launcherState;
 			}  catch (Exception $e) {
 				die('{"message": "File not found! '.$e.'"}');
 			}
@@ -182,6 +178,21 @@ class updater {
 				die ('{"message": "Unknown request!"}');
 			break;
 		}
+	}
+	
+	private function answerJson(){
+		global $config;
+		$badSymbols = array("\n","	");
+		$Answer = '{
+			"runtime": "'.$this->getuserJre().'",
+			"runtimeHash": "notReady",
+			"launcherState": "'.$this->launcherStatus .'",
+			"runnerState": "'.$this->updaterStatus.'",
+			"launcherHash": "'.$this->launcherHashLocal.'",
+			"runnerFile": "updater.'.static::$runnerType.'",
+			"updaterHash": "'.$this->updaterHashLocal.'"
+		}';
+		die(str_replace($badSymbols, "", $Answer));
 	}
 }
 ?>
