@@ -34,3 +34,11 @@
 	'HWIDrenew'		   => 'Обновление HWID {login}',
 	'HWIDcrqstWasSent' => 'Запрос на смену HWID для `{login}` был отправлен, проверьте почту!'
 	);
+	
+	$systemMessages = array(
+	/*    HWID    */
+	'noHWIDprovided' => 'No HWID was provided. Unable to continue =(',
+	'IncorrectHWID' => 'Incorrect HWID!',
+	'settingHWID' => 'Setting {HWID} as {login}`s new HWID',
+	'correctHWID' => '{HWID} HWID is correct for {login}'
+	);

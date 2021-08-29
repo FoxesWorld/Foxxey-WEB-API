@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.9.14 Beta
+ Version: 0.1.10.0 Beta
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -82,6 +82,7 @@ if(!defined('Authorisation')) {
 		}
 					
 		public function checkHWID(){
+			global $systemMessages;
 			$this->checkMultiHWID($this->HWID, $this->login);  //One account per PC
 			if($this->HWID !== $this->realHWID) {
 				$this->check = false;
@@ -90,20 +91,20 @@ if(!defined('Authorisation')) {
 						$this->check = true;
 						$this->insertHWID();
 						if($this->debug) {
-							echo('{"message": "Setting '.$this->HWID.' as '.$this->login.'`s new HWID"}');
+							echo('{"message": "'.str_replace(array('{login}', '{HWID}'), array($this->login, $this->HWID), $systemMessages['settingHWID']).'"}');
 						}
 					} else {
-						exit('{"message": "No HWID was provided. Unable to continue =("}');
+						exit('{"message": "'.$systemMessages['noHWIDprovided'].'"}');
 					}
 				} else {
 					if($this->debug) {
-						echo('{"message": "Incorrect HWID!"}');
+						echo('{"message": "'.$systemMessages['IncorrectHWID'].'"}');
 					}
 				}
 			} else {
 				$this->check = true;
 				if($this->debug) {
-					echo('{"message": "'.$this->HWID.' HWID is correct for '.$this->login.'"}');
+					echo('{"message": "'.str_replace(array('{login}', '{HWID}'), array($this->login, $this->HWID), $systemMessages['correctHWID']).'"}');
 				}
 			}
 			return $this->check;
@@ -123,13 +124,15 @@ if(!defined('Authorisation')) {
 			return $existingName;
 		}
 		
-		//renewHWID methods =====================
+		//renewHWID methods =================Fixed
 		public function renewHWID($email, $ip, $login, $newHWID) {
 			global $message;
 			$lastSentRequest = $this->checkTokenTime($login);
-			if($this->selectNewHWID($newHWID) === false) {
+			//If a reset HWID session is not currently active
+			if($this->selectReNewHWID($newHWID) === false) {
 				//If we dont find a user with an existing account to this HWID
 				if($this->getUserNameByHWID() == NULL) {
+					//If the reset request was already sent
 					if(functions::checkTime(intval($lastSentRequest)) === false) {
 						die('{"message": "'.str_replace('{login}', $login, $message['HWIDcrqstWasSent']).'"}');
 					} else {
@@ -171,7 +174,7 @@ if(!defined('Authorisation')) {
 			}
 		}
 		
-		private function selectNewHWID($HWID){
+		private function selectReNewHWID($HWID){
 			$query = "SELECT * FROM HWIDrenew WHERE `newHWID` = '".$HWID."'";
 			$data = $this->launcherDB->getRow($query);
 			if($data){

@@ -79,7 +79,7 @@ if(!defined('Authorisation')) {
 				$this->db->run($query);
 			} else {
 				if($this->debug === true){
-					echo "User was not specifyed do add in DB tabble";
+					echo "User was not specifyed to add in DB tabble";
 				}
 			}
 		}
