@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: messages.php
 -----------------------------------------------------
- Version: 0.1.0.2 Experimental
+ Version: 0.1.1.3 Experimental
 -----------------------------------------------------
  Usage: Some text used in API
 =====================================================
@@ -31,8 +31,16 @@
 	/* HWID*/
 	'HWIDexists'	   => 'У тебя уже есть аккаунт - {existingAccount}, используй его! Там уже многое достигнуто!',
 	'HWIDnotYours'	   => 'Это не твой аккаунт, твой аккаунт - {existingAccount}',
+	'AlreadyRestoring' => 'У тебя уже активна сессия смены HWID для {login}',
 	'HWIDrenew'		   => 'Обновление HWID {login}',
-	'HWIDcrqstWasSent' => 'Запрос на смену HWID для `{login}` был отправлен, проверьте почту!'
+	'HWIDcrqstWasSent' => 'Запрос на смену HWID для `{login}` был отправлен, проверьте почту!',
+	
+	/* HWID changing */
+	'oldToken'		   => 'Токен устарел!',
+	'cantFindHash'	   => 'Запрошенный хеш не может быть найден!',
+	'Success' 		   => 'HWID успешно изменён!',
+	'Failed'		   => 'Невозможно сменить HWID!'
+	
 	);
 	
 	$systemMessages = array(

@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.10.0 Beta
+ Version: 0.1.11.0 Gamma
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -124,7 +124,15 @@ if(!defined('Authorisation')) {
 			return $existingName;
 		}
 		
-		//renewHWID methods =================Fixed
+		protected function getRestoringNameByHWID($hwid){
+			$query = "SELECT * FROM `HWIDrenew` WHERE newHWID = '".$hwid."';";
+			$data = $this->launcherDB->getRow($query);
+			$restoringName = $data['login'];
+			
+			return $restoringName;
+		}		
+		
+		//renewHWID methods =================Fixed-V.2
 		public function renewHWID($email, $ip, $login, $newHWID) {
 			global $message;
 			$lastSentRequest = $this->checkTokenTime($login);
@@ -132,7 +140,7 @@ if(!defined('Authorisation')) {
 			if($this->selectReNewHWID($newHWID) === false) {
 				//If we dont find a user with an existing account to this HWID
 				if($this->getUserNameByHWID() == NULL) {
-					//If the reset request was already sent
+					//If we finf a request with non expired data
 					if(functions::checkTime(intval($lastSentRequest)) === false) {
 						die('{"message": "'.str_replace('{login}', $login, $message['HWIDcrqstWasSent']).'"}');
 					} else {
@@ -143,8 +151,9 @@ if(!defined('Authorisation')) {
 					//Else if user is trying to restore an account but already has another account to his HWID
 					die('{"message": "'.str_replace('{existingAccount}', $this->getUserNameByHWID(), $message['HWIDnotYours']).'"}');
 				}
+			//You already have an active session for {login}
 			} else {
-				die('{"message": "'.str_replace('{login}', $login, $message['HWIDcrqstWasSent']).'"}');
+				die('{"message": "'.str_replace('{login}', $this-> getRestoringNameByHWID($newHWID), $message['AlreadyRestoring']).'"}');
 			}
 		}
 

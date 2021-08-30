@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions,class.php
 -----------------------------------------------------
- Version: 0.1.7.5 Beta
+ Version: 0.1.7.6 Beta
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
@@ -53,7 +53,7 @@ if(!defined('FOXXEY')) {
 		}
 
 		public function confirmHWIDchange($hash){
-			global $config;
+			global $config, $message;
 			$hash = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($hash))));
 			$query = "SELECT * FROM HWIDrenew WHERE hash = '".$hash."'";
 			$data = $this->db->getRow($query);
@@ -63,21 +63,22 @@ if(!defined('FOXXEY')) {
 						$login = $data['login'];
 						$hwidNew = $data['newHWID'];
 						$this->changeNewHWID($login, $hwidNew);
-						die('HWID changed succesfully!');
+						die('{"message": "'.$message['Success'].'"}');
 					} else {
-						die('{"message": "Token is old!"}');
+						die('{"message": "'.$message['oldToken'].'"}');
 					}
 				} else {
-					die('{"message": "Canot find this hash"}');
+					die('{"message": "'.$message['cantFindHash'].'"}');
 				}
 		}
 
 		private function changeNewHWID($login, $hwidNew) {
+			global $message;
 			$queryChange = "UPDATE usersHWID SET `hwid`='".$hwidNew."' WHERE login = '".$login."'";
 			$queryDelete = "DELETE FROM HWIDrenew WHERE login = '".$login."'";
 			$data = $this->db->run($queryChange.';'.$queryDelete);
 			if(!$data){
-				die('{"message": "Couldn`t change new HWID"}');
+				die('{"message": "'.$message['Failed'].'"}');
 			}
 		}
 
