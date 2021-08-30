@@ -40,7 +40,7 @@ $config = array(
 	'modulesDebug'		=> false,
 	'HWIDdebug'			=> false,
 	'foxCheckDebug'		=> false,
-	'debugStartUpSound' => true,
+	'debugStartUpSound' => false,
 	'antiBruteDebug'	=> false,
 	'randTextsDebug'	=> false,
 	

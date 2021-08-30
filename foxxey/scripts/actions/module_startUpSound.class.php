@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.2.25.4 Evolved
+ Version: 0.2.25.5 Evolved
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -43,36 +43,37 @@ if (!defined('FOXXEY')) {
 		private static $eventNow = 'common';
 		private static $seasonNow;
 		private static $dayTimeNow;
-		private static $dayTimeBool = false;		//Do we switch day time generating sound?
+		private static $dayTimeBool = true;		//Use DayTime? (Morning, Day, Evening, Night)
 		private static $musFilesNum = 0;
 		private static $soundFilesNum = 0;
 		private static $easter = "";
 		private static $debug = false;
 
 		/* Mus */
-		private static $musPerEvent = true;		//Use music for an each event
-		private static $selectedMusic; 			//Selected mus File
-		private static $musFileAbsolute;		//Absolute musFilePath
-		private static $durationMus = 0;		//Duration of a musFile
-		private static $musMd5;					//musFile md5
-		private static $musAdditionalData;		//Comment 
-		private static $musRange;				//Range of muic files
-		private static $isEasterMus = 'false';	//Is the mus is easter
-		private static $easterMusWarn;			//Warn message if easter not found
+		private static $musPerEvent = true;				//Use different music for an each event
+		private static $selectedMusic; 					//Selected mus File
+		private static $musFileAbsolute;				//Absolute musFilePath
+		private static $durationMus = 0;				//Duration of a musFile
+		private static $musMd5;							//musFile md5
+		private static $musAdditionalData;				//Comment 
+		private static $musRange;						//Range of muic files
+		private static $isEasterMus = 'false';			//Is the mus is easter
+		private static $easterMusWarn;					//Warn message if easter not found
 		
 		/* Sound */
-		private static $selectedSound; 			//Selected sound File
-		private static $soundFileAbsolute;		//Absolute soundFilePath
-		private static $durationSound = 0;		//Duration of a soundFile
-		private static $soundMd5;				//soundFile md5
-		private static $soundAdditionalData;	//Comment
-		private static $soundRange;				//Range of sound files
-		private static $isEasterSnd = 'false';	//Is the sound is easter
-		private static $easterSndWarn;			//Warn message if easter not found
+		private static $selectedSound; 					//Selected sound File
+		private static $soundFileAbsolute;				//Absolute soundFilePath
+		private static $durationSound = 0;				//Duration of a soundFile
+		private static $soundMd5;						//soundFile md5
+		private static $soundAdditionalData = 'NoData';	//Comment
+		private static $soundRange;						//Range of sound files
+		private static $isEasterSnd = 'false';			//Is the sound is easter
+		private static $easterSndWarn;					//Warn message if easter not found
 		
 		/* Both */
-		private static $maxDuration = 0;		//Maximum duration
-		private static $soundRangeDebug;		//Debug info of the range
+		private static $currentFolder;					//Current folder of AudioFiles
+		private static $maxDuration = 0;				//Maximum duration
+		private static $soundRangeDebug;				//Debug info of the range
 		
 		//Initialisation
 		function __construct($debug = false) {
@@ -498,7 +499,7 @@ if (!defined('FOXXEY')) {
 						break;
 				}
 				
-				if(static::$dayTimeBool === false){
+				if(!static::$dayTimeBool){
 					startUpSound::$dayTimeNow = '';
 				}
 		}
@@ -537,17 +538,18 @@ if (!defined('FOXXEY')) {
 
 	/*	WIP (the future Eventsarray list) In an outer File
 	$eventsArray = array(
-		'1m' => array(),
-		'2m' => array(),
-		'3m' => array(),
-		'4m' => array(),
-		'5m' => array(),
-		'6m' => array(),
-		'7m' => array(),
-		'8m' => array(),
-		'9m' => array(),
-		'10m' => array(),
-		'11m' => array(),
-		'12m' => array(),
+		'm1' => array(
+			"< 12" =>  'winterHolidays'),
+		'm2' => array(),
+		'm3' => array(),
+		'm4' => array(),
+		'm5' => array(),
+		'm6' => array(),
+		'm7' => array(),
+		'm8' => array(),
+		'm9' => array(),
+		'm10' => array(),
+		'm11' => array(),
+		'm12' => array(),
 	);
 	*/
