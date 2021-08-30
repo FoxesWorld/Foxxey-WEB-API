@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.2.23.3 Post Final
+ Version: 0.2.24.3 Post Final
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -41,8 +41,8 @@ if (!defined('FOXXEY')) {
 		private static $currentDate = CURRENT_DATE;
 		private static $musMountPoint = 'mus';
 		private static $eventNow = 'common';
-		private static $seasonNow;		//WIP
-		private static $dayTimeNow;
+		private static $seasonNow;
+		private static $dayTimeNow;		//WIP
 		private static $musFilesNum = 0;
 		private static $soundFilesNum = 0;
 		private static $easter = "";
