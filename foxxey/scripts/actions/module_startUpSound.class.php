@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.2.24.3 Post Final
+ Version: 0.2.25.4 Evolved
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -27,11 +27,11 @@ if (!defined('FOXXEY')) {
 		
 		$startSound = new startUpSound({Debug});
 		$sounds = $startSound->generateAudio();
+		Returns JSON
 */
 
 /* TODO 
- * Seasons switching
- * DayTime switching
+ * Outer File Event Switching
  */
 
 	class startUpSound {
@@ -42,7 +42,8 @@ if (!defined('FOXXEY')) {
 		private static $musMountPoint = 'mus';
 		private static $eventNow = 'common';
 		private static $seasonNow;
-		private static $dayTimeNow;		//WIP
+		private static $dayTimeNow;
+		private static $dayTimeBool = false;		//Do we switch day time generating sound?
 		private static $musFilesNum = 0;
 		private static $soundFilesNum = 0;
 		private static $easter = "";
@@ -110,7 +111,7 @@ if (!defined('FOXXEY')) {
 			
 			if(static::$debug){
 				echo  '<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">'.
-					  '<h1 style="font-size: large;margin: 0;">Current date</h1>'.static::$dayTimeNow.'<br>'.static::$seasonNow.'</div>';
+					  '<h1 style="font-size: large;margin: 0;">Current date</h1><b>DayTime:</b>'.static::$dayTimeNow.'<br><b>seasonNow:</b>'.static::$seasonNow.'</div>';
 			}
 
 				switch($monthToday){
@@ -227,6 +228,7 @@ if (!defined('FOXXEY')) {
 			$minRange = 1;
 			$maxRange = 1;
 			$easterCheck;
+			$unExistingFolder = '';
 
 			if($config['enableMusic'] === true) {
 			$this->easter($config['easterMusRarity'], static::$debug, 'music');
@@ -235,38 +237,42 @@ if (!defined('FOXXEY')) {
 					} else {
 						$currentMusFolder = static::$AbsolutesoundPath.'/'.static::$musMountPoint.static::$easter;
 					}
-					
-					if(static::$isEasterMus === 'true'){
-						$easterCheck = count(functions::filesInDirArray($currentMusFolder, '.mp3'));
-						if($easterCheck < 1){
-							$currentMusFolder = str_replace('/easter', "", $currentMusFolder);
-							startUpSound::$easterMusWarn = '<b style="color: red;">Esater Mus not found, using common</b><br>';
-						}
-					}
 
-					startUpSound::$musFilesNum = count(functions::filesInDirArray($currentMusFolder, '.mp3')); //Count of music
-					$maxRange = startUpSound::$musFilesNum;										
-				
-				if(isset(static::$musRange) && static::$musRange !== 0) {
-					$RandMusFile = $this->genRange('mus', static::$musRange);
-				} else {
-					$RandMusFile = 'mus'.rand($minRange,$maxRange).'.mp3'; //Getting random musFile
-				}
-				//MusDirs****************************************								
-				startUpSound::$selectedMusic = str_replace(static::$AbsolutesoundPath,"",$currentMusFolder).'/'.$RandMusFile; 	//Local musPath
-				startUpSound::$musFileAbsolute = $currentMusFolder.'/'.$RandMusFile; //Absolute musFilePath
-				//***********************************************
-				
-				if(file_exists(static::$musFileAbsolute)) {
-					startUpSound::$musMd5 = md5_file(static::$musFileAbsolute);
-					$getid3 = new getID3();
-					$getid3->encoding = 'UTF-8';
-					$getid3->Analyze(static::$musFileAbsolute);
-					startUpSound::$durationMus = $this->getFileLength($getid3);
+					if(is_dir($currentMusFolder)) {
+						if(static::$isEasterMus === 'true'){
+							$easterCheck = count(functions::filesInDirArray($currentMusFolder, '.mp3'));
+							if($easterCheck < 1){
+								$currentMusFolder = str_replace('/easter', "", $currentMusFolder);
+								startUpSound::$easterMusWarn = '<b style="color: red;">Esater Mus not found, using common</b><br>';
+							}
+						}
+
+						startUpSound::$musFilesNum = count(functions::filesInDirArray($currentMusFolder, '.mp3')); //Count of music
+						$maxRange = startUpSound::$musFilesNum;										
+					
+					if(isset(static::$musRange) && static::$musRange !== 0) {
+						$RandMusFile = $this->genRange('mus', static::$musRange);
+					} else {
+						$RandMusFile = 'mus'.rand($minRange,$maxRange).'.mp3'; //Getting random musFile
+					}
+					//MusDirs****************************************								
+					startUpSound::$selectedMusic = str_replace(static::$AbsolutesoundPath,"",$currentMusFolder).'/'.$RandMusFile; 	//Local musPath
+					startUpSound::$musFileAbsolute = $currentMusFolder.'/'.$RandMusFile; //Absolute musFilePath
+					//***********************************************
+					
+					if(file_exists(static::$musFileAbsolute)) {
+						startUpSound::$musMd5 = md5_file(static::$musFileAbsolute);
+						$getid3 = new getID3();
+						$getid3->encoding = 'UTF-8';
+						$getid3->Analyze(static::$musFileAbsolute);
+						startUpSound::$durationMus = $this->getFileLength($getid3);
+					} else {
+						startUpSound::$selectedMusic = "musicOff";
+					}
 				} else {
 					startUpSound::$selectedMusic = "musicOff";
+					$unExistingFolder = '<br><b>Warning! Folder not found:</b><span style="color: red;">'.$currentMusFolder.'</span>';
 				}
-
 			} else {
 				startUpSound::$selectedMusic = "musicOff";
 			}
@@ -281,7 +287,7 @@ if (!defined('FOXXEY')) {
 							"<b>musFileDuration:</b>".		static::$durationMus.'<br>'.
 							"<b>filesInDir:</b>".			static::$musFilesNum.'<br>'.
 							"<b>selectedMusFileHash:</b>".	static::$musMd5.'<br>'.
-							"<b>eventName:</b>".			static::$eventNow.static::$soundRangeDebug.'</div>';
+							"<b>eventName:</b>".			static::$eventNow.static::$soundRangeDebug.$unExistingFolder.'</div>';
 						
 						echo $output;
 				}
@@ -295,44 +301,47 @@ if (!defined('FOXXEY')) {
 			global $config;
 			$minRange = 1;
 			$easterCheck;
+			$unExistingFolder = '';
 
 			if($config['enableVoice'] === true) {
-				$this->easter($config['easterMusRarity'], static::$debug, 'sound');
-				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.static::$seasonNow.static::$easter;	//Folder of Sounds
-
-				if(static::$isEasterSnd === 'true'){
-					$easterCheck = count(functions::filesInDirArray($currentSoundFolder, '.mp3'));
-					if($easterCheck < 1){
-						$currentSoundFolder = str_replace('/easter', "", $currentSoundFolder);
-						startUpSound::$easterSndWarn = '<b style="color: red;">Esater Snd not found, using common</b><br>';
+				$this->easter($config['easterSndRarity'], static::$debug, 'sound');
+				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.static::$seasonNow.static::$dayTimeNow.static::$easter;	//Folder of Sounds
+				if(is_dir($currentSoundFolder)) {
+					if(static::$isEasterSnd === 'true'){
+						$easterCheck = count(functions::filesInDirArray($currentSoundFolder, '.mp3'));
+						if($easterCheck < 1){
+							$currentSoundFolder = str_replace('/easter', "", $currentSoundFolder);
+							startUpSound::$easterSndWarn = '<b style="color: red;">Esater Snd not found, using common</b><br>';
+						}
 					}
-				}
-				startUpSound::$soundFilesNum = count(functions::filesInDirArray($currentSoundFolder, '.mp3'));	//Count of Sounds
+					startUpSound::$soundFilesNum = count(functions::filesInDirArray($currentSoundFolder, '.mp3'));	//Count of Sounds to select from
 
-				if(isset(static::$soundRange) && static::$soundRange !== 0) {
-					$RandSoundFile = $this->genRange('voice', static::$soundRange);
+					if(isset(static::$soundRange) && static::$soundRange !== 0) {
+						$RandSoundFile = $this->genRange('voice', static::$soundRange);
+					} else {
+						$RandSoundFile = 'voice'.rand($minRange,static::$soundFilesNum).'.mp3'; //Getting random sound file
+					}
+
+					//SoundDirs**************************************
+					startUpSound::$selectedSound = str_replace(static::$AbsolutesoundPath,"",$currentSoundFolder).'/'.$RandSoundFile;
+					startUpSound::$soundFileAbsolute = static::$AbsolutesoundPath.static::$selectedSound;
+					//***********************************************
+
+					if(file_exists(static::$soundFileAbsolute)) {
+						startUpSound::$soundMd5 = md5_file(static::$soundFileAbsolute);
+						$getid3 = new getID3();
+						$getid3->encoding = 'UTF-8';
+						$getid3->Analyze(static::$soundFileAbsolute);
+						startUpSound::$durationSound = $this->getFileLength($getid3);
+						startUpSound::$soundAdditionalData = $this->getAdditionalInfo($getid3);
+					} else {
+						startUpSound::$selectedSound = 'soundOff';
+					}
+
 				} else {
-					$RandSoundFile = 'voice'.rand($minRange,static::$soundFilesNum).'.mp3'; //Getting random sound file
-				}
-
-				//SoundDirs**************************************
-				startUpSound::$selectedSound = str_replace(static::$AbsolutesoundPath,"",$currentSoundFolder).'/'.$RandSoundFile;
-				startUpSound::$soundFileAbsolute = static::$AbsolutesoundPath.static::$selectedSound;
-				//***********************************************
-
-				if(file_exists(static::$soundFileAbsolute)) {
-					startUpSound::$soundMd5 = md5_file(static::$soundFileAbsolute);
-					$getid3 = new getID3();
-					$getid3->encoding = 'UTF-8';
-					$getid3->Analyze(static::$soundFileAbsolute);
-					startUpSound::$durationSound = $this->getFileLength($getid3);
-					startUpSound::$soundAdditionalData = $this->getAdditionalInfo($getid3);
-				} else {
+					$unExistingFolder = '<br><b>Warning! Folder not found:</b><span style="color: red;">'.$currentSoundFolder.'</span>';
 					startUpSound::$selectedSound = 'soundOff';
 				}
-
-			} else {
-				startUpSound::$selectedSound = 'soundOff';
 			}
 				if($debug == true) {
 					$output =
@@ -340,12 +349,13 @@ if (!defined('FOXXEY')) {
 						'<h1 style="font-size: large;margin: 0;">Sound Gen</h1>'.
 						"<b>selectedFile:</b>".			static::$selectedSound.'<br>'.
 						"<b>isEaster:</b>".				static::$isEasterSnd.'<br>'.
-						static::$easterSndWarn.
+														static::$easterSndWarn.
 						"<b>soundFileAbsolutePath:</b>".static::$soundFileAbsolute.'<br>'.
 						"<b>soundFileDuration:</b>".	static::$durationSound.'<br>'.
 						"<b>soundsInDir:</b>".			static::$soundFilesNum.'<br>'.
 						"<b>selectedSoundFileHash:</b>".static::$soundMd5.'<br>'.
-						"<b>eventName:</b>".			static::$eventNow.static::$soundRangeDebug.'
+						"<b>Additional Info:</b>".		static::$soundAdditionalData.'<br>'.
+						"<b>eventName:</b>".			static::$eventNow.static::$soundRangeDebug.$unExistingFolder.'
 					</div>';
 						echo $output;
 					}
@@ -460,37 +470,41 @@ if (!defined('FOXXEY')) {
 			
 			return $time;
 		}
-		
+
 		private function getAdditionalInfo($getid3){
 			$soundAdditionalData = $getid3->info['tags']['id3v1']['comment'][0];
 			return $soundAdditionalData;
 		}
-		
+
 		private function dayTimeGetting() {
-			$timeNow = date('g:i', CURRENT_TIME);
+			$timeNow = date('G:i', CURRENT_TIME);
 			$hourNow = explode(':', $timeNow)[0];
-			
+
 				switch($hourNow){
 						case ($hourNow <= 6 || $hourNow >= 23):
-							startUpSound::$dayTimeNow = 'night';
+							startUpSound::$dayTimeNow = '/night';
 						break;
 
 						case ($hourNow <= 12):
-							startUpSound::$dayTimeNow = 'Morning';
+							startUpSound::$dayTimeNow = '/morning';
 						break;
 						
 						case ($hourNow <= 18):
-							startUpSound::$dayTimeNow = 'day';
+							startUpSound::$dayTimeNow = '/day';
 						break;
 						
 						case ($hourNow >= 19):
-							startUpSound::$dayTimeNow = 'evening';
+							startUpSound::$dayTimeNow = '/evening';
 						break;
 				}
+				
+				if(static::$dayTimeBool === false){
+					startUpSound::$dayTimeNow = '';
+				}
 		}
-		
+
 		private function seasonNow($monthToday){
-			
+
 			switch($monthToday){
 				case ($monthToday <=3 || $monthToday == 12):
 					startUpSound::$seasonNow = '/winter';
@@ -510,7 +524,7 @@ if (!defined('FOXXEY')) {
 			}
 			
 		}
-		
+
 		private static function IncludestartUpSoundModules(){
 			global $config;
 			$modulesDir = SCRIPTS_DIR.'modules/startUpSoundModules';
@@ -521,7 +535,7 @@ if (!defined('FOXXEY')) {
 		}
 	}
 
-	/*	WIP (the future Eventsarray list)
+	/*	WIP (the future Eventsarray list) In an outer File
 	$eventsArray = array(
 		'1m' => array(),
 		'2m' => array(),

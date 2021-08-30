@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.2.4 Alpha
+ Version: 0.1.2.5 Alpha
 -----------------------------------------------------
  Usage: WEB API settings
 =====================================================
@@ -40,7 +40,7 @@ $config = array(
 	'modulesDebug'		=> false,
 	'HWIDdebug'			=> false,
 	'foxCheckDebug'		=> false,
-	'debugStartUpSound' => false,
+	'debugStartUpSound' => true,
 	'antiBruteDebug'	=> false,
 	'randTextsDebug'	=> false,
 	
@@ -69,6 +69,7 @@ $config = array(
 	'enableVoice' 		=> true,
 	'enableMusic' 		=> true,
 	'easterMusRarity'   => 50,
+	'easterSndRarity'	=> 40,
 	
 	/* E-mail */
 	'encoding' 			=> 'UTF-8',
