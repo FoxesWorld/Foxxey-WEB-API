@@ -11,7 +11,7 @@
 -----------------------------------------------------
  Файл: updater.php
 -----------------------------------------------------
- Версия: 0.3.7.2 Beta
+ Версия: 0.3.7.3 Beta
 -----------------------------------------------------
  Назначение: Проверка хеша лаунчера и апдейтера
 =====================================================
@@ -75,7 +75,8 @@ class updater {
 			if(isset(static::$runnerType)){
 				$file = "updater";
 				switch(static::$runnerType){
-					case 'jar' || 'exe':
+					case 'jar':
+					case 'exe':
 						$fileName = $file.'.'.static::$runnerType;
 						$filePath = $config['updaterRepositoryPath'].$fileName;
 						if(file_exists($filePath)) {

@@ -16,7 +16,7 @@
  Usage: Global ACTIONS module hooking
 =====================================================
 */
-header("Content-Type: application/json; charset=UTF-8");
+//header("Content-Type: application/json; charset=UTF-8");
 	if(!defined('FOXXEY')) {
 		die ('{"message": "Not in FOXXEY thread"}');
 	}

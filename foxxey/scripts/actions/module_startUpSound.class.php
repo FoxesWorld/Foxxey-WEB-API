@@ -16,7 +16,7 @@
  Usage: Current Event Sound generation
 =====================================================
 */
-header("Content-Type: application/json; charset=UTF-8");
+
 if (!defined('FOXXEY')) {
 	die ('{"message": "Not in FOXXEY thread"}');
 } else {
@@ -29,6 +29,11 @@ if (!defined('FOXXEY')) {
 		$sounds = $startSound->generateAudio();
 */
 
+/* TODO 
+ * Seasons switching
+ * DayTime switching
+ */
+
 	class startUpSound {
 	
 		/* Base utils */
@@ -36,6 +41,8 @@ if (!defined('FOXXEY')) {
 		private static $currentDate = CURRENT_DATE;
 		private static $musMountPoint = 'mus';
 		private static $eventNow = 'common';
+		private static $seasonNow;		//WIP
+		private static $dayTimeNow;
 		private static $musFilesNum = 0;
 		private static $soundFilesNum = 0;
 		private static $easter = "";
@@ -85,10 +92,10 @@ if (!defined('FOXXEY')) {
 			}
 		}
 		
-		/**
-		* @param boolean $debug
-		* @return String eventNow, String musRange, String soundRange
-		*/
+		/*
+		 * @param boolean $debug
+		 * @return String eventNow, String musRange, String soundRange
+		 */
 		private function eventNow() {
 			$eventName = 'common';
 			$musRange = 0;
@@ -98,6 +105,13 @@ if (!defined('FOXXEY')) {
 			$dayToday = $dateExploded[0];
 			$monthToday = $dateExploded[1];
 			$yearToday = $dateExploded[2];
+			$this->dayTimeGetting();
+			$this->seasonNow($monthToday);
+			
+			if(static::$debug){
+				echo  '<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">'.
+					  '<h1 style="font-size: large;margin: 0;">Current date</h1>'.static::$dayTimeNow.'<br>'.static::$seasonNow.'</div>';
+			}
 
 				switch($monthToday){
 					case 1:
@@ -179,35 +193,35 @@ if (!defined('FOXXEY')) {
 				$eventArray['musRange']   = $musRange;
 				$eventArray['soundRange'] = $soundRange;
 
-				foreach ($eventArray as $key => $value) {
-					switch($key){
-						case 'eventNow':
-							startUpSound::$eventNow = $eventName;
-						break;
+			foreach ($eventArray as $key => $value) {
+				switch($key){
+					case 'eventNow':
+						startUpSound::$eventNow = $eventName;
+					break;
 						
-						case 'musRange':
-							if(strpos($musRange, '/')){
-								startUpSound::$musRange = explode('/',$musRange);
-							} else {
-								startUpSound::$musRange = $musRange;
-							}
-						break;
-						
-						case 'soundRange':
-							if(strpos($soundRange, '/')){
-								startUpSound::$soundRange = explode('/',$soundRange);
-							} else {
-								startUpSound::$soundRange = $soundRange;
-							}
-						break;
-					}
+					case 'musRange':
+						if(strpos($musRange, '/')){
+							startUpSound::$musRange = explode('/',$musRange);
+						} else {
+							startUpSound::$musRange = $musRange;
+						}
+					break;
+					
+					case 'soundRange':
+						if(strpos($soundRange, '/')){
+							startUpSound::$soundRange = explode('/',$soundRange);
+						} else {
+							startUpSound::$soundRange = $soundRange;
+						}
+					break;
 				}
+			}
 		}
 		
-		/**
-		* @param boolean $debug
-		* @return String {Random mus with parameters}
-		*/
+		/*
+		 * @param boolean $debug
+		 * @return String {Random mus with parameters}
+		 */
 		private function generateMusic($debug = false) {
 			global $config;
 			$minRange = 1;
@@ -273,10 +287,10 @@ if (!defined('FOXXEY')) {
 				}
 		}
 		
-		/**
-		* @param boolean $debug
-		* @return String {Random sound with parameters}
-		*/
+		/*
+		 * @param boolean $debug
+		 * @return String {Random sound with parameters}
+		 */
 		private function generateSound($debug = false) {
 			global $config;
 			$minRange = 1;
@@ -284,7 +298,7 @@ if (!defined('FOXXEY')) {
 
 			if($config['enableVoice'] === true) {
 				$this->easter($config['easterMusRarity'], static::$debug, 'sound');
-				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.static::$easter;	//Folder of Sounds
+				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.static::$seasonNow.static::$easter;	//Folder of Sounds
 
 				if(static::$isEasterSnd === 'true'){
 					$easterCheck = count(functions::filesInDirArray($currentSoundFolder, '.mp3'));
@@ -337,10 +351,10 @@ if (!defined('FOXXEY')) {
 					}
 		}
 
-		/**
-		* @param boolean $debug, Integer chance, of - sound|music
-		* @return String easter
-		*/
+		/*
+		 * @param boolean $debug, Integer chance, of - sound|music
+		 * @return String easter
+		 */
 		private function easter($chance, $debug = false, $of) {
 			global $config;
 			$minRange = 1;
@@ -368,10 +382,10 @@ if (!defined('FOXXEY')) {
 			}
 		}
 
-		/**
-		* @param boolean $debug
-		* @return Integer maxDuration
-		*/
+		/*
+		 * @param boolean $debug
+		 * @return Integer maxDuration
+		 */
 		private function maxDuration($debug = false) {
 			$duration;
 			if(static::$durationMus > static::$durationSound) {
@@ -423,10 +437,10 @@ if (!defined('FOXXEY')) {
 				return $RandSoundFile;
 		}
 
-		/**
-		* @param NO
-		* @return jsonAnswer
-		*/
+		/*
+		 * @param NO
+		 * @return jsonAnswer
+		 */
 		private function outputJson() {
 			$outputArray = array(
 					"maxDuration" 		=> static::$maxDuration,
@@ -452,6 +466,51 @@ if (!defined('FOXXEY')) {
 			return $soundAdditionalData;
 		}
 		
+		private function dayTimeGetting() {
+			$timeNow = date('g:i', CURRENT_TIME);
+			$hourNow = explode(':', $timeNow)[0];
+			
+				switch($hourNow){
+						case ($hourNow <= 6 || $hourNow >= 23):
+							startUpSound::$dayTimeNow = 'night';
+						break;
+
+						case ($hourNow <= 12):
+							startUpSound::$dayTimeNow = 'Morning';
+						break;
+						
+						case ($hourNow <= 18):
+							startUpSound::$dayTimeNow = 'day';
+						break;
+						
+						case ($hourNow >= 19):
+							startUpSound::$dayTimeNow = 'evening';
+						break;
+				}
+		}
+		
+		private function seasonNow($monthToday){
+			
+			switch($monthToday){
+				case ($monthToday <=3 || $monthToday == 12):
+					startUpSound::$seasonNow = '/winter';
+				break;
+				
+				case ($monthToday <= 6 && $monthToday > 3):
+					startUpSound::$seasonNow = '/spring';
+				break;
+				
+				case ($monthToday <= 9 && $monthToday > 6):
+					startUpSound::$seasonNow = '/summer';
+				break;
+				
+				case ($monthToday <= 11 && $monthToday > 9):
+					startUpSound::$seasonNow = '/autumn';
+				break;				
+			}
+			
+		}
+		
 		private static function IncludestartUpSoundModules(){
 			global $config;
 			$modulesDir = SCRIPTS_DIR.'modules/startUpSoundModules';
@@ -461,6 +520,7 @@ if (!defined('FOXXEY')) {
 			functions::includeModules($modulesDir, $config['modulesDebug']);
 		}
 	}
+
 	/*	WIP (the future Eventsarray list)
 	$eventsArray = array(
 		'1m' => array(),

@@ -20,7 +20,7 @@
 /* TODO
  * Userbalance&GeoIP doesn't recieve $userDataDB Var
  */
-	header("Content-Type: application/json; charset=UTF-8");
+
 	if(!defined('FOXXEY')) {
 		die ('{"message": "Not in FOXXEY thread"}');
 	} else {
