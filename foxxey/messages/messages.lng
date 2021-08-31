@@ -31,7 +31,7 @@
 	/* HWID*/
 	'HWIDexists'	   => 'У тебя уже есть аккаунт - {existingAccount}, используй его! Там уже многое достигнуто!',
 	'HWIDnotYours'	   => 'Это не твой аккаунт, твой аккаунт - {existingAccount}',
-	'AlreadyRestoring' => 'У тебя уже активна сессия смены HWID для {login}',
+	'AlreadyRestoring' => 'У тебя уже активная сессия смены HWID для {login}',
 	'HWIDrenew'		   => 'Обновление HWID {login}',
 	'HWIDcrqstWasSent' => 'Запрос на смену HWID для `{login}` был отправлен, проверьте почту!',
 	
@@ -40,7 +40,6 @@
 	'cantFindHash'	   => 'Запрошенный хеш не может быть найден!',
 	'Success' 		   => 'HWID успешно изменён!',
 	'Failed'		   => 'Невозможно сменить HWID!'
-	
 	);
 	
 	$systemMessages = array(

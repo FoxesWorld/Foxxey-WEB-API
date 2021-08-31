@@ -11,11 +11,12 @@
 -----------------------------------------------------
  File: module_longTermBan.class.php
 -----------------------------------------------------
- Version: 0.1.1.0 Alpha
+ Version: 0.1.1.3 Alpha
 -----------------------------------------------------
  Usage: Blocking the whole functionality
 =====================================================
 */
+header("Content-Type: application/json; charset=UTF-8");
 	class longTermBan {
 		
 		private $ip;
@@ -37,10 +38,11 @@
 		
 		public function banIP() {
 			$Logger = new Logger('AuthLog');
-				if($this->checkBan($this->ip) === false) {
+				if($this->checkBan() === false) {
 				$query = "INSERT INTO `fullBlock`(`ip`, `temptime`) VALUES ('".$this->ip."',".$this->banTime.")";
 				$this->db::run($query);
 				$Logger->WriteLine('Banning '.$this->ip.' on '.$this->toDate);
+				die('{"message": "Banning '.$this->ip.' for '.$this->toDate.'..."}');
 			} else {
 				$Logger->WriteLine('The '.$this->ip.' ip has tryed to interract with Foxxey but is banned =( ');
 				//die('{"message": "Ip '.$this->ip.' is already baned! Rest In Peace :3"}');

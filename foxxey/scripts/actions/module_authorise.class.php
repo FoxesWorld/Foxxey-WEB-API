@@ -93,7 +93,7 @@ class Authorise {
 			$this->realMail  = json_decode($this->webSiteFunc->getUserData($this->login, 'email'))		-> email	  ?? null;
 			$this->fullname  = json_decode($this->webSiteFunc->getUserData($this->login, 'fullname'))	-> fullname   ?? functions::getUserName();
 			
-			if($this->login == '' && $this->pass == '') {
+			if($this->login == '' || $this->pass == '') {
 				exit('{"message": "'.$message['dataNotIsset'].'"}');
 			} else {
 				//Getting user login location

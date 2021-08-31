@@ -40,6 +40,7 @@
 		protected $launcherDB;
 		protected $userDataDB;
 		//=========================
+
 		function __construct($ip, $initType) {
 			global $config;
 				

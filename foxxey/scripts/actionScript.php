@@ -16,16 +16,16 @@
  Usage: Global ACTIONS module hooking
 =====================================================
 */
-//header("Content-Type: application/json; charset=UTF-8");
+header("Content-Type: application/json; charset=UTF-8");
 	if(!defined('FOXXEY')) {
 		die ('{"message": "Not in FOXXEY thread"}');
 	}
 
 	class actionScript {
 		
-		private $launcherDB;
-		private $userDataDB;
-		private $ip;
+		protected $launcherDB;
+		protected $userDataDB;
+		protected $ip;
 		
 		function __construct($launcherDB, $userDataDB, $ip){
 			$this->launcherDB = $launcherDB;
@@ -36,7 +36,6 @@
 		
 		private function listActions($request){
 			global $config;
-
 				foreach ($request as $key => $value) {
 				$requestTitle = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($key))));
 				$requestValue = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($value))));
@@ -71,9 +70,10 @@
 				   
 				   //WIP
 				   case 'API':
+						//require (SITE_ROOT.'/api/init.php');
 				   break;
 				   
-				   //Getting user skin
+				   //Getting user Skin&Cloak
 				   case 'show':
 					   require (SCRIPTS_DIR.'actions/module_SkinViewer2D.class.php');
 					   if(class_exists('skinViewer2D')) {
@@ -110,16 +110,16 @@
 				   break;
 				   
 				   //Debug function
-				   case 'testBan':
-					$longTermBan = new longTermBan($this->ip, $this->launcherDB, $requestValue);
-					$longTermBan->banIP();
-				   break;
-				   
-				   //Debug function
-				   case 'randPhrase':
+					case 'testBan':
+						$longTermBan = new longTermBan($this->ip, $this->launcherDB, $requestValue);
+						$longTermBan->banIP();
+					break;
+						   
+					//Debug function
+					case 'rndPhrase':
 						$randTexts = new randTexts($requestValue);
 						die($randTexts->textOut());
-				   break;
+					break;
 
 				   default:
 					die('{"message": "Unknown action request!"}');
