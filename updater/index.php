@@ -1,8 +1,13 @@
 <?php
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Headers: access");
+header("Access-Control-Allow-Methods: GET");
+header("Access-Control-Allow-Credentials: true");
 define('FOXXEY', true);
+
 	require ('../foxxey/init.php');
 	$init = new init(REMOTE_IP, 'updater');
 	$list = list($path, $qs) = explode("?", $_SERVER["REQUEST_URI"], 2);
-	$inputText = json_decode(base64_decode($qs), true);
+	$inputText = base64_decode($qs);
 	$updater = new updater($inputText);
 	

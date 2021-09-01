@@ -102,5 +102,5 @@ $config = array(
 	/* Skins */
 	'skinsAbsolute' 	=> FILES_DIR.'uploads/MinecraftSkins/',
 	'cloaksAbsolute'	=> FILES_DIR.'uploads/MinecraftCloaks/');
-	
+
 require (SITE_ROOT.'/messages/messages.lng');

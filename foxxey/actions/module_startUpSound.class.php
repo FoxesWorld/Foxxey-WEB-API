@@ -33,6 +33,7 @@ if (!defined('FOXXEY')) {
 /* TODO 
  * Outer File Event Switching
  * If Mus is too long generate another one sound
+ * AI with the local .db
  */
 
 	class startUpSound {
@@ -195,7 +196,6 @@ if (!defined('FOXXEY')) {
 							case 31:
 								$eventName = "newYear";
 								$musRange ="1/8";
-								
 							break;
 							
 						}

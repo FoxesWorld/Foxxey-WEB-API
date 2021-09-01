@@ -120,6 +120,10 @@ header("Content-Type: application/json; charset=UTF-8");
 						$randTexts = new randTexts($requestValue);
 						die($randTexts->textOut());
 					break;
+					
+					case 'testDB':
+						$testDB = new localDatabase();
+					break;
 
 				   default:
 					die('{"message": "Unknown action request!"}');
