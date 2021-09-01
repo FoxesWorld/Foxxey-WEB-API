@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.2.26.6 Evolved
+ Version: 0.3.26.6 Radioactive
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -31,7 +31,6 @@ if (!defined('FOXXEY')) {
 */
 
 /* TODO 
- * Outer File Event Switching
  * If Mus is too long generate another one sound
  * AI with the local .db
  */
@@ -39,6 +38,7 @@ if (!defined('FOXXEY')) {
 	class startUpSound {
 	
 		/* Base utils */
+		private $cacheFilePath = FILES_DIR.'startUpSound.txt';
 		private static $AbsolutesoundPath;
 		private static $currentDate = CURRENT_DATE;
 		private static $musMountPoint = 'mus';
@@ -51,6 +51,85 @@ if (!defined('FOXXEY')) {
 		private static $soundFilesNum = 0;
 		private static $easter = "";
 		private static $debug = false;
+		
+		/* Date */
+		private $dayToday;
+		private $monthToday;
+		private $yearToday;
+		
+		/* Event Arrays */
+		/*This array is caching,
+		after caching it can be cleared,
+		supports soundRanges, musRanges and eventNames
+		*/
+		private $eventsArray = array(
+			'm01' => array(
+				"1-12" =>  array(
+					'eventName' => 'winterHolidays',
+					'musRange'  => '1/2',
+					'soundRange'=> '2/5'
+				)
+			),
+
+			'm02' => array(
+			
+			),
+			
+			'm03' => array(
+			
+			),
+			
+			'm04' => array(
+			
+			),
+			
+			'm05' => array(
+			
+			),
+			
+			'm06' => array(
+			
+			),
+			
+			'm07' => array(
+			
+			),
+			
+			'm08' => array(
+				'5-13' => array(
+					'eventName' => 'Killing teddy!',
+					'musRange'  => '1/2',
+					'soundRange'=> '2/5'),
+
+				'20-23' => array(
+					'eventName' => 'Praising DarkFoxes',
+					'musRange'  => '1/2',
+					'soundRange'=> '2/5'
+				)
+			),
+
+			'm09' => array(
+
+				'1-5' => array(
+					'eventName' => '8bit',
+					'musRange'  => '1/2',
+					'soundRange'=> '2/5')
+			),
+			
+			'm10' => array(
+			
+			),
+			
+			'm11' => array(
+			
+			),
+			
+			'm12' => array(
+			
+			)
+		);
+		private $monthNowArray;
+		private $todaysEventArray;
 
 		/* Mus */
 		private static $musPerEvent = true;				//Use different music for an each event
@@ -81,10 +160,26 @@ if (!defined('FOXXEY')) {
 		//Initialisation
 		function __construct($debug = false) {
 			global $config;
+			
+			$dateExploded = explode ('.',CURRENT_DATE);
+			$this->dayToday = $dateExploded[0];
+			$this->monthToday = $dateExploded[1];
+			$this->yearToday = $dateExploded[2];
+			if(!file_exists($this->cacheFilePath)){
+				$this->WriteFile();
+			} else {
+				if(is_array($this->readEventFile())){
+					$this->eventsArray = $this->readEventFile();
+				} else {
+					$this->WriteFile();
+					$this->eventsArray = $this->readEventFile();
+				}
+			}
+
 			startUpSound::IncludestartUpSoundModules();
 			startUpSound::$AbsolutesoundPath = $config['mountDir'];
 			startUpSound::$debug = $debug;
-			$this->eventNow();
+			$this->selectCurrentEvent($this->dayToday, $this->monthToday);
 			$this->generateMusic(static::$debug);
 			$this->generateSound(static::$debug);
 			$this->maxDuration(static::$debug);
@@ -97,138 +192,67 @@ if (!defined('FOXXEY')) {
 			}
 		}
 		
-		/*
-		 * @param boolean $debug
-		 * @return String eventNow, String musRange, String soundRange
-		 */
-		private function eventNow() {
-			$eventName = 'common';
-			$musRange = 0;
-			$soundRange = 0;
-			$eventArray = array();
-			$dateExploded = explode ('.',startUpSound::$currentDate);
-			$dayToday = $dateExploded[0];
-			$monthToday = $dateExploded[1];
-			$yearToday = $dateExploded[2];
-			$this->dayTimeGetting();
-			if(static::$useSeasons) {
-				$this->seasonNow($monthToday);
-			}
-			
-			if(static::$debug){
-				echo  '<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">'.
-					  '<h1 style="font-size: large;margin: 0;">Current date</h1><b>DayTime:</b>'.static::$dayTimeNow.'<br><b>seasonNow:</b>'.static::$seasonNow.'</div>';
+		function selectCurrentEvent($dayToday, $monthToday){
+
+			function checkPeriod($key, $value, $dayToday){
+				if(strpos($key,'-')){
+					$datePeriod = explode('-',$key);
+					$dayFrom = $datePeriod[0];
+					$dayTill = $datePeriod[1];
+					if($dayToday >= $dayFrom && $dayToday <= $dayTill){
+						return $value;
+					}
+				} else {
+					if($dayToday == $key){
+						return $value;
+					}
+				}		
 			}
 
-				switch($monthToday){
-					case 1:
-						switch($dayToday){
-							case($dayToday < 12):
-								$eventName = "winterHolidays";
-							break;
+			foreach ($this->eventsArray as $key => $value) {
+					if('m'.$monthToday == $key){
+					$this->monthNowArray = $value;
+						foreach ($this->monthNowArray as $key => $value){
+							$this->todaysEventArray = checkPeriod($key, $value, $dayToday);
+							if(is_array($this->todaysEventArray)) {
+								$eventName = $this->todaysEventArray['eventName'];
+								$soundRange = $this->todaysEventArray['soundRange'];
+								$musRange = $this->todaysEventArray['musRange'];
+							} else {
+								$eventName = 'common';
+							}
 						}
-					break;
-					
-					case 2:
-					break;
-					
-					case 3:
-					break;
-					
-					case 4:
+						$eventArray['eventNow']   = $eventName;
+						$eventArray['musRange']   = $musRange;
+						$eventArray['soundRange'] = $soundRange;
 
-					break;
-					
-					case 5:
-						switch($dayToday){ //WW2 Victory
-							case 9:
-								$eventName = "9may";
+					foreach ($eventArray as $key => $value) {
+						switch($key){
+							case 'eventNow':
+								startUpSound::$eventNow = $eventName;
 							break;
-						}
-					break;
-					
-					case 6:
-						switch($dayToday){ //Markus Persson birthday
-							case 1:
-							break;
-							
-							case (21):
-								$eventName = "twistOfTheSun";
-							break;
-						}
-					break;
-					
-					case 7:
-						switch($dayToday){
-							case ($dayToday >= 5 && $dayToday < 6):
-								$eventName = "twistOfTheSun";
-							break;
-						}
-					break;
-					
-					case 8:
-					break;
-					
-					case 9:
-						switch($dayToday){
-							case 1:
-								$eventName = "8bit";
-							break;
-						}
-					break;
-					
-					case 10:
-					break;
-					
-					case 11:
-					break;
-					
-					case 12:
-						switch($dayToday){
-							case($dayToday < 31 && $dayToday != 22 && $dayToday != 31):
-								$eventName = "winterHolidays";
+								
+							case 'musRange':
+								if(strpos($musRange, '/')){
+									startUpSound::$musRange = explode('/',$musRange);
+								} else {
+									startUpSound::$musRange = $musRange;
+								}
 							break;
 							
-							case 22:
-								$eventName = "twistOfTheSun";
+							case 'soundRange':
+								if(strpos($soundRange, '/')){
+									startUpSound::$soundRange = explode('/',$soundRange);
+								} else {
+									startUpSound::$soundRange = $soundRange;
+								}
 							break;
-							
-							case 31:
-								$eventName = "newYear";
-								$musRange ="1/8";
-							break;
-							
 						}
-				}
-				$eventArray['eventNow']   = $eventName;
-				$eventArray['musRange']   = $musRange;
-				$eventArray['soundRange'] = $soundRange;
-
-			foreach ($eventArray as $key => $value) {
-				switch($key){
-					case 'eventNow':
-						startUpSound::$eventNow = $eventName;
-					break;
-						
-					case 'musRange':
-						if(strpos($musRange, '/')){
-							startUpSound::$musRange = explode('/',$musRange);
-						} else {
-							startUpSound::$musRange = $musRange;
-						}
-					break;
-					
-					case 'soundRange':
-						if(strpos($soundRange, '/')){
-							startUpSound::$soundRange = explode('/',$soundRange);
-						} else {
-							startUpSound::$soundRange = $soundRange;
-						}
-					break;
+					}
 				}
 			}
 		}
-		
+
 		/*
 		 * @param boolean $debug
 		 * @return String {Random mus with parameters}
@@ -518,22 +542,22 @@ if (!defined('FOXXEY')) {
 				}
 		}
 
-		private function seasonNow($monthToday){
+		private function seasonNow(){
 
-			switch($monthToday){
-				case ($monthToday <=3 || $monthToday == 12):
+			switch($this->monthToday){
+				case ($this->monthToday <=3 || $this->monthToday == 12):
 					startUpSound::$seasonNow = '/winter';
 				break;
 				
-				case ($monthToday <= 6 && $monthToday > 3):
+				case ($this->monthToday <= 6 && $this->monthToday > 3):
 					startUpSound::$seasonNow = '/spring';
 				break;
 				
-				case ($monthToday <= 9 && $monthToday > 6):
+				case ($this->monthToday <= 9 && $this->monthToday > 6):
 					startUpSound::$seasonNow = '/summer';
 				break;
 				
-				case ($monthToday <= 11 && $monthToday > 9):
+				case ($this->monthToday <= 11 && $this->monthToday > 9):
 					startUpSound::$seasonNow = '/autumn';
 				break;				
 			}
@@ -548,22 +572,17 @@ if (!defined('FOXXEY')) {
 			}
 			functions::includeModules($modulesDir, $config['modulesDebug']);
 		}
-	}
+		
+		/* FilesWork */
+		private function readEventFile(){
+			$data = file_get_contents($this->cacheFilePath);
+			$out = unserialize($data);
 
-	/*	WIP (the future Eventsarray list) In an outer File
-	$eventsArray = array(
-		'm1' => array(
-			"< 12" =>  'winterHolidays'),
-		'm2' => array(),
-		'm3' => array(),
-		'm4' => array(),
-		'm5' => array(),
-		'm6' => array(),
-		'm7' => array(),
-		'm8' => array(),
-		'm9' => array(),
-		'm10' => array(),
-		'm11' => array(),
-		'm12' => array(),
-	);
-	*/
+			return $out;
+		}
+
+		private function WriteFile(){
+			$data = serialize($this->eventsArray);
+			file_put_contents($this->cacheFilePath, $data);
+		}
+	}
