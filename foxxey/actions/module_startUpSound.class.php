@@ -169,7 +169,11 @@ if (!defined('FOXXEY')) {
 					break;
 					
 					case 9:
-						$eventName = "8bit";
+						switch($dayToday){
+							case 1:
+								$eventName = "8bit";
+							break;
+						}
 					break;
 					
 					case 10:

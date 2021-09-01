@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.6.2 Alpha
+ Version: 0.1.6.3 Alpha
 -----------------------------------------------------
  Usage: Initialising&Including modules
 =====================================================
@@ -20,7 +20,7 @@
 	if(!defined('FOXXEY')) {
 		die ('{"message": "Not in FOXXEY thread"}');
 	} else {
-		require ($_SERVER['DOCUMENT_ROOT'].'/foxxey/config.php');
+		require ($_SERVER['DOCUMENT_ROOT'].'/foxxey/foxxeyData/config.php');
 		require (SCRIPTS_DIR.'database.class.php');
 		require (SCRIPTS_DIR.'functions.class.php');
 	}
