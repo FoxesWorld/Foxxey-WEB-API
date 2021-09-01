@@ -16,7 +16,7 @@
  Usage: Blocking the whole functionality
 =====================================================
 */
-header("Content-Type: application/json; charset=UTF-8");
+
 	class longTermBan {
 		
 		private $ip;

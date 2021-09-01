@@ -68,7 +68,7 @@ $config = array(
 	'mountDir' 			=> SITE_ROOT."/foxxeyData/eventSounds",
 	'enableVoice' 		=> true,
 	'enableMusic' 		=> true,
-	'easterMusRarity'   => 50,
+	'easterMusRarity'   => 1000,
 	'easterSndRarity'	=> 40,
 	
 	/* E-mail */

@@ -45,7 +45,7 @@ header("Content-Type: application/json; charset=UTF-8");
 					  
 					//Authorising
 				   case 'auth':
-					   require (SCRIPTS_DIR.'actions/module_authorise.class.php');
+					   require (SITE_ROOT.'/actions/module_authorise.class.php');
 					   if(class_exists('Authorise')) {
 							$login		 = $_GET['login'] 		?? null;
 							$password 	 = $_GET['password'] 	?? null;
@@ -59,7 +59,7 @@ header("Content-Type: application/json; charset=UTF-8");
 				   
 				   //startUpSound using
 				   case 'startUpSound':
-					   require (SCRIPTS_DIR.'actions/module_startUpSound.class.php');
+					   require (SITE_ROOT.'/actions/module_startUpSound.class.php');
 					   if(class_exists('startUpSound')) {
 							$startSound = new startUpSound($config['debugStartUpSound']);
 							die($startSound->generateAudio());
@@ -75,7 +75,7 @@ header("Content-Type: application/json; charset=UTF-8");
 				   
 				   //Getting user Skin&Cloak
 				   case 'show':
-					   require (SCRIPTS_DIR.'actions/module_SkinViewer2D.class.php');
+					   require (SITE_ROOT.'/actions/module_SkinViewer2D.class.php');
 					   if(class_exists('skinViewer2D')) {
 						header("Content-type: image/png");
 						$show = $_GET['show'] ?? null;
