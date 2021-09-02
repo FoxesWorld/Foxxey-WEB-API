@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.3.26.7 Radioactive
+ Version: 0.3.26.8 Radioactive
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -40,6 +40,7 @@ if (!defined('FOXXEY')) {
 	
 		/* Base utils */
 		private $cacheFilePath = FOXXEYDATA.'startUpSound.timetable';
+		private static $serverVersion = '3.26.8 Radioactive';
 		private static $AbsolutesoundPath;
 		private static $currentDate = CURRENT_DATE;
 		private static $musMountPoint = 'mus';
@@ -492,8 +493,9 @@ if (!defined('FOXXEY')) {
 					"selectedSound" 	=> (String) static::$selectedSound,
 					"soundMd5" 			=> (String) static::$soundMd5,
 					"MusicMd5" 			=> (String) static::$musMd5,
-					"message"			=> (String) static::$soundAdditionalData,
-					"eventName" 		=> (String) static::$eventNow);
+					"eventInfo"			=> (String) static::$soundAdditionalData,
+					"eventName" 		=> (String) static::$eventNow,
+					'serverVersion'		=> (String) static::$serverVersion);
 
 			return json_encode($outputArray, JSON_UNESCAPED_SLASHES);
 		}
