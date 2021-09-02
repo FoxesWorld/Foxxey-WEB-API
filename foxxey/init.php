@@ -60,6 +60,11 @@
 						$action = new actionScript($this->launcherDB, $this->userDataDB, $ip);
 					break;
 					
+					case 'API':
+						require (SITE_ROOT.'/api/init.php');
+						$apiInit = new apiInit($ip, $_REQUEST);
+					break;
+					
 					case 'updater':
 						require (SCRIPTS_DIR.'updater.class.php');
 					break;

@@ -16,7 +16,9 @@
  Usage: Global ACTIONS module hooking
 =====================================================
 */
-header("Content-Type: application/json; charset=UTF-8");
+if($config['debugStartUpSound'] === false) {
+	header("Content-Type: application/json; charset=UTF-8");
+}
 	if(!defined('FOXXEY')) {
 		die ('{"message": "Not in FOXXEY thread"}');
 	}
@@ -68,11 +70,6 @@ header("Content-Type: application/json; charset=UTF-8");
 					   }
 				   break;
 				   
-				   //WIP
-				   case 'API':
-						//require (SITE_ROOT.'/api/init.php');
-				   break;
-				   
 				   //Getting user Skin&Cloak
 				   case 'show':
 					   require (SITE_ROOT.'/actions/module_SkinViewer2D.class.php');
@@ -108,22 +105,6 @@ header("Content-Type: application/json; charset=UTF-8");
 						$hashUpdate  = new functions($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
 						$hashUpdate->confirmHWIDchange($requestValue);
 				   break;
-				   
-				   //Debug function
-					case 'testBan':
-						$longTermBan = new longTermBan($this->ip, $this->launcherDB, $requestValue);
-						$longTermBan->banIP();
-					break;
-						   
-					//Debug function
-					case 'rndPhrase':
-						$randTexts = new randTexts($requestValue);
-						die($randTexts->textOut());
-					break;
-					
-					case 'testDB':
-						$testDB = new localDatabase();
-					break;
 
 				   default:
 					die('{"message": "Unknown action request!"}');

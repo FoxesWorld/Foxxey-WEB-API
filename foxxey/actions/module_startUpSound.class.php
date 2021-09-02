@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.3.26.8 Radioactive
+ Version: 0.3.27.8 Radioactive
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -40,7 +40,7 @@ if (!defined('FOXXEY')) {
 	
 		/* Base utils */
 		private $cacheFilePath = FOXXEYDATA.'startUpSound.timetable';
-		private static $serverVersion = '3.26.8 Radioactive';
+		private static $serverVersion = '3.27.8 Radioactive';
 		private static $AbsolutesoundPath;
 		private static $currentDate = CURRENT_DATE;
 		private static $musMountPoint = 'mus';
@@ -112,7 +112,7 @@ if (!defined('FOXXEY')) {
 
 			'09' => array(
 
-				'1-5' => array(
+				'1' => array(
 					'eventName' => '8bit')
 			),
 			
@@ -223,8 +223,8 @@ if (!defined('FOXXEY')) {
 							}
 						}
 						$eventArray['eventNow']   = $eventName;
-						$eventArray['musRange']   = $musRange;
-						$eventArray['soundRange'] = $soundRange;
+						$eventArray['musRange']   = $musRange ?? 0;
+						$eventArray['soundRange'] = $soundRange ?? 0;
 
 					foreach ($eventArray as $key => $value) {
 						switch($key){
@@ -233,19 +233,25 @@ if (!defined('FOXXEY')) {
 							break;
 								
 							case 'musRange':
+							$musRange = $eventArray['musRange'];
+							if($musRange !== 0) {
 								if(strpos($musRange, '/')){
 									startUpSound::$musRange = explode('/',$musRange);
 								} else {
 									startUpSound::$musRange = $musRange;
 								}
+							}
 							break;
 							
 							case 'soundRange':
+							$soundRange = $eventArray['soundRange'];
+							if($soundRange !== 0) {
 								if(strpos($soundRange, '/')){
 									startUpSound::$soundRange = explode('/',$soundRange);
 								} else {
 									startUpSound::$soundRange = $soundRange;
 								}
+							}
 							break;
 						}
 					}

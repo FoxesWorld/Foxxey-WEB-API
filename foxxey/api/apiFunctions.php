@@ -1,13 +1,17 @@
 <?php
+	if(!defined('API')) {
+		die('Not in API thread!');
+	}
 
-	class apiFuncftions extends actionScript {
+	class apiFuncftions {
 		
+		private $ip;
 		private $request;
 		
-		function __construct($request){
+		function __construct($ip, $request){
 			global $config;
+			$this->ip = $ip;
 			$this->request = $request;
-			echo var_dump($this->ip);
 			
 
 			foreach ($this->request as $key => $value) {
@@ -27,7 +31,7 @@
 					   break;
 					   
 					   default:
-						die('{"message": "Unknown request!"}');
+						die('{"message": "Unknown API request!"}');
 				}
 			}
 		}
