@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.3.26.6 Radioactive
+ Version: 0.3.26.7 Radioactive
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -32,13 +32,14 @@ if (!defined('FOXXEY')) {
 
 /* TODO 
  * If Mus is too long generate another one sound
- * AI with the local .db
+ * Maybe storing a Mus|Sound file shift in ID3 tags
+ * AI with the local sqlite.db
  */
 
 	class startUpSound {
 	
 		/* Base utils */
-		private $cacheFilePath = FILES_DIR.'startUpSound.txt';
+		private $cacheFilePath = FOXXEYDATA.'startUpSound.timetable';
 		private static $AbsolutesoundPath;
 		private static $currentDate = CURRENT_DATE;
 		private static $musMountPoint = 'mus';
@@ -46,7 +47,7 @@ if (!defined('FOXXEY')) {
 		private static $seasonNow;
 		private static $dayTimeNow;
 		private static $useDayTime = false;		//Use DayTime? (Morning, Day, Evening, Night)
-		private static $useSeasons = false;		//Use Seasons? (Winter, Spring, Summer, Aitimn)
+		private static $useSeasons = false;		//Use Seasons? (Winter, Spring, Summer, Autumn)
 		private static $musFilesNum = 0;
 		private static $soundFilesNum = 0;
 		private static $easter = "";
@@ -63,7 +64,7 @@ if (!defined('FOXXEY')) {
 		supports soundRanges, musRanges and eventNames
 		*/
 		private $eventsArray = array(
-			'm01' => array(
+			'01' => array(
 				"1-12" =>  array(
 					'eventName' => 'winterHolidays',
 					'musRange'  => '1/2',
@@ -71,31 +72,31 @@ if (!defined('FOXXEY')) {
 				)
 			),
 
-			'm02' => array(
+			'02' => array(
 			
 			),
 			
-			'm03' => array(
+			'03' => array(
 			
 			),
 			
-			'm04' => array(
+			'04' => array(
 			
 			),
 			
-			'm05' => array(
+			'05' => array(
 			
 			),
 			
-			'm06' => array(
+			'06' => array(
 			
 			),
 			
-			'm07' => array(
+			'07' => array(
 			
 			),
 			
-			'm08' => array(
+			'08' => array(
 				'5-13' => array(
 					'eventName' => 'Killing teddy!',
 					'musRange'  => '1/2',
@@ -108,23 +109,21 @@ if (!defined('FOXXEY')) {
 				)
 			),
 
-			'm09' => array(
+			'09' => array(
 
 				'1-5' => array(
-					'eventName' => '8bit',
-					'musRange'  => '1/2',
-					'soundRange'=> '2/5')
+					'eventName' => '8bit')
 			),
 			
-			'm10' => array(
-			
-			),
-			
-			'm11' => array(
+			'10' => array(
 			
 			),
 			
-			'm12' => array(
+			'11' => array(
+			
+			),
+			
+			'12' => array(
 			
 			)
 		);
@@ -153,7 +152,6 @@ if (!defined('FOXXEY')) {
 		private static $easterSndWarn;					//Warn message if easter not found
 		
 		/* Both */
-		//private static $currentFolder;				//Current folder of AudioFiles (Deprecated)
 		private static $maxDuration = 0;				//Maximum duration
 		private static $soundRangeDebug;				//Debug info of the range
 		
@@ -165,6 +163,7 @@ if (!defined('FOXXEY')) {
 			$this->dayToday = $dateExploded[0];
 			$this->monthToday = $dateExploded[1];
 			$this->yearToday = $dateExploded[2];
+
 			if(!file_exists($this->cacheFilePath)){
 				$this->WriteFile();
 			} else {
@@ -192,7 +191,7 @@ if (!defined('FOXXEY')) {
 			}
 		}
 		
-		function selectCurrentEvent($dayToday, $monthToday){
+		private function selectCurrentEvent($dayToday, $monthToday){
 
 			function checkPeriod($key, $value, $dayToday){
 				if(strpos($key,'-')){
@@ -210,14 +209,14 @@ if (!defined('FOXXEY')) {
 			}
 
 			foreach ($this->eventsArray as $key => $value) {
-					if('m'.$monthToday == $key){
+					if($monthToday == $key){
 					$this->monthNowArray = $value;
 						foreach ($this->monthNowArray as $key => $value){
 							$this->todaysEventArray = checkPeriod($key, $value, $dayToday);
 							if(is_array($this->todaysEventArray)) {
 								$eventName = $this->todaysEventArray['eventName'];
-								$soundRange = $this->todaysEventArray['soundRange'];
-								$musRange = $this->todaysEventArray['musRange'];
+								$soundRange = $this->todaysEventArray['soundRange'] ?? 0;
+								$musRange = $this->todaysEventArray['musRange'] ?? 0;
 							} else {
 								$eventName = 'common';
 							}
