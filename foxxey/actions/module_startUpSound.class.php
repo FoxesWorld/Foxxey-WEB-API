@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.3.27.8 Radioactive
+ Version: 0.3.30.9 Radioactive
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -39,20 +39,21 @@ if (!defined('FOXXEY')) {
 	class startUpSound {
 	
 		/* Base utils */
-		private $cacheFilePath = FOXXEYDATA.'startUpSound.timetable';
-		private static $serverVersion = '3.27.8 Radioactive';
+		private $cacheFilePath 			= FOXXEYDATA.'startUpSound.timetable';
+		private static $serverVersion 	= '3.30.9 Radioactive';
 		private static $AbsolutesoundPath;
-		private static $currentDate = CURRENT_DATE;
-		private static $musMountPoint = 'mus';
-		private static $eventNow = 'common';
-		private static $seasonNow;
-		private static $dayTimeNow;
-		private static $useDayTime = false;		//Use DayTime? (Morning, Day, Evening, Night)
-		private static $useSeasons = false;		//Use Seasons? (Winter, Spring, Summer, Autumn)
-		private static $musFilesNum = 0;
-		private static $soundFilesNum = 0;
-		private static $easter = "";
-		private static $debug = false;
+		private static $currentDate 	= CURRENT_DATE;
+		private static $musMountPoint 	= 'mus';
+		private static $sndMountPoint 	= 'snd';
+		private static $eventNow 		= 'common';
+		private static $seasonNow 		= '';
+		private static $dayTimeNow 		= '';
+		private static $useDayTime 		= false;		//Use DayTime snd? (Morning, Day, Evening, Night)
+		private static $useSeasons 		= false;		//Use Seasons? (Winter, Spring, Summer, Autumn)
+		private static $musFilesNum 	= 0;
+		private static $soundFilesNum 	= 0;
+		private static $easter 			= "";
+		private static $debug 			= false;
 		
 		/* Date */
 		private $dayToday;
@@ -60,7 +61,7 @@ if (!defined('FOXXEY')) {
 		private $yearToday;
 		
 		/* Event Arrays */
-		/*This array is caching,
+		/* This array is caching,
 		after caching it can be cleared,
 		supports soundRanges, musRanges and eventNames
 		*/
@@ -132,29 +133,29 @@ if (!defined('FOXXEY')) {
 		private $todaysEventArray;
 
 		/* Mus */
-		private static $musPerEvent = true;				//Use different music for an each event
-		private static $selectedMusic; 					//Selected mus File
-		private static $musFileAbsolute;				//Absolute musFilePath
-		private static $durationMus = 0;				//Duration of a musFile
-		private static $musMd5;							//musFile md5
-		private static $musAdditionalData;				//Comment 
-		private static $musRange;						//Range of muic files
-		private static $isEasterMus = 'false';			//Is the mus is easter
-		private static $easterMusWarn;					//Warn message if easter not found
+		private static $musPerEvent 		= true;				//Use different music for an each event
+		private static $selectedMusic		= ''; 				//Selected mus File
+		private static $musFileAbsolute		= '';				//Absolute musFilePath
+		private static $durationMus 		= 0;				//Duration of a musFile
+		private static $musMd5				= '';				//musFile md5
+		private static $musAdditionalData	= '';				//Comment (Not used)
+		private static $musRange			= 0;				//Range of muic files
+		private static $isEasterMus 		= 'false';			//Is the mus is easter
+		private static $easterMusWarn		= '';				//Warn message if easter not found
 		
 		/* Sound */
-		private static $selectedSound; 					//Selected sound File
-		private static $soundFileAbsolute;				//Absolute soundFilePath
-		private static $durationSound = 0;				//Duration of a soundFile
-		private static $soundMd5;						//soundFile md5
+		private static $selectedSound		= ''; 		//Selected sound File
+		private static $soundFileAbsolute	= '';		//Absolute soundFilePath
+		private static $durationSound 		= 0;		//Duration of a soundFile
+		private static $soundMd5			= '';		//soundFile md5
 		private static $soundAdditionalData = 'NoData';	//Comment
-		private static $soundRange;						//Range of sound files
-		private static $isEasterSnd = 'false';			//Is the sound is easter
-		private static $easterSndWarn;					//Warn message if easter not found
+		private static $soundRange			= 0;		//Range of sound files
+		private static $isEasterSnd 		= 'false';	//Is the sound is easter
+		private static $easterSndWarn		= '';		//Warn message if easter not found
 		
 		/* Both */
-		private static $maxDuration = 0;				//Maximum duration
-		private static $soundRangeDebug;				//Debug info of the range
+		private static $maxDuration 		= 0;		//Maximum duration
+		private static $soundRangeDebug		= '';		//Debug info of the range
 		
 		//Initialisation
 		function __construct($debug = false) {
@@ -180,6 +181,13 @@ if (!defined('FOXXEY')) {
 			startUpSound::$AbsolutesoundPath = $config['mountDir'];
 			startUpSound::$debug = $debug;
 			$this->selectCurrentEvent($this->dayToday, $this->monthToday);
+				if(static::$useDayTime) {
+					$this->dayTimeGetting();
+				}
+			if(static::$debug){
+				echo '<h1>startUpSound <i>'.static::$serverVersion.'</i></h1>
+				<div style="border: 1px dashed black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">';
+			}
 			$this->generateMusic(static::$debug);
 			$this->generateSound(static::$debug);
 			$this->maxDuration(static::$debug);
@@ -215,14 +223,14 @@ if (!defined('FOXXEY')) {
 						foreach ($this->monthNowArray as $key => $value){
 							$this->todaysEventArray = checkPeriod($key, $value, $dayToday);
 							if(is_array($this->todaysEventArray)) {
-								$eventName = $this->todaysEventArray['eventName'];
+								$eventName = $this->todaysEventArray['eventName'] ?? 'common';
 								$soundRange = $this->todaysEventArray['soundRange'] ?? 0;
 								$musRange = $this->todaysEventArray['musRange'] ?? 0;
 							} else {
 								$eventName = 'common';
 							}
 						}
-						$eventArray['eventNow']   = $eventName;
+						$eventArray['eventNow']   = $eventName ?? 'common';
 						$eventArray['musRange']   = $musRange ?? 0;
 						$eventArray['soundRange'] = $soundRange ?? 0;
 
@@ -265,10 +273,10 @@ if (!defined('FOXXEY')) {
 		 */
 		private function generateMusic($debug = false) {
 			global $config;
-			$minRange = 1;
-			$maxRange = 1;
-			$easterCheck;
-			$unExistingFolder = '';
+			$minRange = 1; 			//Min genRange
+			$maxRange = 1; 			//Max genRange (Will be overwritten)
+			$easterCheck;  			//Easter musFile
+			$unExistingFolder = ''; //Exception message
 
 			if($config['enableMusic'] === true) {
 			$this->easter($config['easterMusRarity'], static::$debug, 'music');
@@ -327,7 +335,7 @@ if (!defined('FOXXEY')) {
 							"<b>musFileDuration:</b>".		static::$durationMus.'<br>'.
 							"<b>filesInDir:</b>".			static::$musFilesNum.'<br>'.
 							"<b>selectedMusFileHash:</b>".	static::$musMd5.'<br>'.
-							"<b>eventName:</b>".			static::$eventNow.static::$soundRangeDebug.$unExistingFolder.'</div>';
+							"<b>eventName:</b>".			static::$eventNow.static::$soundRangeDebug.$unExistingFolder.'</div></div>';
 						
 						echo $output;
 				}
@@ -345,7 +353,7 @@ if (!defined('FOXXEY')) {
 
 			if($config['enableVoice'] === true) {
 				$this->easter($config['easterSndRarity'], static::$debug, 'sound');
-				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.static::$seasonNow.static::$dayTimeNow.'/snd'.static::$easter;	//Folder of Sounds
+				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$sndMountPoint.static::$seasonNow.static::$dayTimeNow.static::$easter;	//Folder of Sounds
 				if(is_dir($currentSoundFolder)) {
 					if(static::$isEasterSnd === 'true'){
 						$easterCheck = count(functions::filesInDirArray($currentSoundFolder, '.mp3'));
@@ -397,7 +405,7 @@ if (!defined('FOXXEY')) {
 						"<b>selectedSoundFileHash:</b>".static::$soundMd5.'<br>'.
 						"<b>Additional Info:</b>".		static::$soundAdditionalData.'<br>'.
 						"<b>eventName:</b>".			static::$eventNow.static::$soundRangeDebug.$unExistingFolder.'
-					</div>';
+					</div></div>';
 						echo $output;
 					}
 		}
@@ -411,6 +419,15 @@ if (!defined('FOXXEY')) {
 			$minRange = 1;
 			$maxRange = 1000;
 			$easterChance = mt_rand($minRange, $maxRange);
+			switch($of){
+				case 'sound':
+					$confRarity = $config['easterSndRarity'];
+				break;
+				
+				case 'music':
+					$confRarity = $config['easterMusRarity'];
+				break;
+			}
 				if ($easterChance <= $chance){
 					startUpSound::$easter = "/easter";
 					switch($of){
@@ -428,8 +445,8 @@ if (!defined('FOXXEY')) {
 			if($debug === true) {
 					echo 	'<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">'.
 							'<h1 style="font-size: large;margin: 0;">Easter '.$of.'</h1>
-							<b>This rand: </b>'.		$easterChance.' <= '.$config['easterMusRarity'].'<br>'.
-							'</div>';
+							<b>This rand: </b>'.		$easterChance.' <= '.$confRarity.'<br>'.
+							'';
 			}
 		}
 
@@ -514,8 +531,8 @@ if (!defined('FOXXEY')) {
 		}
 
 		private function getAdditionalInfo($getid3){
-			if(is_array($getid3->info['tags']['id3v1']['comment'])) {
-				$soundAdditionalData = $getid3->info['tags']['id3v1']['comment'][0];
+			if(is_array(@$getid3->info['tags']['id3v1']['comment'])) {
+				@$soundAdditionalData = $getid3->info['tags']['id3v1']['comment'][0];
 				return $soundAdditionalData;
 			} else {
 				return "undefined";
@@ -542,10 +559,6 @@ if (!defined('FOXXEY')) {
 						case ($hourNow >= 19):
 							startUpSound::$dayTimeNow = '/evening';
 						break;
-				}
-				
-				if(!static::$useDayTime){
-					startUpSound::$dayTimeNow = '';
 				}
 		}
 
