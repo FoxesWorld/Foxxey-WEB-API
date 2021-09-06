@@ -40,7 +40,7 @@ if (!defined('FOXXEY')) {
 	
 		/* Base utils */
 		private $cacheFilePath 			= FOXXEYDATA.'startUpSound.timetable';
-		private static $serverVersion 	= '3.30.9 Radioactive';
+		private static $serverVersion 	= '0.3.30.10 Radioactive';
 		private static $AbsolutesoundPath;
 		private static $currentDate 	= CURRENT_DATE;
 		private static $musMountPoint 	= 'mus';
@@ -287,21 +287,18 @@ if (!defined('FOXXEY')) {
 					}
 
 					if(is_dir($currentMusFolder)) {
-						if(static::$isEasterMus === 'true'){
-							$easterCheck = count(functions::filesInDirArray($currentMusFolder, '.mp3'));
-							if($easterCheck < 1){
+						startUpSound::$musFilesNum = count(functions::filesInDirArray($currentMusFolder, '.mp3'));
+						if(static::$isEasterMus === 'true'){	
+							if(static::$musFilesNum < 1){
 								$currentMusFolder = str_replace('/easter', "", $currentMusFolder);
 								startUpSound::$easterMusWarn = '<b style="color: red;">Esater Mus not found, using common</b><br>';
 							}
 						}
 
-						startUpSound::$musFilesNum = count(functions::filesInDirArray($currentMusFolder, '.mp3')); //Count of music
-						$maxRange = startUpSound::$musFilesNum;										
-					
 					if(isset(static::$musRange) && static::$musRange !== 0) {
 						$RandMusFile = $this->genRange('mus', static::$musRange);
 					} else {
-						$RandMusFile = 'mus'.rand($minRange,$maxRange).'.mp3'; //Getting random musFile
+						$RandMusFile = 'mus'.rand($minRange, static::$musFilesNum).'.mp3'; //Getting random musFile
 					}
 					//MusDirs****************************************								
 					startUpSound::$selectedMusic = str_replace(static::$AbsolutesoundPath,"",$currentMusFolder).'/'.$RandMusFile; 	//Local musPath
@@ -355,15 +352,13 @@ if (!defined('FOXXEY')) {
 				$this->easter($config['easterSndRarity'], static::$debug, 'sound');
 				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$sndMountPoint.static::$seasonNow.static::$dayTimeNow.static::$easter;	//Folder of Sounds
 				if(is_dir($currentSoundFolder)) {
-					if(static::$isEasterSnd === 'true'){
-						$easterCheck = count(functions::filesInDirArray($currentSoundFolder, '.mp3'));
-						if($easterCheck < 1){
+					startUpSound::$soundFilesNum = count(functions::filesInDirArray($currentSoundFolder, '.mp3'));
+					if(static::$isEasterSnd === 'true'){	
+						if(startUpSound::$soundFilesNum < 1){
 							$currentSoundFolder = str_replace('/easter', "", $currentSoundFolder);
 							startUpSound::$easterSndWarn = '<b style="color: red;">Esater Snd not found, using common</b><br>';
 						}
 					}
-					//startUpSound::$currentFolder = str_replace(static::$AbsolutesoundPath, '', $currentSoundFolder);
-					startUpSound::$soundFilesNum = count(functions::filesInDirArray($currentSoundFolder, '.mp3'));	//Count of Sounds to select from
 
 					if(isset(static::$soundRange) && static::$soundRange !== 0) {
 						$RandSoundFile = $this->genRange('voice', static::$soundRange);
