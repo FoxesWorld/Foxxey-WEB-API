@@ -274,8 +274,6 @@ if (!defined('FOXXEY')) {
 		private function generateMusic($debug = false) {
 			global $config;
 			$minRange = 1; 			//Min genRange
-			$maxRange = 1; 			//Max genRange (Will be overwritten)
-			$easterCheck;  			//Easter musFile
 			$unExistingFolder = ''; //Exception message
 
 			if($config['enableMusic'] === true) {
@@ -300,6 +298,7 @@ if (!defined('FOXXEY')) {
 					} else {
 						$RandMusFile = 'mus'.rand($minRange, static::$musFilesNum).'.mp3'; //Getting random musFile
 					}
+
 					//MusDirs****************************************								
 					startUpSound::$selectedMusic = str_replace(static::$AbsolutesoundPath,"",$currentMusFolder).'/'.$RandMusFile; 	//Local musPath
 					startUpSound::$musFileAbsolute = $currentMusFolder.'/'.$RandMusFile; //Absolute musFilePath
@@ -344,9 +343,8 @@ if (!defined('FOXXEY')) {
 		 */
 		private function generateSound($debug = false) {
 			global $config;
-			$minRange = 1;
-			$easterCheck;
-			$unExistingFolder = '';
+			$minRange = 1; 			//Min genRange
+			$unExistingFolder = ''; //Exception message
 
 			if($config['enableVoice'] === true) {
 				$this->easter($config['easterSndRarity'], static::$debug, 'sound');
@@ -517,7 +515,7 @@ if (!defined('FOXXEY')) {
 
 			return json_encode($outputArray, JSON_UNESCAPED_SLASHES);
 		}
-		
+
 		private function getFileLength ($getid3){
 			$duration = $getid3->info['playtime_string'];
 			$time = str_replace(0, "",explode(':', $duration)[1]);
@@ -587,7 +585,7 @@ if (!defined('FOXXEY')) {
 			}
 			functions::includeModules($modulesDir, $config['modulesDebug']);
 		}
-		
+
 		/* FilesWork */
 		private function readEventFile(){
 			$data = file_get_contents($this->cacheFilePath);

@@ -13,45 +13,39 @@ Ini_Set('display_errors', true);
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 1.1.0.0 Experimental
+ Version: 1.2.0.0 Experimental
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
 */
-define('FOXXEY', true);
-require('../foxxeyData/config.php');
-define('startUpSound', true);
-require('../scripts/functions.class.php');
-
-$startUpSound = new startUpSound(false);
-$startUpSound->generateAudio();
 
 if (!defined('FOXXEY')) {
 	die ('{"message": "Not in FOXXEY thread"}');
 } else {
-	//define('startUpSound', true);
+	define('startUpSound', true);
 }
 
 	class startUpSound {
 		
 		/* IO Utils */
-		private $cacheFilePath 	= FOXXEYDATA.'startUpSound.timetable';
+		private $cacheFilePath 	 = FOXXEYDATA.'startUpSound.timetable';
 		private $AbsolutePath;
-		private $musMountPoint 	= 'mus';
-		private $sndMountPoint 	= 'snd';
-		private $musFilesNum 	= 0;
-		private $sndFilesNum 	= 0;
+		private $musMountPoint 	 = 'mus';
+		private $sndMountPoint 	 = 'snd';
+		private $musFilesNum 	 = 0;
+		private $sndFilesNum 	 = 0;
 		
 		/* Kernel settings */
-		private $musPerEvent 	= true;	
-		private $serverVersion 	= '1.1.0.0 Experimental';
-		private $eventNow 		= 'common';
-		private $useDayTime 	= false;		//Use DayTime snd? (Morning, Day, Evening, Night)
-		private $useSeasons 	= false;		//Use Seasons? (Winter, Spring, Summer, Autumn)
-		private $debug 			= false;
+		private $serverVersion 	 = '1.2.0.0 Experimental';
+		private $eventNow 		 = 'common';
+		private $musPerEvent 	 = true;	
+		private $useDayTime 	 = false;		//Use DayTime snd? (Morning, Day, Evening, Night)
+		private $useSeasons 	 = false;		//Use Seasons? (Winter, Spring, Summer, Autumn)
+		private $debug 			 = false;
+		private $showDebugPerSnd = false; 
 		
 		/* easter */
-		private $easter			= 'false';
+		private $easter			 = 'false';
 		private $isEasterSnd;
 		private $isEasterMus;
 		private $thisEaster;
@@ -63,23 +57,86 @@ if (!defined('FOXXEY')) {
 		private $durationSnd;
 		
 		/* Date */
-		private $currentDate 	= CURRENT_DATE;
-		private $seasonNow 		= '';
-		private $dayTimeNow 	= '';
+		private $currentDate 	 = CURRENT_DATE;
+		private $seasonNow 		 = '';
+		private $dayTimeNow 	 = '';
 		private $dayToday;
 		private $monthToday;
 		private $yearToday;
 		
 		/* Ranges */
-		private $musRange 		= 0;
-		private $sndRange 		= 0;
+		private $musRange 		 = 0;
+		private $sndRange 		 = 0;
 		
 		/* Event Arrays */
-		private $eventsArray;
+		private $eventsArray = array(
+			'01' => array(
+				"1-12" =>  array(
+					'eventName' => 'winterHolidays',
+					'musRange'  => '1/2',
+					'sndRange'=> '2/5'
+				)
+			),
+
+			'02' => array(
+			
+			),
+			
+			'03' => array(
+			
+			),
+			
+			'04' => array(
+			
+			),
+			
+			'05' => array(
+			
+			),
+			
+			'06' => array(
+			
+			),
+			
+			'07' => array(
+			
+			),
+			
+			'08' => array(
+				'5-13' => array(
+					'eventName' => 'Killing teddy!',
+					'musRange'  => '1/2',
+					'sndRange'=> '2/5'),
+
+				'20-23' => array(
+					'eventName' => 'Praising DarkFoxes',
+					'musRange'  => '1/2',
+					'sndRange'=> '2/5'
+				)
+			),
+
+			'09' => array(
+
+				'1-8' => array(
+					'eventName' => '8bit')
+			),
+			
+			'10' => array(
+			
+			),
+			
+			'11' => array(
+			
+			),
+			
+			'12' => array(
+			
+			)
+		);
 		private $monthNowArray;
 		private $todaysEventArray;
 		
-		/* MultiSound */
+		/* MultiSound Alpha*/
 		private $musToGen 		= 1;
 		private $sndToGen 		= 1;
 		
@@ -90,8 +147,26 @@ if (!defined('FOXXEY')) {
 		private $additionalInfo = 'NoData';
 		
 		/* Debug style */
-		private $easterStyle 	= 'border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px 2px;';
-		
+		//background: url('data:image/png;base64,') no-repeat;
+		private $pageStyle 		= "<style>body{
+											background-color: #91464661;
+											background-size: cover;
+											background-position: center;
+										}
+
+										.totalInfo {
+											border: 1px solid black;
+											padding: 5px;
+											margin: 5px 0px;
+										}
+										
+										.title {
+											font-size: large;
+											margin: 0;
+										}
+									</style>"; 
+		private $baseDebugStyle = 'border: 1px dashed #a76565; padding: 30px 40px; border-radius: 10px; width: fit-content; margin: 15px;';
+		private $audioGenStyle 	= 'border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px 2px;';
 		
 		function __construct($debug = false){
 			global $config;
@@ -148,7 +223,6 @@ if (!defined('FOXXEY')) {
 			switch($genType){
 				case 'mus':
 				$minRange = 1;
-				$easterCheck;
 				$unExistingFolder = '';
 					if($config['enableMusic'] === true) {
 						for($i = 0; $i < $this->musToGen; $i++) {
@@ -185,7 +259,7 @@ if (!defined('FOXXEY')) {
 									$getid3->encoding = 'UTF-8';
 									$getid3->Analyze($musFileAbsolute);
 									$this->durationMus = $this->getFileLength($getid3);
-									
+
 									$this->musGen[] = json_encode(array(
 										'path' => $selectedMusic,
 										'hash' => $musMd5
@@ -205,7 +279,6 @@ if (!defined('FOXXEY')) {
 				
 				case 'snd':
 				$minRange = 1;
-				$easterCheck;
 				$unExistingFolder = '';
 					if($config['enableVoice'] === true) {
 						for($i = 0; $i < $this->sndToGen; $i++) {
@@ -345,44 +418,52 @@ if (!defined('FOXXEY')) {
 					switch($of){
 						case 'sound':
 							$this->isEasterSnd = 'true';
-							$isEater = '<b>Is eater: </b> <span style="color: green;">YES</green>';
+							$isEaster = '<b>Is eater: </b> <span style="color: green;">YES</green>';
 						break;
 						
 						case 'music':
 							$this->isEasterMus = 'true';
-							$isEater = '<b>Is eater: </b> <span style="color: green;">YES</span>';
+							$isEaster = '<b>Is eater: </b> <span style="color: green;">YES</span>';
 						break;
 					}
 				} else {
-					$isEater = '<b>Is eater: </b> <span style="color: red;">NO</span>';
+					$isEaster = '<b>Is eater: </b> <span style="color: red;">NO</span>';
 					$this->easter = "";
 				}
 			if($debug === true) {
-					$this->thisEaster[] = '<div style="'.$this->easterStyle.'">'.
-							'<h1 style="font-size: large;margin: 0;">Easter '.$of.'</h1>
-							<b>This rand: </b>'.		$easterChance.' <= '.$confRarity.'<br>'.$isEater.
+					$this->thisEaster[] = '<div style="'.$this->audioGenStyle.'">'.
+							'<h1 style="font-size: large;margin: 0;">Generated '.$of.'</h1>
+							<b>This rand: </b>'.		$easterChance.' <= '.$confRarity.'<br>'.$isEaster.'<br />'.
 							'</div>';
 			}
 		}
 		
 		private function debugScreen(){
 			if($this->debug){
-				echo '<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">
-				<h1 style="font-size: large;margin: 0;">Base Info:</h1>
-				<b>MusFilesNum: </b>'		.$this->musFilesNum.'<br />
-				<b>MusFilesNum: </b>'		.$this->sndFilesNum.'<br />
-				<b>Selected event: </b>'	.$this->eventNow.'<br />
-				<b>musRange: </b>'			.$this->musRange.'<br />
-				<b>sndRange: </b>'			.$this->sndRange.'<br />
-				<b>Sound duration:</b>'		.$this->durationSnd.'<br />
-				<b>SndToGen:</b>'			.$this->sndToGen.'<br />
-				<b>MusToGen:</b>'			.$this->musToGen.'<br />
-				<b>Mus duration:</b> '		.$this->durationMus.'<br />
-				<b>Max duration:</b>'		.$this->sleepTime.'<hr>
-				';
-				
-				foreach ($this->thisEaster as $key){
-					echo $key;
+
+				echo $this->pageStyle.'<div style="'.$this->baseDebugStyle.'">
+				<h1 class="title">Base Info:</h1>
+				<b>Max duration:		</b>'	.$this->sleepTime.'						<br />
+				<b>Current event: 		</b>'	.$this->eventNow.'						<br />
+
+				<div class = "totalInfo">
+					<b>MusFilesNum: 	</b>'	.$this->musFilesNum.'					<br />
+					<b>MusRange: 		</b>'	.$this->todaysEventArray["musRange"].'	<br />
+					<b>MusToGenAmmount: </b>'	.$this->musToGen.'						<br />
+					<b>Mus duration:	</b> '	.$this->durationMus.'					<br />'.'
+				</div>
+
+				<div class = "totalInfo">
+					<b>SndFilesNum: 	</b>'	.$this->sndFilesNum.'					<br />
+					<b>SndRange: 		</b>'	.$this->todaysEventArray["sndRange"].'	<br />
+					<b>SndToGenAmmount: </b>'	.$this->sndToGen.'						<br />
+					<b>Snd duration: 	</b>'	.$this->durationSnd.'					<br />
+				</div>
+				<hr>';
+				if($this->showDebugPerSnd) {
+					foreach ($this->thisEaster as $key){
+						echo $key;
+					}
 				}
 			}
 		}
