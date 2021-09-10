@@ -62,7 +62,7 @@
 					
 					case 'API':
 						require (SITE_ROOT.'/api/init.php');
-						$apiInit = new apiInit($ip, $_REQUEST);
+						$apiInit = new apiInit($ip, $this->userDataDB, $this->launcherDB, $_REQUEST);
 					break;
 					
 					case 'updater':

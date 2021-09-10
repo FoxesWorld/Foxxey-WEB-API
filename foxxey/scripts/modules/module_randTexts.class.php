@@ -56,7 +56,7 @@ if (!defined('FOXXEY')) {
 				$randWord = rand(0, count($this->textArr)-1);
 				$answer = str_replace("\n", "", $this->textArr[$randWord]);
 			} else {
-				$answer = '{"message": "File '.$filePath.' not found!"}';
+			$answer = '{"message": "File '.$filePath.' not found!"}}';
 			}
 			$answer = substr($answer,0,-1);
 			return $answer;

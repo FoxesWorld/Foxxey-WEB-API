@@ -1,4 +1,21 @@
 <?php
+/*
+=====================================================
+ API functions file
+-----------------------------------------------------
+ https://Foxesworld.ru/
+-----------------------------------------------------
+ Copyright (c) 2016-2021  FoxesWorld
+-----------------------------------------------------
+ This code is reserved
+-----------------------------------------------------
+ File: config.php
+-----------------------------------------------------
+ Version: 0.1.0.0 Alpha
+-----------------------------------------------------
+ Usage: Data parsing by API
+=====================================================
+*/
 	if(!defined('API')) {
 		die('Not in API thread!');
 	}
@@ -7,10 +24,14 @@
 		
 		private $ip;
 		private $request;
+		private $launcherDB;
+		private $userDataDB;
 		
-		function __construct($ip, $request){
+		function __construct($ip, $userDataDB, $launcherDB, $request){
 			global $config;
 			$this->ip = $ip;
+			$this->userDataDB = $userDataDB;
+			$this->launcherDB = $launcherDB;
 			$this->request = $request;
 			
 
@@ -31,7 +52,7 @@
 					   break;
 					   
 					   default:
-						die('{"message": "Unknown API request!"}');
+						die('{"message": "Unknown API request `'.$requestTitle.'`!"}');
 				}
 			}
 		}

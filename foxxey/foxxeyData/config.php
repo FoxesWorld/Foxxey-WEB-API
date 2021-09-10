@@ -65,11 +65,11 @@ $config = array(
 			'maxLoginAttempts'	=> 1,
 	
 	/* startUpSound */
-	'mountDir' 			=> SITE_ROOT."/foxxeyData/eventSounds",
+	'mountDir' 			=> SITE_ROOT."/foxxeyData/startUpSoundRepo",
 	'enableVoice' 		=> true,
 	'enableMusic' 		=> true,
-	'easterMusRarity'   => 100,
-	'easterSndRarity'	=> 400,
+	'easterMusRarity'   => 1,
+	'easterSndRarity'	=> 1,
 	
 	/* E-mail */
 	'encoding' 			=> 'UTF-8',

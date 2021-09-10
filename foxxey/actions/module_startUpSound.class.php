@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.3.30.9 Radioactive
+ Version: 0.3.30.10 Radioactive
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -160,7 +160,7 @@ if (!defined('FOXXEY')) {
 		//Initialisation
 		function __construct($debug = false) {
 			global $config;
-			
+
 			$dateExploded = explode ('.',CURRENT_DATE);
 			$this->dayToday = $dateExploded[0];
 			$this->monthToday = $dateExploded[1];

@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: actionScript.php
 -----------------------------------------------------
- Version: 0.2.5.0 Experimental
+ Version: 0.2.5.1 Experimental
 -----------------------------------------------------
  Usage: Global ACTIONS module hooking
 =====================================================
@@ -107,7 +107,7 @@ if($config['debugStartUpSound'] === false) {
 				   break;
 
 				   default:
-					die('{"message": "Unknown action request!"}');
+					die('{"message": "Unknown action request `'.$requestTitle.'`!"}');
 				   break;
 				}
 			}
