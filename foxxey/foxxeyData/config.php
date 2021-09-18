@@ -23,6 +23,7 @@ if(!defined('FOXXEY')) {
 
 	define('webDir', 	  'foxxey');
 	define('ROOT_DIR', 	  $_SERVER['DOCUMENT_ROOT']);
+	define('ADMIN_DIR', ROOT_DIR.'/adm/');
 	define('SCRIPTS_DIR', ROOT_DIR.'/'.webDir.'/scripts/');
 	define('FILES_DIR',   ROOT_DIR.'/files/');
 	define('SITE_ROOT',   ROOT_DIR.'/'.webDir);

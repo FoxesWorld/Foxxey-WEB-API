@@ -28,7 +28,7 @@
 				if($request) {
 					$this->request = $request;
 					require ('apiFunctions.php');
-					$apiFuncftions = new apiFuncftions($ip, $userDataDB, $launcherDB, $_GET);
+					$apiFuncftions = new apiFuncftions($ip, $userDataDB, $launcherDB, $_REQUEST);
 				}
 			} else {
 				die('{"message": "Undefined IP!"}');

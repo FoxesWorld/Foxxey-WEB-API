@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.3.30.10 Radioactive
+ Version: 0.3.30.11 Blazing
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -31,16 +31,17 @@ if (!defined('FOXXEY')) {
 */
 
 /* TODO 
- * If Mus is too long generate another one sound
+ * If Mus is too long generate another one sound => will be made in startUpSound 1.2.0.0
  * Maybe storing a Mus|Sound file shift in ID3 tags
  * AI with the local sqlite.db
+ * Force easterMus, Force easterSnd
  */
 
 	class startUpSound {
 	
 		/* Base utils */
 		private $cacheFilePath 			= FOXXEYDATA.'startUpSound.timetable';
-		private static $serverVersion 	= '0.3.30.10 Radioactive';
+		private static $serverVersion 	= '0.3.30.11 Blazing';
 		private static $AbsolutesoundPath;
 		private static $currentDate 	= CURRENT_DATE;
 		private static $musMountPoint 	= 'mus';
@@ -112,8 +113,8 @@ if (!defined('FOXXEY')) {
 			),
 
 			'09' => array(
-
-				'1' => array(
+				
+				'1-3' => array(
 					'eventName' => '8bit')
 			),
 			

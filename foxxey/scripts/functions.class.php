@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions,class.php
 -----------------------------------------------------
- Version: 0.1.7.6 Beta
+ Version: 0.1.7.7 Beta
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
@@ -84,7 +84,7 @@ if(!defined('FOXXEY')) {
 
 		/* STATIC FUNCTIONS  (NO DB NEEDED)*/
 
-			static function generateLoginHash($length = 9){
+			public static function generateLoginHash($length = 9){
 				if(function_exists('openssl_random_pseudo_bytes')) {
 					$stronghash = md5(openssl_random_pseudo_bytes(15));
 				} else {
@@ -98,6 +98,20 @@ if(!defined('FOXXEY')) {
 				$hash = md5($hash);
 
 				return $hash;
+			}
+			
+			public static function selectAwardedUsers($db){
+				$query = "SELECT * FROM foxBonus";
+				$data = $db->getRows($query);
+				
+				return $data;
+			}
+			
+			public static function selectCities($db){
+				$query = "SELECT * FROM ipCity";
+				$data = $db->getRows($query);
+				
+				return $data;
 			}
 
 			public static function passwordReHash($pass, $realPass, $realName){
@@ -158,6 +172,23 @@ if(!defined('FOXXEY')) {
 				} else {
 					return null;
 				}
+			}
+			
+			public static function modulesInit() {
+				$allModules = functions::filesInDirArray(SCRIPTS_DIR.'modules','.php');
+				for($i = 0; $i < count($allModules); $i++){
+					if(strpos($allModules[$i],'.wip.')) {
+						$wipModules[] = $allModules[$i];
+					} else {
+						$validModules[] = $allModules[$i];
+					}
+				}
+				$returnArray = array(
+					'validModules' => $validModules,
+					'wipModules'   => @$wipModules
+				);
+				
+				return $returnArray;
 			}
 
 			public static function shortDateToUnix($tempTime){

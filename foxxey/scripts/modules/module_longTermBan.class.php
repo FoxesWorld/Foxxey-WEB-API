@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: module_longTermBan.class.php
 -----------------------------------------------------
- Version: 0.1.1.3 Alpha
+ Version: 0.1.1.5 Alpha
 -----------------------------------------------------
  Usage: Blocking the whole functionality
 =====================================================
@@ -29,7 +29,8 @@
 			
 			$this->db = $db;
 			$this->ip = $ip;
-			if($toDate !== null) {
+			
+			if($toDate !== "" && $toDate !== NULL) {
 				$this->toDate = $toDate;
 				$this->banTime = functions::shortDateToUnix($toDate);
 				$this->banIP();
@@ -40,12 +41,18 @@
 			$Logger = new Logger('AuthLog');
 				if($this->checkBan() === false) {
 				$query = "INSERT INTO `fullBlock`(`ip`, `temptime`) VALUES ('".$this->ip."',".$this->banTime.")";
-				$this->db::run($query);
-				$Logger->WriteLine('Banning '.$this->ip.' on '.$this->toDate);
-				die('{"message": "Banning '.$this->ip.' for '.$this->toDate.'..."}');
+				if(!empty($this->banTime)) {
+					$this->db::run($query);
+					$Logger->WriteLine('Banning '.$this->ip.' on '.$this->toDate);
+					die('{"message": "Banning '.$this->ip.' for '.$this->toDate.'..."}');
+				} else {
+					$Logger->WriteLine('Can`t ban  '.$this->ip.' banTime is undefined!');
+					die('{"message": "Undefined banTime!"}');
+				}
 			} else {
+				die('{"message": "Ip '.$this->ip.' is already baned! Rest In Peace :3"}');
 				$Logger->WriteLine('The '.$this->ip.' ip has tryed to interract with Foxxey but is banned =( ');
-				//die('{"message": "Ip '.$this->ip.' is already baned! Rest In Peace :3"}');
+				
 			}
 		}
 		

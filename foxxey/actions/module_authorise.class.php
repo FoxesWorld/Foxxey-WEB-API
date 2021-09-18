@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.13.3 Experimental
+ Verssion: 0.1.13.4 Experimental
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -100,7 +100,11 @@ class Authorise {
 				if($config['geoIPcheck'] === true) {
 					if(class_exists('geoPlugin')) {
 						$geoplugin = new geoPlugin($this->ip);
-						static::$LoggerAuth->WriteLine($this->realName.' attemping to log from ['.$geoplugin->countryCode.']'.$geoplugin->countryName .' '.$geoplugin->city.'...');
+						if($geoplugin->countryCode !== null) {
+							static::$LoggerAuth->WriteLine($this->realName.' attemping to log from ['.$geoplugin->countryCode.']'.$geoplugin->countryName .' '.$geoplugin->city.'...');
+						} else {
+							exit('{"message": "CountryCode was not identyfied! Aborting!"}');
+						}
 					} else {
 						echo '{"message": "Module geoPlugin not found!", "desc": "Can`t get user login location!"},';
 					}

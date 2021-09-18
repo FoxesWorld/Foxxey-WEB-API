@@ -31,7 +31,7 @@
 	/* HWID*/
 	'HWIDexists'	   => 'У тебя уже есть аккаунт - {existingAccount}, используй его! Там уже многое достигнуто!',
 	'HWIDnotYours'	   => 'Это не твой аккаунт, твой аккаунт - {existingAccount}',
-	'AlreadyRestoring' => 'У тебя уже активная сессия смены HWID для {login}',
+	'AlreadyRestoring' => 'Ты уже сбрасываешь HWID для {login}`а',
 	'HWIDrenew'		   => 'Обновление HWID {login}',
 	'HWIDcrqstWasSent' => 'Запрос на смену HWID для `{login}` был отправлен, проверьте почту!',
 	

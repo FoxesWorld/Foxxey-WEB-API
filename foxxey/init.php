@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.6.3 Alpha
+ Version: 0.1.6.4 Alpha
 -----------------------------------------------------
  Usage: Initialising&Including modules
 =====================================================
@@ -48,7 +48,9 @@
 				$this->launcherDB = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);
 			
 			//Modules Initialising
-			$this->modulesInit();
+			$this->allModules = functions::modulesInit();
+			$this->validModules = $this->allModules['validModules'];
+			$this->wipModules 	= $this->allModules['wipModules'];
 			functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug'], $this->validModules);
 			$this->longTermBan = new longTermBan($ip, $this->launcherDB);
 			if($this->longTermBan->checkBan() === false) {
@@ -76,17 +78,6 @@
 			} else {
 				$randTexts = new randTexts('banned');
 				die('{"message": "'.$randTexts->textOut().'"}');
-			}
-		}
-		
-		private function modulesInit() {
-			$this->allModules = functions::filesInDirArray(SCRIPTS_DIR.'modules','.php');
-			for($i = 0; $i < count($this->allModules); $i++){
-				if(strpos($this->allModules[$i],'.wip.')) {
-					$this->wipModules[] = $this->allModules[$i];
-				} else {
-					$this->validModules[] = $this->allModules[$i];
-				}
 			}
 		}
 	}
