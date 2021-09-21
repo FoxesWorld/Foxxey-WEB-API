@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions,class.php
 -----------------------------------------------------
- Version: 0.1.7.7 Beta
+ Version: 0.1.8.7 Beta
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
@@ -98,20 +98,6 @@ if(!defined('FOXXEY')) {
 				$hash = md5($hash);
 
 				return $hash;
-			}
-			
-			public static function selectAwardedUsers($db){
-				$query = "SELECT * FROM foxBonus";
-				$data = $db->getRows($query);
-				
-				return $data;
-			}
-			
-			public static function selectCities($db){
-				$query = "SELECT * FROM ipCity";
-				$data = $db->getRows($query);
-				
-				return $data;
 			}
 
 			public static function passwordReHash($pass, $realPass, $realName){

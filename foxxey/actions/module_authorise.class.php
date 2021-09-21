@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.13.4 Experimental
+ Verssion: 0.1.14.5 Experimental
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -101,7 +101,7 @@ class Authorise {
 					if(class_exists('geoPlugin')) {
 						$geoplugin = new geoPlugin($this->ip);
 						if($geoplugin->countryCode !== null) {
-							static::$LoggerAuth->WriteLine($this->realName.' attemping to log from ['.$geoplugin->countryCode.']'.$geoplugin->countryName .' '.$geoplugin->city.'...');
+							static::$LoggerAuth->WriteLine($this->login.' attemping to log from ['.$geoplugin->countryCode.']'.$geoplugin->countryName .' '.$geoplugin->city.'...');
 						} else {
 							exit('{"message": "CountryCode was not identyfied! Aborting!"}');
 						}
@@ -112,6 +112,7 @@ class Authorise {
 
 				//IF RealName is Null
 				if($this->realName == null || $this->realPass == null) {
+					static::$LoggerAuth->WriteLine($this->login.' is an unreal user and does not exist!');
 					exit('{"message": "'.$message['userNotFound'].'"}');
 				} else {
 						if(strlen($this->realPass) == 32 && ctype_xdigit($this->realPass)) {

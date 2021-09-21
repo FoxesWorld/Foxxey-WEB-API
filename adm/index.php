@@ -2,12 +2,17 @@
 session_start();
 define('FOXXEY', true);
 define('FOXXEYadm', true);
+require ('engine/inc/functions.class.php');
+
+//$cssFiles = functions::filesInDirArray(ADMIN_DIR.'assets/css','.css');
+//$JsFiles = functions::filesInDirArray(ADMIN_DIR.'assets/js','.js');
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-	<!-- Required meta tags -->
+	<!-- meta tags -->
 	<meta charset="utf-8" />
 	<meta name="format-detection" content="telephone=no">
 	<meta name="viewport" content="user-scalable=no, initial-scale=1.0, maximum-scale=1.0, width=device-width, height=device-height"> 
@@ -19,39 +24,24 @@ define('FOXXEYadm', true);
 	
 	<!--favicon-->
 	<link rel="icon" href="assets/images/favicon-32x32.png" type="image/png" />
-
-	<!-- loader-->
-	<link href="assets/css/pace.min.css" rel="stylesheet" />
-	<script src="assets/js/pace.min.js"></script>
-
-	<!-- Bootstrap -->
 	<script src="assets/js/jquery.min.js"></script>
+	
+	<?php 
+		//admFunctions::incFiles('assets/css/', '.css', 'css');
+		admFunctions::incFiles('assets/js/', '.js', 'js');
+	?>
+
+	<link rel="stylesheet" href="assets/css/pace.min.css"      />
 	<link rel="stylesheet" href="assets/css/bootstrap.min.css" />
-	<script src="assets/js/bootstrap.min.js"></script>
+	<link rel="stylesheet" href="assets/css/icons.css" 		   />
+	<link rel="stylesheet" href="assets/css/app.css" 		   />
+	<link rel="stylesheet" href="assets/css/animate.min.css"   />
 
-	<!-- Icons CSS -->
-	<link rel="stylesheet" href="assets/css/icons.css" />
-	
-	<!-- App CSS -->
-	<link rel="stylesheet" href="assets/css/app.css" />
-	<link rel="stylesheet" href="assets/css/animate.min.css" />
-
-	
-	<script src="assets/js/notify.min.js"></script>
-	<script src="assets/js/popper.min.js"></script>
-
-	<!--plugins-->
-	<script src="assets/plugins/simplebar/js/simplebar.min.js"></script>
-	<script src="assets/plugins/metismenu/js/metisMenu.min.js"></script>
-	<script src="assets/js/notify.min.js"></script>
-	<script src="assets/js/SetCookie.js"></script>
-	<script src="assets/js/functions.foxxey.js"></script>
-	
 	<script>
 		setTimeout(function(){
 		$.ajax({
 		  url: "admin.php",
-		  context: $( "#content" ),
+		  context: $("#content"),
 		  success: function(data){
 			$(this).html(data);
 		  }
@@ -61,10 +51,11 @@ define('FOXXEYadm', true);
 </head>
 
 	<body class="bg-theme bg-theme1">
-		<!-- wrapper -->
-		<div id="content" class="wrapper">
 
-		</div>
+		<!-- wrapper -->
+			<div id="content" class="wrapper">
+
+			</div>
 		<!-- end wrapper -->
 	</body>
 

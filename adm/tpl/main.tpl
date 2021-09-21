@@ -5,7 +5,7 @@
 						<img src="assets/images/logo-icon.png" class="logo-icon-2" alt="" />
 					</div>
 					<div>
-						<h4 class="d-none d-lg-flex logo-text">Foxxey</h4>
+						<a href="javascript:loadPage('main','.page-wrapper');"><h4 class="d-none d-lg-flex logo-text">Foxxey</h4></a>
 					</div>
 					<a href="javascript:;" class="toggle-btn ml-lg-auto"> <i class="bx bx-menu"></i>
 					</a>
@@ -221,17 +221,17 @@
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">	
 							
-								<a class="dropdown-item" href="javascript:;">
+								<a class="dropdown-item" href="javascript:loadPage('profile','.page-wrapper');">
 									<i class="bx bx-user"></i>
 									<span>Profile</span>
 								</a>
 								
-								<a class="dropdown-item" href="javascript:;">
+								<a class="dropdown-item" href="javascript:loadPage('settings','.page-wrapper');">
 									<i class="bx bx-cog"></i>
 									<span>Settings</span>
 								</a>
 								
-								<a class="dropdown-item" onclick="loadPage('dashboard','.page-wrapper'); return false;" href="javascript:;">
+								<a class="dropdown-item" href="javascript:loadPage('dashboard','.page-wrapper');">
 									<i class="bx bx-tachometer"></i>
 									<span>Dashboard</span>
 								</a>
@@ -274,7 +274,7 @@
 		
 		<div class="page-wrapper">
 			<!--page-content-wrapper-->
-			<!-- <div class="container">
+			<div class="container">
 				<div class="page-content">
 						<div class="card radius-15">
 							<div class="card-body p-5">
@@ -287,7 +287,7 @@
 							</div>
 						</div>
 				</div> 
-			</div>-->
+			</div>
 			<!--end page-content-wrapper-->
 		</div>
 		

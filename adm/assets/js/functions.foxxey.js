@@ -49,12 +49,15 @@
 		}
 		
 		function loadPage(page, block) {
+			$(block).animate({opacity: 0}, 300);
 			$.post('admin.php', {
 				action: 'loadPage',
 				page: page
 					
 			}, function (data) {
-				$(block).html(data);
+				setTimeout(function(){
+					$(block).html(data).animate({opacity: 1}, 500);
+				}, 500);
 			});
 		}
 		
@@ -69,4 +72,36 @@
 				show('', 'body');
 				button.notify(message,type);
 				});
+		}
+		
+		function parseApiJSON(url, request, textValue){
+			$.ajax({
+				url: url,
+				method: 'POST',
+				data: String(request),
+				success: function(data) {
+					
+					if(!data.message){
+						$("#"+String(textValue)).html(data[String(textValue)]);
+					} else {
+						alert(data['message']);
+					} 
+				}
+			});
+		}
+		
+		function parseApiMultiJSON (url, request, requestValue) {	
+			$.ajax({ 
+				type: 'GET', 
+				url: url, 
+				data: String(request), 
+				dataType: 'json',
+				success: function (data) {			
+					$.each(data, function(index, element) {
+						$('#'+String(request)).append($('<div>', {
+							text: element[String(requestValue)]
+						}));
+					});
+				}
+			});
 		}

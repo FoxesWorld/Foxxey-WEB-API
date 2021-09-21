@@ -1,7 +1,7 @@
 /*
-Template Name: Syntrans Admin
-Author: codervent
-Email: codervent@gmail.com
+Template Name: Foxxey Admin
+Author: AidenFox
+Email: lisssicin@yandex.ru
 File: app.css
 */
 
@@ -759,7 +759,6 @@ sup {
 }
 
 .footer {
-	position: absolute;
 	bottom: 0;
 	left: 0;
 	right: 0;
@@ -940,8 +939,12 @@ select option {
 .card {
 	box-shadow: 0 0.1rem 0.7rem rgb(0 0 0 / 18%);
 	border: 1px solid rgba(0, 0, 0, 0);
-	margin-bottom: 30px;
+	margin: 5px 2%;
 	background-color: rgb(0 0 0 / 0.24);
+}
+
+.card-min {
+	    height: fit-content;
 }
 
 .card-header {

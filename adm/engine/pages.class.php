@@ -19,11 +19,19 @@ if(!defined('FOXXEYadm')){
 		}
 		
 		private function availablePages($page){
-			
+			//TODO - scan tpl automatically!!!
 			switch($page) {
 				
 				case 'dashboard':
 					die($this->getTemplate(ADMIN_DIR.'tpl/dashboard'));
+				break;
+				
+				case 'settings':
+					die($this->getTemplate(ADMIN_DIR.'tpl/settings'));
+				break;
+				
+				case 'profile':
+					die($this->getTemplate(ADMIN_DIR.'tpl/profile'));
 				break;
 				
 				default:
@@ -33,6 +41,7 @@ if(!defined('FOXXEYadm')){
 			
 		}
 		
+		//To merge
 		function getTemplate($name) {
 			ob_start();
 			include ($name.".tpl");

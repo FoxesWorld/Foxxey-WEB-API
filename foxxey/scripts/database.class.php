@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: database.class.php
 -----------------------------------------------------
- Verssion: 0.1.2.0 Alpha
+ Verssion: 0.1.2.0 Experimental
 -----------------------------------------------------
  Usage: Database class
 =====================================================
@@ -24,11 +24,9 @@ class db {
 
   const CHARSET = 'utf8';
  
-  static private $db;
-  private static $instance = null;
+  private static $db;
 
   public function __construct($db_user, $db_pass, $db_name, $db_location = 'localhost', $show_error=1){
-    //if (db::$instance === null){
       try {
         db::$db = new PDO(
           'mysql:host='.$db_location.';dbname='.$db_name,
@@ -45,8 +43,6 @@ class db {
 		  $message = $e->getMessage();
 		  functions::display_error($message, $query, '1');
       }
-    //}
-    //return db::$instance;
   }
  
   /**
@@ -144,11 +140,5 @@ class db {
   public static function sql($query, $args = [])
   {
     self::run($query, $args);
-  }
-  
-  private static function dbUnset (){
-	  db::$instance = NULL;
-	  //db::$db->query('KILL CONNECTION_ID()');
-	  db::$db = NULL;
   }
 }

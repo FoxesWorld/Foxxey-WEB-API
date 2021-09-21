@@ -13,21 +13,21 @@
 -----------------------------------------------------
  Version: 0.1.0.0 Alpha
 -----------------------------------------------------
- Usage: Initialiasing API
+ Usage: Initialiasing API (After primary init)
 =====================================================
 */
 
+/* TODO */
+
 	class apiInit {
 
-		private $ip;
 		private $request;
 		
 		function __construct($ip, $userDataDB, $launcherDB, $request = null){
-			$this->ip = $ip;
-				if($this->ip != null) {
+				if($ip != null) {
 				if($request) {
 					$this->request = $request;
-					require ('apiFunctions.php');
+					require ('apiFunctions.class.php');
 					$apiFuncftions = new apiFuncftions($ip, $userDataDB, $launcherDB, $_REQUEST);
 				}
 			} else {

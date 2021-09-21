@@ -44,27 +44,31 @@
 		function __construct($ip, $initType) {
 			global $config;
 				
-				$this->userDataDB = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata']);
-				$this->launcherDB = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);
+				$userDataDB = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata']);
+				$launcherDB = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);
+				
+				//die(var_dump($userDataDB.' '.$launcherDB));
 			
 			//Modules Initialising
 			$this->allModules = functions::modulesInit();
 			$this->validModules = $this->allModules['validModules'];
 			$this->wipModules 	= $this->allModules['wipModules'];
 			functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug'], $this->validModules);
-			$this->longTermBan = new longTermBan($ip, $this->launcherDB);
+			$this->longTermBan = new longTermBan($ip, $launcherDB);
 			if($this->longTermBan->checkBan() === false) {
+
 				switch($initType){
 					case 'launcher':	
 						$dbPrepare = new dbPrepare;
 						$dbPrepare->dbPrepare();
 						require(SCRIPTS_DIR.'actionScript.php');
-						$action = new actionScript($this->launcherDB, $this->userDataDB, $ip);
+						$action = new actionScript($launcherDB, $userDataDB, $ip);
 					break;
 					
 					case 'API':
 						require (SITE_ROOT.'/api/init.php');
-						$apiInit = new apiInit($ip, $this->userDataDB, $this->launcherDB, $_REQUEST);
+						$apiInit = new apiInit($ip, $userDataDB, $launcherDB, $_REQUEST);
+						
 					break;
 					
 					case 'updater':
