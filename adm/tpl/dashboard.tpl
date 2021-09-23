@@ -64,57 +64,58 @@
 					<div id="modules">
 
 					</div>
+					<button class="btn btn-green float-right" onclick="$(this).notify('Work In Progress!', 'warn'); return false;" type="button">Configuration</button>
 				</div>
-			</div>        
-		</div>
-		
-		<div class="box">
-			<div class="box-header">
-				<div class="tabs">
-						<input type="radio" name="tab-btn" id="tab-btn-1" value="" checked>
-						<label for="tab-btn-1">Статистика</label>
-						<input type="radio" name="tab-btn" id="tab-btn-2" value="">
-						<label for="tab-btn-2">Заметки</label>
-						<input type="radio" name="tab-btn" id="tab-btn-3" value="">
-						<label for="tab-btn-3">О Системе</label>
-					
-					<div id="content-1">
-						<div>Количество городов: <b id="totalCities">0</b></div>
-						<div>Всего игроков: <b id="totalPlayers">0</b></div>
-					</div>
-					<div id="content-2">
-					  Ваши заметки //Coming very soon
-					</div>
-					<div id="content-3">
-							<div class="row">
-							<div class="col-md-12">
-								<table class="table table-normal">
-									<tbody>
-										<tr>
-											<td class="col-md-3 white-line">Версия PhP:</td>
-											<td class="col-md-9 white-line" id="phpVersion"></td>
-										</tr>
-										<tr>
-											<td>Операционная система:</td>
-											<td id="serverOS"></td>
-										</tr>
-									</tbody>
-								</table>
+			</div>
+			<div class="container-fluid card">
+				<div class="box-header">
+					<div class="tabs">
+							<input type="radio" name="tab-btn" id="tab-btn-1" value="" checked>
+							<label for="tab-btn-1">Статистика</label>
+							<input type="radio" name="tab-btn" id="tab-btn-2" value="">
+							<label for="tab-btn-2">Заметки</label>
+							<input type="radio" name="tab-btn" id="tab-btn-3" value="">
+							<label for="tab-btn-3">О Системе</label>
+						
+						<div id="content-1">
+							<div>Количество городов: <b id="totalCities">0</b></div>
+							<div>Всего игроков: <b id="totalPlayers">0</b></div>
+						</div>
+						<div id="content-2">
+						  <h4>Ваши заметки</h4>
+						  <textarea id="notice" name="notice" style="width:100%;height:200px;background-color:lightyellow;"></textarea>
+						  <button class="btn btn-green" onclick="saveNotes($(this)); return false;" type="button">Save notes <i class="fadeIn animated bx bx-save"></i></button>
+						</div>
+						<div id="content-3">
+								<div class="row">
+								<div class="col-md-12">
+									<table class="table table-normal">
+										<tbody>
+											<tr>
+												<td class="col-md-3 white-line">Версия PhP:</td>
+												<td class="col-md-9 white-line" id="phpVersion"></td>
+											</tr>
+											<tr>
+												<td>Операционная система:</td>
+												<td id="serverOS"></td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
 							</div>
 						</div>
 					</div>
 				</div>
-			</div>
+			</div>			
 		</div>
 </div>
 		
-		<script src="assets/js/logtail.js"></script>
+		<script src="assets/js/logtail.selfInc.js"></script>
 
 <script>
-parseApiJSON('/foxxey/api.php', 'cities', 'totalPlayers');
-parseApiJSON('/foxxey/api.php', 'cities', 'totalCities');
-parseApiJSON('/foxxey/api.php', 'systemInfo', 'serverOS');
-parseApiJSON('/foxxey/api.php', 'systemInfo', 'phpVersion');
+readNotes();
+parseJSONapi('/foxxey/api.php', 'cities');
+parseJSONapi('/foxxey/api.php', 'systemInfo');
 parseApiMultiJSON('/foxxey/api.php', 'modules', 'module');
 </script>
 				

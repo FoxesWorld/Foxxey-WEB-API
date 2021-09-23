@@ -5,10 +5,11 @@
 						<img src="assets/images/logo-icon.png" class="logo-icon-2" alt="" />
 					</div>
 					<div>
-						<a href="javascript:loadPage('main','.page-wrapper');"><h4 class="d-none d-lg-flex logo-text">Foxxey</h4></a>
+						<a href="javascript:loadPage('main','body');"><h4 class="d-none d-lg-flex logo-text">Foxxey</h4>
+							<div class="d-none d-lg-flex logoSub">Adminpanel</div>
+						</a>
 					</div>
-					<a href="javascript:;" class="toggle-btn ml-lg-auto"> <i class="bx bx-menu"></i>
-					</a>
+					<a href="javascript:;" onclick="$(this).notify('Work In Progress!', 'warn'); return false;" class="toggle-btn ml-lg-auto"> <i class="bx bx-menu"></i></a>
 				</div>
 				<div class="flex-grow-1 search-bar">
 					<div class="input-group">
@@ -18,7 +19,8 @@
 						</div>
 						<input type="text" class="form-control" placeholder="search" />
 						<div class="input-group-append">
-							<button class="btn btn-search" type="button"><i class="lni lni-search-alt"></i>
+							<button class="btn btn-search" type="button" onclick="$(this).notify('Work In Progress!', 'warn'); return false;">
+								<i class="lni lni-search-alt"></i>
 							</button>
 						</div>
 					</div>
@@ -216,7 +218,7 @@
 										<p class="user-name mb-0"><?=$_SESSION['fullname']?></p>
 										<p class="designattion mb-0">Available</p>
 									</div>
-									<img src="<?=$_SESSION['photo']?>" class="user-img" alt="<?=$_SESSION['fullname']?>">
+									<img src="<?=$_SESSION['foto']?>" class="user-img" alt="<?=$_SESSION['fullname']?>">
 								</div>
 							</a>
 							<div class="dropdown-menu dropdown-menu-right">	
@@ -255,13 +257,22 @@
 									</div>
 								</div>
 							</a>
-							<div class="dropdown-menu dropdown-menu-right">	<a class="dropdown-item" href="javascript:;"><i
-										class="flag-icon flag-icon-de"></i><span>German</span></a>
-								<a class="dropdown-item" href="javascript:;"><i
-										class="flag-icon flag-icon-fr"></i><span>French</span></a>
-								<a class="dropdown-item" href="javascript:;"><i
-										class="flag-icon flag-icon-um"></i><span>English</span></a>
-								<a class="dropdown-item" href="javascript:;"></a>
+
+							<div class="dropdown-menu dropdown-menu-right">	
+								<a class="dropdown-item" href="javascript:;">
+									<i class="flag-icon flag-icon-de"></i><span>German</span>
+								</a>
+									
+								<a class="dropdown-item" href="javascript:;">
+									<i class="flag-icon flag-icon-fr"></i><span>French</span>
+								</a>
+								
+								<a class="dropdown-item" href="javascript:;">
+									<i class="flag-icon flag-icon-um"></i><span>English</span>
+								</a>
+								
+								<a class="dropdown-item" href="javascript:;">
+								</a>
 							</div>
 						</li>
 					</ul>

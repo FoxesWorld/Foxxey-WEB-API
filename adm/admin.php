@@ -1,4 +1,21 @@
 <?php
+/*
+=====================================================
+ This is my Brain! | FoxxeyAPI Adm/API class
+-----------------------------------------------------
+ https://FoxesWorld.ru/
+-----------------------------------------------------
+ Copyright (c) 2016-2021  FoxesWorld
+-----------------------------------------------------
+ This code is reserved
+-----------------------------------------------------
+ File: admin.php
+-----------------------------------------------------
+ Version: 0.1.2.3 Experimental
+-----------------------------------------------------
+ Usage: All the functions of Foxxey Admin can be verifyed in here
+=====================================================
+*/
 	Error_Reporting(E_ALL);
 	Ini_Set('display_errors', true);
 
@@ -6,6 +23,8 @@ session_start();
 define('FOXXEY', true);
 define('FOXXEYadm', true);
 require ('../foxxey/foxxeyData/config.php');
+require (ADMIN_DIR.'engine/data/config.php');
+require ('engine/inc/functions.class.php');
 
 	$FoxxeyAPI = new FoxxeyAPI();
 
@@ -21,17 +40,9 @@ require ('../foxxey/foxxeyData/config.php');
 						$ADMengine = new ADMengine($_REQUEST, $ip, $webSiteDB);
 					}
 			if(!isset($_SESSION['isLogged'])){
-				die($this->getTemplate(ADMIN_DIR."tpl/login"));
+				die(admFunctions::getTemplate(ADMIN_DIR."tpl/login"));
 			} else {
-				die($this->getTemplate(ADMIN_DIR."tpl/main"));
+				die(admFunctions::getTemplate(ADMIN_DIR."tpl/main"));
 			}
 		}
-		
-	function getTemplate($name) {
-		ob_start();
-		include ($name.".tpl");
-		$text = ob_get_clean();
-		return $text;
-    }
-		
 	}

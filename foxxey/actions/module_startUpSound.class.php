@@ -192,6 +192,10 @@ if (!defined('FOXXEY')) {
 			$this->generateMusic(static::$debug);
 			$this->generateSound(static::$debug);
 			$this->maxDuration(static::$debug);
+			if(isset($_REQUEST['startUpSoundAPI'])) {
+			$api = new startUpSoundAPI(static::$musFilesNum, static::$soundFilesNum, static::$eventNow, $this->eventsArray);
+			$api->apiOut();
+			}
 		}
 		
 		//Function for getting the result of startUpSound work

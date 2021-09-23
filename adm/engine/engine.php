@@ -1,4 +1,21 @@
-<?php 
+<?php
+/*
+=====================================================
+ All main wires are plugged, we are ready to start!
+-----------------------------------------------------
+ https://FoxesWorld.ru/
+-----------------------------------------------------
+ Copyright (c) 2016-2021  FoxesWorld
+-----------------------------------------------------
+ This code is reserved
+-----------------------------------------------------
+ File: engine.php
+-----------------------------------------------------
+ Version: 0.1.4.0 Experimental
+-----------------------------------------------------
+ Usage: Engine actions
+=====================================================
+*/
 if(!defined('FOXXEYadm')){
 	die('{"message": "Not In Admin Thread!"}');
 }
@@ -8,19 +25,29 @@ if(!defined('FOXXEYadm')){
 		private $action;
 		private $ip;
 		private $webSiteDB;
+		private $parseInfoArray;
 		
 		function __construct($request, $ip, $webSiteDB){
+			global $admConfig;
 			$this->ip = $ip;
 			$this->webSiteDB = $webSiteDB;
-			$this->action = $request['action'];
+			$this->action = $request['action'] ?? null;
 			if(isset($this->action)) {
 				switch($this->action){
 					case 'logIn':
-						$this->logIn();
+						$login = $_POST['login'];
+						$password = $_POST['password'];
+						@$rememberMe = $_POST['rememberMe'];
+						$this->parseInfoArray = $admConfig['additionalParseData'];
+						admFunctions::logIn($login, $password, $this->parseInfoArray, $rememberMe, $this->webSiteDB);
 					break;
-					
+					//TODO "Tru to use `If check` inside switch case"
 					case 'logOut':
-						$this->logOut();
+						if(@$_SESSION['isLogged'] === true) {
+							admFunctions::logOut();
+						} else {
+							die('{"message": "Not logged in to LogOut!!!"}');
+						}
 					break;
 					
 					case 'loadPage':
@@ -32,62 +59,32 @@ if(!defined('FOXXEYadm')){
 							die('{"message": "Not logged in!"}');
 						}
 					break;
+					
+					case 'sendNotes':
+						if(@$_SESSION['isLogged'] === true) {
+							require(ADMIN_DIR.'engine/modules/changeNotes.class.php');
+							$notes = $_POST['adminNotes'];
+							$changeAdminNotes = new changeAdminNotes($notes);
+						} else {
+							die('{"message": "Not logged in!"}');
+						}
+					break;
+					
+					case 'readNotes':
+						if(@$_SESSION['isLogged'] === true) {
+							require(ADMIN_DIR.'engine/modules/changeNotes.class.php');
+							$changeAdminNotes = new changeAdminNotes();
+						} else {
+							die('{"message": "Not logged in!"}');
+						}
+					break;
 
 					default:
 						die('{"message": "Unknown adm Action request!"}');
+					break;
 				}
 			} else {
 				die('{"message": "No Action was passed!"}');
 			}
 		}
-		
-		private function logIn() {
-				$login = $_POST['login'];
-				$password = $_POST['password'];
-				@$rememberMe = $_POST['rememberMe'];
-				$group = json_decode($this->getUserData($login, 'user_group', $this->webSiteDB)) -> user_group ?? null;
-
-				if($group != 1 && $group !== null){
-					exit('{"message": "Not an admin user"}');
-				} else {
-					$passwordDB = json_decode($this->getUserData($login, 'password', $this->webSiteDB)) -> password ?? null;
-					if(password_verify($password, $passwordDB)) {
-						$fullname  = json_decode($this->getUserData($login, 'fullname', $this->webSiteDB))	-> fullname   ?? 'Мастер Лис';
-						$photo = json_decode($this->getUserData($login, 'foto', $this->webSiteDB))	-> foto;
-						$_SESSION['fullname'] = $fullname;
-						$_SESSION['photo'] 	  = $photo;
-						$_SESSION['pass'] 	  = $password;
-						$_SESSION['isLogged'] = true;
-
-						if($rememberMe) {
-							session_write_close();
-							ini_set('session.cookie_lifetime', 0);
-							session_set_cookie_params(0);
-						}
-						die('{"type": "success", "message": "Correct!!!"}');
-					} else {
-						die('{"message": "Incorrect login or password"}');
-					}
-				}
-		}
-		
-		private function logOut() {
-				session_unset();
-				session_destroy();
-				die('{"message": "Exit successful!", "type": "success"}');
-		}
-		
-		private function getUserData($login, $data, $db){
-		$query = "SELECT $data FROM dle_users WHERE name = '$login'";
-		$selectedValue = $db->getRow($query);
-			if($selectedValue["$data"]){
-					$gotData = $selectedValue["$data"];
-					$answer = array('type' => 'success', 'username' => $login, $data => $gotData);
-					$answer = json_encode($answer);
-				} else {
-					$answer = "{'type', 'warn', 'message', 'Login not found'}";
-				}
-		return $answer;
-	}
-		
 	}

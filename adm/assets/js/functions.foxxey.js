@@ -36,7 +36,10 @@
 					let message = data['message'];
 
 					if(type == 'success'){
-						addAnimClass('animate__shakeY', 'authBox');
+						addAnimClass('animate__zoomOut', 'authBox');
+						setTimeout(function(){
+								 $('#authBox').remove();
+						}, 1500);
 					setTimeout(function(){
 							show('', 'body');
 					}, 1500);
@@ -70,22 +73,23 @@
 				let type = data['type'];
 				let message = data['message'];
 				show('', 'body');
-				button.notify(message,type);
 				});
 		}
 		
-		function parseApiJSON(url, request, textValue){
+		function parseJSONapi(url, request, debug = false) {
 			$.ajax({
 				url: url,
 				method: 'POST',
+				dataType: 'json',
 				data: String(request),
 				success: function(data) {
-					
-					if(!data.message){
-						$("#"+String(textValue)).html(data[String(textValue)]);
-					} else {
-						alert(data['message']);
-					} 
+					for (var key in data) {
+					  let value = data[key];
+					  if(debug === true) {
+						console.log('ключ: ' + key + ', значение: ' + value);
+					  }
+					  $("#"+String(key)).html(value);
+					}
 				}
 			});
 		}
@@ -103,5 +107,29 @@
 						}));
 					});
 				}
+			});
+		}
+		
+		function saveNotes(button) {
+			let notes = $("#notice").val();
+			
+			$.post('admin.php', {
+				action: 'sendNotes',
+				adminNotes: notes
+					
+			}, function (data) {
+				data = JSON.parse(data);
+				let type = data['type'];
+				let message = data['message'];
+				button.notify(message, type);
+			});
+		}
+		
+		function readNotes(){
+			$.post('admin.php', {
+				action: 'readNotes'
+					
+			}, function (data) {
+				$('#notice').html(data);
 			});
 		}

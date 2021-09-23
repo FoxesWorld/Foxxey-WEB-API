@@ -5,50 +5,49 @@
 									<div class="col-12 col-lg-7 border-right">
 										<div class="d-md-flex align-items-center">
 											<div class="mb-md-0 mb-3">
-												<img src="<?=$_SESSION['photo']?>" class="rounded-circle shadow" width="130" height="130" alt="<?=$_SESSION['fullname']?>">
+												<img src="<?=$_SESSION['foto']?>" class="rounded-circle shadow" width="130" height="130" alt="<?=$_SESSION['fullname']?>">
 											</div>
 											<div class="ml-md-4 flex-grow-1">
 												<div class="d-flex align-items-center mb-1">
 													<h4 class="mb-0"><?=$_SESSION['fullname']?></h4>
 													<p class="mb-0 ml-auto"></p>
 												</div>
-												<p class="mb-0">Senior Web Developer</p>
-												<p><i class='bx bx-buildings'></i> FoxesWorld</p>
+												<p class="mb-0"><?=$_SESSION['info']?></p>
+												<p>Registered: <?=admFunctions::unixToReal($_SESSION['reg_date'])?></p>
+												
 											<!--	<button type="button" class="btn btn-light">Connect</button>
 												<button type="button" class="btn btn-light ml-2">Resume</button> -->
 											</div>
 										</div>
-									</div> <!--
+									</div>
 									<div class="col-12 col-lg-5">
 										<table class="table table-sm table-borderless mt-md-0 mt-3">
 											<tbody>
 												<tr>
-													<th>Availability:</th>
-													<td>Full-time (40hr/wk) <span class="badge badge-light">available</span>
+													<th>Two Factor (Alpha):</th>
+													<td><span class="badge badge-light">NonAvialable</span>
 													</td>
 												</tr>
 												<tr>
 													<th>Age:</th>
-													<td>27</td>
+													<td>21</td>
 												</tr>
 												<tr>
 													<th>Location:</th>
-													<td>Sankt, Petersburg, Russia</td>
+													<td><?=$_SESSION['land'] ?></td>
 												</tr>
 												<tr>
-													<th>Years experience:</th>
-													<td>6</td>
+													<th>Last login:</th>
+													<td><?=admFunctions::unixToReal($_SESSION['lastdate'])?></td>
 												</tr>
 											</tbody>
 										</table>
 										<div class="mb-3 mb-lg-0"> <a href="javascript:;" class="btn btn-sm btn-link"><i class='bx bxl-github'></i></a>
 											<a href="javascript:;" class="btn btn-sm btn-link"><i class='bx bxl-twitter'></i></a>
 											<a href="javascript:;" class="btn btn-sm btn-link"><i class='bx bxl-facebook'></i></a>
-											<a href="javascript:;" class="btn btn-sm btn-link"><i class='bx bxl-linkedin'></i></a>
-											<a href="javascript:;" class="btn btn-sm btn-link"><i class='bx bxl-dribbble'></i></a>
 											<a href="javascript:;" class="btn btn-sm btn-link"><i class='bx bxl-stack-overflow'></i></a>
 										</div>
-									</div> -->
+									</div>
 								</div>
 								<!--end row
 								<ul class="nav nav-pills">

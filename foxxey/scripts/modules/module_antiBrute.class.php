@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: antiBrute.class.php
 -----------------------------------------------------
- Verssion: 0.1.4.6 Final
+ Verssion: 0.1.4.7 Final
 -----------------------------------------------------
  Usage: Prevent users bruting passwords
 =====================================================
@@ -48,7 +48,7 @@ if (!defined('FOXXEY')) {
 			$this->parseIpRow();
 
 			switch ($this->DBip) {
-				case (REMOTE_IP):
+				case ($ip):
 					$this->increaseAttempts();
 				break;
 
@@ -108,11 +108,13 @@ if (!defined('FOXXEY')) {
 
 		private function banIp(){
 			global $config;
-			$Logger = new Logger('AuthLog');
-			if($this->debug === true) {
-				echo "Banning ".$this->ip." till ".$config['bantime']."<br>";
+			if(class_exists('Logger')) {
+				$Logger = new Logger('AuthLog');
+				if($this->debug === true) {
+					echo "Banning ".$this->ip." till ".$config['bantime']."<br>";
+				}
+				$Logger->WriteLine('Banning '.$this->ip.' for too many authorisation errors');
 			}
-			$Logger->WriteLine('Banning '.$this->ip.' for too many authorisation errors');
 			$query = "UPDATE `antiBrute` SET `time`=".$config['bantime']." WHERE ip = '".$this->ip."'";
 			$this->db::run($query);
 		}

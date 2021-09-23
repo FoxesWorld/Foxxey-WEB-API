@@ -72,7 +72,7 @@ pre {
 	overflow: auto;
 	word-break: break-all;
 	word-wrap: break-word;
-	max-height: 43vw;
+	max-height: 35vw;
 }
 
 code {
@@ -81,6 +81,21 @@ code {
 	color: #DD1144;
 	padding: 2px 4px;
 	white-space: nowrap;
+}
+
+textarea {
+    box-shadow: inset 0 1px 1px rgb(181 167 133);
+    border-radius: 0;
+    color: #333;
+    padding: 4px;
+    border: 1px solid #b5a785;
+    display: inline-block;
+    background: #baa263;
+    font-family: Verdana;
+    line-height: 1.5;
+    font-size: 12px;
+    border: 1px solid #5555558a;
+    border-radius: 5px;
 }
 
 
@@ -129,6 +144,44 @@ code {
 	background: rgb(255 255 255 / 20%);
 }
 
+.btn.btn-green {
+    overflow: hidden;
+    margin-bottom: 5px;
+    border: 1px solid #6d963b;
+    -webkit-box-shadow: inset 0 1px 2px #a2c873;
+    -moz-box-shadow: inset 0 1px 2px #a2c873;
+    box-shadow: inset 0 1px 2px #a2c873;
+    background: #82b346;
+    background-image: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjUwJSIgeTE9IjAlIiB4Mj0iNTAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzk2YzE2MSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzgyYjM0NiIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==);
+    background-size: 100%;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #96c161), color-stop(100%, #82b346));
+    background-image: -webkit-linear-gradient(top, #96c161, #82b346);
+    background-image: -moz-linear-gradient(top, #96c161, #82b346);
+    background-image: -o-linear-gradient(top, #96c161, #82b346);
+    background-image: linear-gradient(top, #96c161, #82b346);
+}
+
+    .btn.btn-green:hover {
+      background: #80af45;
+      background-image: url('data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0idXRmLTgiPz4gPHN2ZyB2ZXJzaW9uPSIxLjEiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PGxpbmVhckdyYWRpZW50IGlkPSJncmFkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjUwJSIgeTE9IjAlIiB4Mj0iNTAlIiB5Mj0iMTAwJSI+PHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzk2YzE2MSIvPjxzdG9wIG9mZnNldD0iMTAwJSIgc3RvcC1jb2xvcj0iIzgwYWY0NSIvPjwvbGluZWFyR3JhZGllbnQ+PC9kZWZzPjxyZWN0IHg9IjAiIHk9IjAiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiIGZpbGw9InVybCgjZ3JhZCkiIC8+PC9zdmc+IA==');
+      background-size: 100%;
+      background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(0%, #96c161), color-stop(100%, #80af45));
+      background-image: -webkit-linear-gradient(top, #96c161, #80af45);
+      background-image: -moz-linear-gradient(top, #96c161, #80af45);
+      background-image: -o-linear-gradient(top, #96c161, #80af45);
+      background-image: linear-gradient(top, #96c161, #80af45);
+      -webkit-transition: box-shadow 0.05s ease-in-out;
+      -moz-transition: box-shadow 0.05s ease-in-out;
+      -o-transition: box-shadow 0.05s ease-in-out;
+      transition: box-shadow 0.05s ease-in-out; }
+    
+    .btn.btn-green:active {
+      background: #8cbb52;
+      border-color: #688e38;
+      -webkit-box-shadow: 0 0 5px #8cbb52 inset;
+      -moz-box-shadow: 0 0 5px #8cbb52 inset;
+      box-shadow: 0 0 5px #8cbb52 inset; }
+
 .logo-icon {
 	width: 145px;
 }
@@ -143,6 +196,13 @@ code {
 	font-size: 25px;
 	margin-bottom: 0;
 	margin-left: 10px;
+}
+
+.logoSub{
+	position: absolute;
+    top: 20px;
+	left: 45px;
+	color: #e99b32;
 }
 
 .top-header .navbar {
@@ -514,7 +574,7 @@ code {
 
 .page-wrapper {
 	position: relative;
-	margin-top: 130px;
+	margin-top: 80px;
 }
 
 @media screen and (min-width: 1400px) {
@@ -529,7 +589,7 @@ code {
 }
 
 .page-content {
-	padding: 30px;
+	padding: 10px;
 }
 
 
@@ -770,6 +830,7 @@ sup {
 	margin-left: 0px;
 	transition: all .3s ease-out;
 	z-index: 10;
+	margin: 10px 0px;
 }
 
 .p-tab-name {
@@ -939,7 +1000,7 @@ select option {
 .card {
 	box-shadow: 0 0.1rem 0.7rem rgb(0 0 0 / 18%);
 	border: 1px solid rgba(0, 0, 0, 0);
-	margin: 5px 2%;
+	margin: 10px 2% 0px 0px;
 	background-color: rgb(0 0 0 / 0.24);
 }
 
@@ -2942,7 +3003,7 @@ body.bg-theme12 {
 
 @media screen and (max-width: 1280px) {
 	.page-wrapper {
-		margin-top: 70px;
+		margin-top: 60px;
 	}
 	.nav-container {
 		position: fixed;
