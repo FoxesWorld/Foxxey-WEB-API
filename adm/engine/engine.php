@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: engine.php
 -----------------------------------------------------
- Version: 0.1.4.0 Experimental
+ Version: 0.1.5.0 Experimental
 -----------------------------------------------------
  Usage: Engine actions
 =====================================================
@@ -26,63 +26,60 @@ if(!defined('FOXXEYadm')){
 		private $ip;
 		private $webSiteDB;
 		private $parseInfoArray;
-		
+
 		function __construct($request, $ip, $webSiteDB){
 			global $admConfig;
 			$this->ip = $ip;
 			$this->webSiteDB = $webSiteDB;
 			$this->action = $request['action'] ?? null;
 			if(isset($this->action)) {
-				switch($this->action){
-					case 'logIn':
+				if($this->action === 'logIn') {
 						$login = $_POST['login'];
 						$password = $_POST['password'];
 						@$rememberMe = $_POST['rememberMe'];
 						$this->parseInfoArray = $admConfig['additionalParseData'];
 						admFunctions::logIn($login, $password, $this->parseInfoArray, $rememberMe, $this->webSiteDB);
-					break;
-					//TODO "Tru to use `If check` inside switch case"
-					case 'logOut':
-						if(@$_SESSION['isLogged'] === true) {
-							admFunctions::logOut();
-						} else {
-							die('{"message": "Not logged in to LogOut!!!"}');
-						}
-					break;
-					
-					case 'loadPage':
-						if(@$_SESSION['isLogged'] === true) {
-							$page = $_POST['page'];
-							require ('pages.class.php');
-							$adminPages = new adminPages($page);
-						} else {
-							die('{"message": "Not logged in!"}');
-						}
-					break;
-					
-					case 'sendNotes':
-						if(@$_SESSION['isLogged'] === true) {
-							require(ADMIN_DIR.'engine/modules/changeNotes.class.php');
-							$notes = $_POST['adminNotes'];
-							$changeAdminNotes = new changeAdminNotes($notes);
-						} else {
-							die('{"message": "Not logged in!"}');
-						}
-					break;
-					
-					case 'readNotes':
-						if(@$_SESSION['isLogged'] === true) {
-							require(ADMIN_DIR.'engine/modules/changeNotes.class.php');
-							$changeAdminNotes = new changeAdminNotes();
-						} else {
-							die('{"message": "Not logged in!"}');
-						}
-					break;
+				} else {
+					//If isLogged
+					if(@$_SESSION['isLogged'] === true) {
+						switch($this->action){
+							case 'logOut':
+									admFunctions::logOut();
+							break;
 
-					default:
-						die('{"message": "Unknown adm Action request!"}');
-					break;
-				}
+							case 'loadPage':
+									$page = $_POST['page'];
+									require ('pages.class.php');
+									$adminPages = new adminPages($page);
+							break;
+
+							case 'sendNotes':
+									require(ADMIN_DIR.'engine/modules/changeNotes.class.php');
+									$notes = $_POST['adminNotes'];
+									$changeAdminNotes = new changeAdminNotes($notes);
+							break;
+
+							case 'readNotes':
+									require(ADMIN_DIR.'engine/modules/changeNotes.class.php');
+									$changeAdminNotes = new changeAdminNotes();
+							break;
+							
+							case 'clearSUScache':
+								$cachePath = @$_REQUEST['cachePath'];
+								require (ADMIN_DIR.'engine/modules/startUpSoundcfg.class.php');
+								startUpSoundCfg::clearSUScache($cachePath);
+								
+							break;
+
+							default:
+								die('{"message": "Unknown adm Action request!"}');
+							break;
+						}
+					} else {
+						die('{"message": "Not logged in!!!"}');
+				} 
+			}
+
 			} else {
 				die('{"message": "No Action was passed!"}');
 			}

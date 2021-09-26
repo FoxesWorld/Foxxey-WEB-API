@@ -5,7 +5,36 @@ if(!defined('FOXXEYadm')){
 	$admConfig = array(
 	
 			/* Authorisation */
-			'additionalParseData' => array('fullname', 'foto', 'reg_date', 'info', 'land', 'lastdate'),
+			
+			/* Data To parse when authorising 
+			 * `type` - the type of data, can be
+			 * 'plainText', 'date' or `realname`
+			 */
+			'additionalParseData' => array(		
+					array(
+						'name' => 'fullname',
+						'type' => 'realname'
+					), 
+					array(
+						'name' => 'foto',
+						'type' => 'plainText'
+					),
+					array(
+						'name' => 'reg_date',
+						'type' => 'date'
+					),
+					array(
+						'name' => 'info',
+						'type' => 'plainText'
+					),
+					array(
+						'name' => 'land',
+						'type' => 'plainText'
+					), 
+					array(
+						'name' => 'lastdate',
+						'type' => 'date')
+			),
 		
 			/* Base Data*/
 			'monthArray'		  => array(

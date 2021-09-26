@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions.class.php
 -----------------------------------------------------
- Version: 0.1.6.0 Experimental
+ Version: 0.1.7.0 Experimental
 -----------------------------------------------------
  Usage: All adminPanel functions
 =====================================================
@@ -66,8 +66,10 @@ if(!defined('FOXXEYadm')){
 							
 						//Parsing userInfo
 						foreach($parseInfoArray as $key){
-							$val = json_decode(admFunctions::getUserData($login, $key, $db)) -> {$key};
-							$_SESSION[$key] = $val;
+							//die(var_dump($key));
+							$val = json_decode(admFunctions::getUserData($login, $key['name'], $db)) -> {$key['name']};
+							$val = self::textTypeFormatting($val, $key['type']);
+							$_SESSION[$key['name']] = $val;
 						}
 							
 					//Defining systemData
@@ -122,6 +124,26 @@ if(!defined('FOXXEYadm')){
 			}
 			closedir($openDir);
 			return $files;
+		}
+		
+		private static function textTypeFormatting($val, $type){
+			switch ($type){
+				case 'plainText':
+					
+				break;
+				
+				case 'date':
+					$val = admFunctions::unixToReal($val);
+				break;
+				
+				case 'realname':
+					if(!$val){
+						$val = 'An unknown MasterFox';
+					}
+				break;
+			}
+			
+			return $val;
 		}
 	}
 ?>

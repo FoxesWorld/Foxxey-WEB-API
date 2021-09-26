@@ -13,7 +13,7 @@
 													<p class="mb-0 ml-auto"></p>
 												</div>
 												<p class="mb-0"><?=$_SESSION['info']?></p>
-												<p>Registered: <?=admFunctions::unixToReal($_SESSION['reg_date'])?></p>
+												<p>Registered: <?=$_SESSION['reg_date']?></p>
 												
 											<!--	<button type="button" class="btn btn-light">Connect</button>
 												<button type="button" class="btn btn-light ml-2">Resume</button> -->
@@ -38,7 +38,7 @@
 												</tr>
 												<tr>
 													<th>Last login:</th>
-													<td><?=admFunctions::unixToReal($_SESSION['lastdate'])?></td>
+													<td><?=$_SESSION['lastdate']?></td>
 												</tr>
 											</tbody>
 										</table>

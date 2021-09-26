@@ -46,6 +46,21 @@
 
 <script>
 parseJSONapi('/launcher.php?startUpSound', 'startUpSoundAPI');
+
+function clearCacheButton() {
+	let cacheStatus = $("#cacheFile").text();
+	
+	switch(cacheStatus){// data-toggle="modal" data-target="#clearCacheModal"
+		case 'cacheExists':
+			$("#cacheFile").html('<button class="btn btn-gold" onclick="clearCache($(this))">ClearCache</button>');
+		break;
+		
+		case 'cacheDeleted':
+			$("#cacheFile").html('<span class="badge badge-light">Already cleared</span>');
+		break;
+	}
+}
+setInterval("clearCacheButton()", 1000);
 </script>
 
 <div class="page-content">
@@ -68,26 +83,80 @@ parseJSONapi('/launcher.php?startUpSound', 'startUpSoundAPI');
 				</div>
 
 				<div id="content-3">
-					<h4>Configuring <b>startUpSound</b> eventList</h4>
-					
-							<div class="row">
-								<div class="col-md-12">
-									<table class="table table-normal">
-										<tbody>
-											<tr>
-												<td class="col-md-3 white-line">musFilesNum:</td>
-												<td class="col-md-9 white-line" id="musNum">0</td>
-											</tr>
-											<tr>
-												<td>sndFilesNum:</td>
-												<td id="sndNum">0</td>
-											</tr>
-										</tbody>
-									</table>
-								</div>
-							</div>
+					<div class="row">
+						<div class="col-12 col-lg-7 border-right">
+							<h4>Information</h4>
+								<table class="table table-normal">
+									<tbody>
+										<tr>
+											<td>serverVersion:</td>
+											<td id="serverVersion">undefined</td>
+										</tr>
+									<!-- Common mus files -->
+										<tr>
+											<td>CommonMusFilesNum:</td>
+											<td id="musNum">0</td>
+										</tr>
+										<tr>
+											<td>CommonSndFilesNum:</td>
+											<td id="sndNum">0</td>
+										</tr>
+										
+									<!-- Easter musFiles  -->
+										<tr>
+											<td>EasterMusFilesNum:</td>
+											<td id="easterMusNum">0</td>
+										</tr>
+										<tr>
+											<td>EasterSndFilesNum:</td>
+											<td id="easterSndNum">0</td>
+										</tr>
+										
+										<tr>
+											<td>eventNow:</td>
+											<td id="eventNow">undefined</td>
+										</tr>
+										
+										<tr>
+											<td>CachePath:</td>
+											<td><div id="cachePath"></div></td>
+										</tr>
+										<!--
+										<tr>
+											<div id="warn" class="p-3 mb-2 bg-warning text-dark radius-15"></div>
+										</tr> -->
+										
+									</tbody>
+								</table>
+						</div>
+
+						<div class="col-12 col-lg-5">
+							<h4>Options</h4>
+							<div id="cacheFile"></div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+							<div class="modal fade" id="clearCacheModal" tabindex="-1" role="dialog" aria-hidden="true">
+								<div class="modal-dialog modal-dialog-centered">
+									<div class="modal-content">
+										<div class="animate__animated modal-header animate__bounceInLeft">
+											<h5 class="modal-title">Очистка Кеша</h5>
+											<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+										</div>
+										<div class="animate__animated modal-body animate__bounceInRight">
+										startUpSound - кеширует свои настройки после первого запуска, поэтому для применения новых настроек кеш нужно очищать, в данный момент эта функция недоступна, поскольку не была доделана</div>
+										<div class="modal-footer">
+											<button type="button" class="btn btn-red" data-dismiss="modal">Закрыть</button>
+											<!-- <button type="button" class="btn btn-light">Очистить</button> -->
+										</div>
+									</div>
+								</div>
+							</div>
 </div>
+
+
+
+
