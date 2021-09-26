@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions.class.php
 -----------------------------------------------------
- Version: 0.1.7.0 Experimental
+ Version: 0.1.7.1 Experimental
 -----------------------------------------------------
  Usage: All adminPanel functions
 =====================================================
@@ -55,18 +55,17 @@ if(!defined('FOXXEYadm')){
 		}
 		
 		public static function logIn($login, $password, $parseInfoArray, $rememberMe, $db) {
-			global $config;
+			global $config, $admConfig;
 			$group = json_decode(admFunctions::getUserData($login, 'user_group', $db)) -> user_group ?? null;
 
-			if($group != 1 && $group !== null){
-				exit('{"message": "Not an admin user", "type": "warn"}');
+			if(!in_array($group, $admConfig['groupsToShow'])){
+				exit('{"message": "Insufficent rights!", "type": "warn"}');
 			} else {
 				$passwordDB = json_decode(admFunctions::getUserData($login, 'password', $db)) -> password ?? null;
 				if(password_verify($password, $passwordDB)) {
 							
 						//Parsing userInfo
 						foreach($parseInfoArray as $key){
-							//die(var_dump($key));
 							$val = json_decode(admFunctions::getUserData($login, $key['name'], $db)) -> {$key['name']};
 							$val = self::textTypeFormatting($val, $key['type']);
 							$_SESSION[$key['name']] = $val;
@@ -84,6 +83,7 @@ if(!defined('FOXXEYadm')){
 					}
 					die('{"type": "success", "message": "Successful authorisation!"}');
 				} else {
+					//WIP
 					require (SCRIPTS_DIR.'modules/module_antiBrute.class.php');
 						if($config['useAntiBrute'] === true) {
 							//$launcherDB = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);

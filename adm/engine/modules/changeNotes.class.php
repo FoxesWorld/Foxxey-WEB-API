@@ -1,7 +1,7 @@
 <?php
 /*
 =====================================================
- This is my Brain! | FoxxeyAPI Adm/API class
+ Change your notices in here!
 -----------------------------------------------------
  https://FoxesWorld.ru/
 -----------------------------------------------------
@@ -11,9 +11,9 @@
 -----------------------------------------------------
  File: changeNotes.class.php
 -----------------------------------------------------
- Version: 0.1.0.0 Experimental
+ Version: 0.1.0.1 Experimental
 -----------------------------------------------------
- Usage: Changing and reading adminNotes
+ Usage: Changing and reading adminNotes (Logged only)
 =====================================================
 */
 if(!defined('FOXXEYadm')){

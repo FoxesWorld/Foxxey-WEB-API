@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.3.30.11 Blazing
+ Version: 0.3.30.12 Blazing
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -31,6 +31,7 @@ if (!defined('FOXXEY')) {
 */
 
 /* TODO 
+ * Rewrite startUpSound to work with API
  * If Mus is too long generate another one sound => will be made in startUpSound 1.2.0.0
  * Maybe storing a Mus|Sound file shift in ID3 tags
  * AI with the local sqlite.db
@@ -41,7 +42,7 @@ if (!defined('FOXXEY')) {
 	
 		/* Base utils */
 		private $cacheFilePath 			= FOXXEYDATA.'startUpSound.timetable';
-		private static $serverVersion 	= '0.3.30.11 Blazing';
+		private static $serverVersion 	= '0.3.30.12 Blazing';
 		private static $AbsolutesoundPath;
 		private static $currentDate 	= CURRENT_DATE;
 		private static $musMountPoint 	= 'mus';
@@ -114,7 +115,7 @@ if (!defined('FOXXEY')) {
 
 			'09' => array(
 				
-				'1-3' => array(
+				'1' => array(
 					'eventName' => '8bit')
 			),
 			
@@ -167,14 +168,16 @@ if (!defined('FOXXEY')) {
 			$this->monthToday = $dateExploded[1];
 			$this->yearToday = $dateExploded[2];
 
-			if(!file_exists($this->cacheFilePath)){
-				$this->WriteFile();
-			} else {
-				if(is_array($this->readEventFile())){
-					$this->eventsArray = $this->readEventFile();
-				} else {
+			if(!isset($_REQUEST['startUpSoundAPI'])) {
+				if(!file_exists($this->cacheFilePath)){
 					$this->WriteFile();
-					$this->eventsArray = $this->readEventFile();
+				} else {
+					if(is_array($this->readEventFile())){
+						$this->eventsArray = $this->readEventFile();
+					} else {
+						$this->WriteFile();
+						$this->eventsArray = $this->readEventFile();
+					}
 				}
 			}
 
@@ -193,8 +196,10 @@ if (!defined('FOXXEY')) {
 			$this->generateSound(static::$debug);
 			$this->maxDuration(static::$debug);
 			if(isset($_REQUEST['startUpSoundAPI'])) {
-			$api = new startUpSoundAPI(static::$musFilesNum, static::$soundFilesNum, static::$eventNow, $this->eventsArray);
-			$api->apiOut();
+				$easterMusNum = count(functions::filesInDirArray(static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$musMountPoint.'/easter', '.mp3'));
+				$easterSndNum = count(functions::filesInDirArray(static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$sndMountPoint.'/easter', '.mp3'));
+				$api = new startUpSoundAPI(static::$serverVersion, static::$musFilesNum, static::$soundFilesNum, $easterMusNum, $easterSndNum, static::$eventNow, $this->cacheFilePath, $this->eventsArray);
+				$api->apiOut();
 			}
 		}
 		

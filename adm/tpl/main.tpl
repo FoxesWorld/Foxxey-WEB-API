@@ -292,9 +292,10 @@
 								<div class="card-title text-center"> <i class="bx bxs-book-content text-white font-60"></i>
 									<h3 class="mb-5 mt-3 text-white">Foxxey Web Api</h3>
 								</div>
-								<h4>Hi there! It's a currently developing <b>Foxxey</b> WEB API! You can find a bunch of bugs in here but 
-								we are working to fix them all! Right now you can watch the list of loaded modules, later we plan to add an ability
-								of configuring each module, and decide wich of them to load or not, but later...</h4>
+								<h4>Приветствую тебя, <?=$_SESSION['login']?> в админпанели Foxxey WEB API, цель этой панели - конфигурация нашего софта, а также просмотр статистики,
+								собранной нашим лаунчером, админпанель находится на стадии развития, поэтому здесь могут быть найдены различные баги. На основной странице, видимой сразу после входа планируется
+								разместить чарты и таблицы, показывающие статистику за последнее время, а именно - самый частый игрок заходивший за последний день, общее количество пользователей, выполнившее успешный вход
+								за последние сутки и самых заядлых бруттеров. Разработкой этой админпанели занимается AidenFox и он бы не отказался от помощи. ;)</h4>
 							</div>
 						</div>
 				</div> 

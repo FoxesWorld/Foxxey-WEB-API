@@ -647,7 +647,7 @@ textarea {
 
 .page-wrapper {
 	position: relative;
-	margin-top: 70px;
+	margin-top: 80px;
 }
 
 @media screen and (min-width: 1400px) {
@@ -3011,7 +3011,7 @@ ul.icons li span {
 	transition: background .3s;
 }
 
-body.bg-theme1 {
+body.bg-theme {
 	background-image: url(../images/bg-themes/1.png);
 }
 

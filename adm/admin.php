@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: admin.php
 -----------------------------------------------------
- Version: 0.1.2.3 Experimental
+ Version: 0.1.2.4 Experimental
 -----------------------------------------------------
  Usage: All the functions of Foxxey Admin can be verifyed in here
 =====================================================
@@ -31,7 +31,7 @@ require ('engine/inc/functions.class.php');
 	class FoxxeyAPI {
 		
 		public function __construct(){
-			global $config;
+			global $config, $admConfig;
 			require (SCRIPTS_DIR.'database.class.php');
 			$ip = getenv('REMOTE_ADDR');
 			$webSiteDB = new db($config['db_user'],$config['db_pass'],$config['db_database']);
@@ -39,7 +39,7 @@ require ('engine/inc/functions.class.php');
 						require('engine/engine.php');
 						$ADMengine = new ADMengine($_REQUEST, $ip, $webSiteDB);
 					}
-			if(!isset($_SESSION['isLogged'])){
+			if(!isset($_SESSION['isLogged']) || !in_array(json_decode(admFunctions::getUserData($_SESSION['login'], 'user_group', $webSiteDB)) -> user_group, $admConfig['groupsToShow'])){
 				die(admFunctions::getTemplate(ADMIN_DIR."tpl/login"));
 			} else {
 				die(admFunctions::getTemplate(ADMIN_DIR."tpl/main"));

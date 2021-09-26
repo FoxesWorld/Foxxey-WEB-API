@@ -13,7 +13,7 @@
 -----------------------------------------------------
  Version: 0.1.5.0 Experimental
 -----------------------------------------------------
- Usage: AObserving tpl pages (Logged only)
+ Usage: Abserving tpl pages (Logged only)
 =====================================================
 */
 if(!defined('FOXXEYadm')){
@@ -23,21 +23,14 @@ if(!defined('FOXXEYadm')){
 		
 		private $page;
 		private $tplFilesArray;
-		private $login;
-		private $photo;
-		private $realname;
 		
-		function __construct($page){//, $login, $photo, $realname
+		function __construct($page){
 			$this->page  	= $page;
-			//$this->login	= $login;
-			//$this->photo 	= $photo;
-			//$this->realname = $realname;
 			$this->tplFilesArray = admFunctions::filesInDirArray(ADMIN_DIR.'tpl/','.tpl');
 			$this->availablePages($this->page);
 		}
 		
 		private function availablePages($page){
-			//TODO - scan tpl dir automatically!!!
 			if(in_array($page.'.tpl', $this->tplFilesArray)) {
 				die(admFunctions::getTemplate(ADMIN_DIR.'tpl/'.$page));
 			} else {

@@ -6,6 +6,9 @@ if(!defined('FOXXEYadm')){
 	
 			/* Authorisation */
 			
+			/* Number of group that can logIn*/
+			'groupsToShow' => array(1),
+			
 			/* Data To parse when authorising 
 			 * `type` - the type of data, can be
 			 * 'plainText', 'date' or `realname`

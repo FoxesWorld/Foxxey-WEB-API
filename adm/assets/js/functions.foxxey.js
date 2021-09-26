@@ -53,7 +53,11 @@
 						data = JSON.parse(data);
 						let type = data['type'];
 						let message = data['message'];
-						show('', 'body');
+						if(type === 'success') {
+							show('', 'body');
+						} else {
+							console.log(message);
+						}
 						});
 				}
 		
@@ -97,11 +101,10 @@
 					$.post('admin.php', {
 						action: 'loadPage',
 						page: page
-							
 					}, function (data) {
-						setTimeout(function(){
-							$(block).html(data).animate({opacity: 1}, 500);
-						}, 500);
+							setTimeout(function(){
+								$(block).html(data).animate({opacity: 1}, 500);
+							}, 500);
 					});
 				}
 		

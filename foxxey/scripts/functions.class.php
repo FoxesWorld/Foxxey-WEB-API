@@ -215,15 +215,19 @@ if(!defined('FOXXEY')) {
 			
 		public static function filesInDirArray ($dir, $fileMask){
 			$files = array();
-			$openDir = opendir($dir);
-			while($file = readdir($openDir)){
-				if($file == '.' || $file == '..'){
-					continue;
-				} else {
-					if(strpos($file, $fileMask)){
-						$files[] = $file;
+			if(is_dir($dir)) {
+				$openDir = opendir($dir);
+				while($file = readdir($openDir)){
+					if($file == '.' || $file == '..'){
+						continue;
+					} else {
+						if(strpos($file, $fileMask)){
+							$files[] = $file;
+						}
 					}
 				}
+			} else {
+				return 'Directory not found - '.$dir;
 			}
 			return $files;
 		}

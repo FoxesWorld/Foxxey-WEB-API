@@ -1,5 +1,24 @@
-<?php 
-
+<?php
+/*
+=====================================================
+ You can extend startUpSound abilityes in here!
+-----------------------------------------------------
+ https://FoxesWorld.ru/
+-----------------------------------------------------
+ Copyright (c) 2016-2021  FoxesWorld
+-----------------------------------------------------
+ This code is reserved
+-----------------------------------------------------
+ File: startUpSoundcfg.class.php
+-----------------------------------------------------
+ Version: 0.1.0.1 Experimental
+-----------------------------------------------------
+ Usage: Configuring startUpSound (Logged only)
+=====================================================
+*/
+if(!defined('FOXXEYadm')){
+	die('{"message": "Not In Admin Thread!"}');
+}
 
 	class startUpSoundCfg {
 		
@@ -19,5 +38,7 @@
 				die('{"message": "Path was not defined!"}');
 			}
 		}
+		
+		//More Functions coming out soon
 		
 	}
