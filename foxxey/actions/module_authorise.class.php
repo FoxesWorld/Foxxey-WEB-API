@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.14.5 Experimental
+ Verssion: 0.1.15.6 Alpha
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -147,14 +147,16 @@ class Authorise {
 								$antiBrute = new antiBrute($this->ip, $this->launcherDB, $config['antiBruteDebug']);
 							}
 							static::$LoggerAuth->WriteLine('Incorrect login for '.$this->ip.' as '.$this->login.' using `'.$this->pass.'` Bruting by '.$HWIDuser);
+							$this->incorrectPass($this->login, $HWIDuser);
 							exit('{"message": "'.$message['wrongLoginPass'].'"}');
 						} else {
 
 
 						if($this->HWIDstatus === 'true'){ //If HWID is correct
 								static::$LoggerAuth->WriteLine('Successful authorisation for '.$HWIDuser.' with the correct HWID');
+								$this->successfulAuth($this->login);
 								functions::passwordReHash($this->pass, $this->realPass, $this->realName);
-
+								
 								//GETTING PERSONAL DATA
 								$this->fullname  = json_decode($this->webSiteFunc->getUserData($this->login, 'fullname'))	-> fullname   ?? functions::getUserName();
 								$this->userGroup = json_decode($this->webSiteFunc->getUserData($this->login, 'user_group'))	-> user_group ?? 4;
@@ -205,6 +207,16 @@ class Authorise {
 					}
 				}
 			}
+		}
+		
+		private function successfulAuth($login) {
+			$query = "INSERT INTO `successfulAuth`(`login`) VALUES ('".$login."')";
+			$this->launcherDB::run($query);
+		}
+		
+		private function incorrectPass($login, $HWIDuser) {
+			$query = "INSERT INTO `wrongPass`(`login`, `realLogin`) VALUES ('".$login."', '".$HWIDuser."')";
+			$this->launcherDB::run($query);
 		}
 		
 		private static function IncludeAuthModules(){

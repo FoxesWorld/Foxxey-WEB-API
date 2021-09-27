@@ -128,6 +128,27 @@ CREATE TABLE IF NOT EXISTS `usersHWID` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
+-- Структура таблицы `wrongPass`
+--
+
+CREATE TABLE `wrongPass` (
+  `id` int(2) NOT NULL,
+  `login` varchar(256) NOT NULL,
+  `realLogin` varchar(256) NOT NULL,
+  `timestamp` timestamp(6) NOT NULL DEFAULT current_timestamp(6)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Структура таблицы `successfulAuth`
+--
+
+CREATE TABLE `successfulAuth` (
+  `id` int(2) NOT NULL,
+  `login` varchar(128) NOT NULL,
+  `timestamp` timestamp(6) NOT NULL DEFAULT current_timestamp(6)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
 -- Индексы сохранённых таблиц
 --
 
@@ -185,6 +206,19 @@ ALTER TABLE `usersHWID`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `login` (`login`),
   ADD UNIQUE KEY `hwid` (`hwid`);
+  
+--
+-- Индексы таблицы `wrongPass`
+--
+ALTER TABLE `wrongPass`
+  ADD PRIMARY KEY (`id`);
+  
+--
+-- Индексы таблицы `successfulAuth`
+--
+ALTER TABLE `successfulAuth`
+  ADD PRIMARY KEY (`id`);
+
 
 --
 -- AUTO_INCREMENT для сохранённых таблиц
@@ -237,4 +271,18 @@ ALTER TABLE `servers`
 --
 ALTER TABLE `usersHWID`
   MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+COMMIT;
+
+--
+-- AUTO_INCREMENT для таблицы `wrongPass`
+--
+ALTER TABLE `wrongPass`
+  MODIFY `id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+COMMIT;
+
+--
+-- AUTO_INCREMENT для таблицы `successfulAuth`
+--
+ALTER TABLE `successfulAuth`
+  MODIFY `id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
