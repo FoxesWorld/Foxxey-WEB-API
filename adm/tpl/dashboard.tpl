@@ -56,13 +56,22 @@
 						</code>
 					</pre>
 				</div>
+				<button class="btn btn-gold float-left" onclick="sendPost($(this), 'admin.php','clearLastLog')">Clear</button>
 			</div>
 
 			<div class="card card-min col-md-3">
 				<div class="card-body">
-					<h5>Modules installed</h5>					
-					<div id="modules">
+					<div class="table-responsive">
+						<table class="table mb-0">
+							<thead>
+								<tr>
+									<th scope="col">Modules</th>
+								</tr>
+							</thead>
+							<tbody id="modules">
 
+							</tbody>
+						</table>
 					</div>
 					<button class="btn btn-green float-right" onclick="$(this).notify('Work In Progress!', 'warn'); return false;" type="button">Configuration</button>
 				</div>
@@ -116,6 +125,6 @@
 readNotes();
 parseJSONapi('/foxxey/api.php', 'cities');
 parseJSONapi('/foxxey/api.php', 'systemInfo');
-parseApiMultiJSON('/foxxey/api.php', 'modules', 'module');
+parseJSONMulti('/foxxey/api.php', 'modules');
 </script>
 				

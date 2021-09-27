@@ -129,7 +129,7 @@ class Authorise {
 								if($config['checkHWID'] === true) {
 									if(class_exists('HWID')) {
 										$hardwareCheck = new HWID($this->login, $this->HWID, $this->launcherDB, $config['HWIDdebug']);
-										$HWIDuser = $hardwareCheck->getUserNameByHWID() ?? $this->HWID.' (No login with that HWID)';
+										$HWIDuser = $hardwareCheck->getUserNameByHWID() ?? $this->HWID;
 
 										$this->HWIDstatus = $hardwareCheck->checkHWID() ? 'true' : 'false';
 									} else {

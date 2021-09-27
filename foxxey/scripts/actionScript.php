@@ -97,6 +97,12 @@ if($config['debugStartUpSound'] === false) {
 					   }
 				   break;
 				   
+				   case 'startUpSoundExp':
+					require (SITE_ROOT.'/actions/module_startUpSound.classExp.php');
+					$startSound = new startUpSound($config['debugStartUpSound']);
+					die($startSound->generateAudio());
+				   break;
+				   
 				   //Changing HWID
 				   case 'changeHWID':
 				   			if($config['useAntiBrute'] === true) {

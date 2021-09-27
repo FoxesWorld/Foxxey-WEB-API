@@ -64,6 +64,10 @@ $config = array(
 		/* ANTI BRUTE */
 			'bantime'			=> CURRENT_TIME + (120),
 			'maxLoginAttempts'	=> 1,
+			
+		/* Logging */
+			'authLog'			=> FILES_DIR.'/logs/AuthLog.log',
+			'errorLog'			=> FILES_DIR.'/logs/Errors.log',
 	
 	/* startUpSound */
 	'mountDir' 			=> SITE_ROOT."/foxxeyData/startUpSoundRepo",
@@ -102,6 +106,21 @@ $config = array(
 	
 	/* Skins */
 	'skinsAbsolute' 	=> FILES_DIR.'uploads/MinecraftSkins/',
-	'cloaksAbsolute'	=> FILES_DIR.'uploads/MinecraftCloaks/');
+	'cloaksAbsolute'	=> FILES_DIR.'uploads/MinecraftCloaks/',
+	
+	'monthArray'		  => array(
+		  "01" => "января",
+		  "02" => "февраля",
+		  "03" => "марта",
+		  "04" => "апреля",
+		  "05" => "мая",
+		  "06" => "июня",
+		  "07" => "июля",
+		  "08" => "августа",
+		  "09" => "сентября",
+		  "10" => "октября",
+		  "11" => "ноября",
+		  "12" => "декабря"
+			));
 
 require (SITE_ROOT.'/messages/messages.lng');

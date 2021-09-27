@@ -126,6 +126,15 @@ if(!defined('FOXXEYadm')){
 			return $files;
 		}
 		
+		public static function clearLastLog(){
+			global $config;
+			if(file_exists($config['authLog'])) {
+				unlink($config['authLog']);
+			}
+			die('{"message": "Log was cleared!", "type": "success"}');
+		}
+		
+		//Used in authorisation
 		private static function textTypeFormatting($val, $type){
 			switch ($type){
 				case 'plainText':

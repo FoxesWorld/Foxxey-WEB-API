@@ -26,14 +26,15 @@ class Logger {
 	var $logDate;
 	
     function __construct($LogType) {
+		global $config;
 		$this->logDate = '['.CURRENT_DATE.'] '.date('H:m:s').' ';
 		switch ($LogType){
 			case 'AuthLog':
-				$this->file = FILES_DIR.'/logs/AuthLog.log';
+				$this->file = $config['authLog'];
 			break;
 			
 			case 'Error':
-				$this->file = FILES_DIR.'/logs/Errors.log';
+				$this->file = $config['errorLog'];
 			break;
 			
 			default:

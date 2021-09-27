@@ -59,4 +59,41 @@ header("Content-Type: application/json; charset=UTF-8");
 				
 				return $data;
 			}
+			
+			public static function wrongPassList($db) {
+				$outputJson = array();
+				$query = "SELECT * FROM `wrongPass`";
+				$data = $db->getRows($query);
+				foreach($data as $key) {
+					$outputJson[] = array(
+						'login' => $key['login'],
+						'realLogin' => $key['realLogin'],
+						'timestamp' => apiFuncftions::dateToGoodDate($key['timestamp'])
+					);
+				}
+				return json_encode($outputJson);
+			}
+			
+			public static function succesfulAuth($db) {
+				$outputJson = array();
+				$query = "SELECT * FROM `successfulAuth`";
+				$data = $db->getRows($query);
+				foreach($data as $key) {
+					$outputJson[] = array(
+						'login' => $key['login'],
+						'timestamp' => apiFuncftions::dateToGoodDate($key['timestamp'])
+					);
+				}
+				return json_encode($outputJson);
+			}
+			
+			private static function dateToGoodDate($date) {
+				global $config;
+				$dateArr = explode('-', $date);
+				$month = $config['monthArray'][$dateArr[1]];
+				$day = explode(' ', $dateArr[2]);
+				$time = explode('.',$day[1]);
+				$outputDate = $day[0].' '.$month.' '.$dateArr[0].' '.$time[0];
+				return $outputDate;
+			}
 	}

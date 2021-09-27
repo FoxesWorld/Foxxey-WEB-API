@@ -242,7 +242,7 @@
 								<a class="dropdown-item" href="javascript:;"><i
 										class="bx bx-cloud-download"></i><span>Downloads</span></a>-->
 								<div class="dropdown-divider mb-0"></div>	
-								<a class="dropdown-item" href="#" onclick="LogOut(); return false;">
+								<a class="dropdown-item" href="#" onclick="sendPost($(this), 'admin.php','logOut'); return false;">
 									<i class="bx bx-power-off"></i>
 									<span>Logout</span>
 								</a>
@@ -284,23 +284,78 @@
 		
 		
 		<div class="page-wrapper">
-			<!--page-content-wrapper-->
-			<div class="container">
-				<div class="page-content">
-						<div class="card radius-15">
-							<div class="card-body p-5">
-								<div class="card-title text-center"> <i class="bx bxs-book-content text-white font-60"></i>
-									<h3 class="mb-5 mt-3 text-white">Foxxey Web Api</h3>
+
+					<div class="row">
+
+							<div class="card card-min col-md-6 radius-15 d-sm-block">
+								<div class="card-body p-5">
+									<div class="card-title text-center"> <i class="bx bxs-book-content text-white font-60"></i>
+										<h3 class="mb-5 mt-3 text-white">Foxxey Web Api</h3>
+									</div>
+									<h4>Приветствую тебя, <?=$_SESSION['login']?> в админпанели Foxxey WEB API, цель этой панели - конфигурация нашего софта, а также просмотр статистики,
+									собранной нашим лаунчером, админпанель находится на стадии развития, поэтому здесь могут быть найдены различные баги. На основной странице, видимой сразу после входа планируется
+									разместить чарты и таблицы, показывающие статистику за последнее время, а именно - самый частый игрок заходивший за последний день, общее количество пользователей, выполнившее успешный вход
+									за последние сутки и самых заядлых бруттеров. Разработкой этой админпанели занимается AidenFox и он бы не отказался от помощи. ;)</h4>
 								</div>
-								<h4>Приветствую тебя, <?=$_SESSION['login']?> в админпанели Foxxey WEB API, цель этой панели - конфигурация нашего софта, а также просмотр статистики,
-								собранной нашим лаунчером, админпанель находится на стадии развития, поэтому здесь могут быть найдены различные баги. На основной странице, видимой сразу после входа планируется
-								разместить чарты и таблицы, показывающие статистику за последнее время, а именно - самый частый игрок заходивший за последний день, общее количество пользователей, выполнившее успешный вход
-								за последние сутки и самых заядлых бруттеров. Разработкой этой админпанели занимается AidenFox и он бы не отказался от помощи. ;)</h4>
+							</div>
+			
+					<div class="card card-min col-md-5">
+						<div class="card-body">
+							<div class="card-title">
+								<h4 class="mb-0">wrongAuth</h4>
+							</div>
+							<div class="table-responsive">
+								<table class="table mb-0">
+									<thead>
+										<tr>
+											<th scope="col">Login failed Auth</th>
+											<th scope="col">RealLogin with that HWID</th>
+											<th scope="col">TimeStamp</th>
+										</tr>
+									</thead>
+					
+									<tbody id="wrongAuth">
+									<!--	<tr>
+											<td id="login"></td>
+											<td id="realLogin"></td>
+											<td id="timestamp"></td>
+										</tr> -->
+									</tbody>
+								</table>
 							</div>
 						</div>
-				</div> 
-			</div>
-			<!--end page-content-wrapper-->
+						<button  class="btn btn-green w-25 p-3"  onclick="parseJSONMulti('/foxxey/api.php', 'wrongAuth', false); $(this).notify('testDeprecated!', 'warn');">Test</button>
+					</div>
+					
+					<div class="card card-min col-md-4">
+						<div class="card-body">
+							<div class="card-title">
+								<h4 class="mb-0">succesfulAuth</h4>
+							</div>
+							<div class="table-responsive">
+								<table class="table mb-0">
+									<thead>
+										<tr>
+											<th scope="col">Login</th>
+											<th scope="col">TimeStamp</th>
+										</tr>
+									</thead>
+					
+									<tbody id="succesfulAuth">
+									<!--	<tr>
+											<td id="login"></td>
+											<td id="realLogin"></td>
+											<td id="timestamp"></td>
+										</tr> -->
+									</tbody>
+								</table>
+							</div>
+						</div>
+						<button  class="btn btn-green w-25 p-3"  onclick="parseJSONMulti('/foxxey/api.php', 'succesfulAuth', false); $(this).notify('testDeprecated!', 'warn');">Test</button>
+					</div>
+
+				</div>
+			<!-- end page-content-wrapper-->
 		</div>
 		
 		

@@ -73,9 +73,13 @@ if(!defined('FOXXEYadm')){
 									startUpSoundCfg::clearSUScache($cachePath);
 									
 								break;
+								
+								case 'clearLastLog':
+									admFunctions::clearLastLog();
+								break;
 
 								default:
-									die('{"message": "Unknown adm Action request!"}');
+									die('{"message": "Unknown adm Action request!", "type": "error"}');
 								break;
 							}
 						} else {

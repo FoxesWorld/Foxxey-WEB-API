@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.0.0 Alpha
+ Version: 0.1.2.0 Alpha
 -----------------------------------------------------
  Usage: Main API action file
 =====================================================
@@ -44,8 +44,8 @@ header("Content-Type: application/json; charset=UTF-8");
 			switch($request){
 				//Debug function
 					   case 'testBan':
-						$longTermBan = new longTermBan($this->ip, $this->launcherDB, $value);
-						$longTermBan->banIP();
+							$longTermBan = new longTermBan($this->ip, $this->launcherDB, $value);
+							$longTermBan->banIP();
 					   break;
 							   
 				//Debug function
@@ -67,28 +67,37 @@ header("Content-Type: application/json; charset=UTF-8");
 					   break;
 						   
 					   case 'systemInfo':
-						exit('{"serverOS": "'.$this->os_version.'","phpVersion": "'.$this->phpVersion.'"}');
+							exit('{"serverOS": "'.$this->os_version.'","phpVersion": "'.$this->phpVersion.'"}');
 					   break;
-						   
+					
+						/* WIP Exception!!! */
 					   case 'awards':
-						//$this->userDataDB = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata']);
-						exit(apiFuncftions::selectAwardedUsers($this->userDataDB));
+							//$this->userDataDB = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata']);
+							exit(apiFuncftions::selectAwardedUsers($this->userDataDB));
 					   break;
 						   
 					   case 'cities':
-						 $cities = apiFuncftions::selectCities($this->launcherDB);
-						 $citiesNames = array();
-						 $playersCountArr = array();
-						 foreach($cities as $key) {
-							 $citiesNames[] = $key["cityName"];
-							 $playersCountArr[] = $key["cityCount"];
-						 }
-						 $playersCount = array_sum($playersCountArr);
-						 exit('{"totalCities": '.count($citiesNames).', "totalPlayers": '.$playersCount.'}');			 
+							 $cities = apiFuncftions::selectCities($this->launcherDB);
+							 $citiesNames = array();
+							 $playersCountArr = array();
+							 foreach($cities as $key) {
+								 $citiesNames[] = $key["cityName"];
+								 $playersCountArr[] = $key["cityCount"];
+							 }
+							 $playersCount = array_sum($playersCountArr);
+							 exit('{"totalCities": '.count($citiesNames).', "totalPlayers": '.$playersCount.'}');			 
+					   break;
+					   
+					   case 'wrongAuth':
+							exit(apiFuncftions::wrongPassList($this->launcherDB));
+					   break;
+					   
+					   case 'succesfulAuth':
+							exit(apiFuncftions::succesfulAuth($this->launcherDB));
 					   break;
 						   
 					   default:
-						die('{"message": "Unknown API request `'.$requestTitle.'`!"}');
+							die('{"message": "Unknown API request `'.$requestTitle.'`!"}');
 			}
 		}
 	
