@@ -24,7 +24,7 @@ if (!defined('FOXXEY')) {
 }
 
 /*		 USAGE
-		
+
 		$startSound = new startUpSound({Debug});
 		$sounds = $startSound->generateAudio();
 		Returns JSON
@@ -39,7 +39,7 @@ if (!defined('FOXXEY')) {
  */
 
 	class startUpSound {
-	
+
 		/* Base utils */
 		private $cacheFilePath 			= FOXXEYDATA.'startUpSound.timetable';
 		private static $serverVersion 	= '0.3.30.12 Blazing';
@@ -56,12 +56,12 @@ if (!defined('FOXXEY')) {
 		private static $soundFilesNum 	= 0;
 		private static $easter 			= "";
 		private static $debug 			= false;
-		
+
 		/* Date */
 		private $dayToday;
 		private $monthToday;
 		private $yearToday;
-		
+
 		/* Event Arrays */
 		/* This array is caching,
 		after caching it can be cleared,
@@ -120,6 +120,9 @@ if (!defined('FOXXEY')) {
 			),
 			
 			'10' => array(
+				'13' => array(
+					'musRange'  => '10'
+				),
 			
 			),
 			
@@ -144,7 +147,7 @@ if (!defined('FOXXEY')) {
 		private static $musRange			= 0;				//Range of muic files
 		private static $isEasterMus 		= 'false';			//Is the mus is easter
 		private static $easterMusWarn		= '';				//Warn message if easter not found
-		
+
 		/* Sound */
 		private static $selectedSound		= ''; 		//Selected sound File
 		private static $soundFileAbsolute	= '';		//Absolute soundFilePath
@@ -154,11 +157,11 @@ if (!defined('FOXXEY')) {
 		private static $soundRange			= 0;		//Range of sound files
 		private static $isEasterSnd 		= 'false';	//Is the sound is easter
 		private static $easterSndWarn		= '';		//Warn message if easter not found
-		
+
 		/* Both */
 		private static $maxDuration 		= 0;		//Maximum duration
 		private static $soundRangeDebug		= '';		//Debug info of the range
-		
+
 		//Initialisation
 		function __construct($debug = false) {
 			global $config;
@@ -202,16 +205,16 @@ if (!defined('FOXXEY')) {
 				$api->apiOut();
 			}
 		}
-		
+
 		//Function for getting the result of startUpSound work
 		public function generateAudio() {
 			if(static::$debug === false) {
 				echo $this->outputJson();
 			}
 		}
-		
-		private function selectCurrentEvent($dayToday, $monthToday){
 
+		private function selectCurrentEvent($dayToday, $monthToday){
+			$eventName = 'common';
 			function checkPeriod($key, $value, $dayToday){
 				if(strpos($key,'-')){
 					$datePeriod = explode('-',$key);
@@ -249,7 +252,7 @@ if (!defined('FOXXEY')) {
 							case 'eventNow':
 								startUpSound::$eventNow = $eventName;
 							break;
-								
+
 							case 'musRange':
 							$musRange = $eventArray['musRange'];
 							if($musRange !== 0) {
@@ -260,7 +263,7 @@ if (!defined('FOXXEY')) {
 								}
 							}
 							break;
-							
+
 							case 'soundRange':
 							$soundRange = $eventArray['soundRange'];
 							if($soundRange !== 0) {
@@ -313,7 +316,7 @@ if (!defined('FOXXEY')) {
 					startUpSound::$selectedMusic = str_replace(static::$AbsolutesoundPath,"",$currentMusFolder).'/'.$RandMusFile; 	//Local musPath
 					startUpSound::$musFileAbsolute = $currentMusFolder.'/'.$RandMusFile; //Absolute musFilePath
 					//***********************************************
-					
+
 					if(file_exists(static::$musFileAbsolute)) {
 						startUpSound::$musMd5 = md5_file(static::$musFileAbsolute);
 						$getid3 = new getID3();
@@ -346,7 +349,7 @@ if (!defined('FOXXEY')) {
 						echo $output;
 				}
 		}
-		
+
 		/*
 		 * @param boolean $debug
 		 * @return String {Random sound with parameters}
@@ -465,7 +468,6 @@ if (!defined('FOXXEY')) {
 				$duration= static::$durationSound;
 			}
 				startUpSound::$maxDuration = $duration;
-			
 			if($debug === true) {
 				echo '
 				<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">
@@ -499,7 +501,7 @@ if (!defined('FOXXEY')) {
 					'<h1 style="font-size: large;margin: 0;">'.$type.'Range</h1>'.
 					 "<b>".$type."ToPlay:</b>".$minRange.'</div>';
 				break;
-				
+
 				default:
 					$minRange = 1;
 				break;

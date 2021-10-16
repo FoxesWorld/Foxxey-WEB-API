@@ -115,9 +115,7 @@ function get_log() {
 
                 log_file_size = 0;
                 log_data = "";
-                show_log();
-
-                setTimeout(get_log, poll);
+                //show_log();
             } else {
                 throw "Unknown AJAX Error (status " + xhr.status + ")";
             }
@@ -172,8 +170,9 @@ $(document).ready(function () {
 
     /* If URL is /logtail/?noreverse display in chronological order */
     var hash = location.search.replace(/^\?/, "");
-    if (hash == "noreverse")
-        reverse = false;
+    if (hash == "noreverse") {
+		reverse = false;
+	}
 
     /* Add pause toggle */
     $(pausetoggle).click(function (e) {

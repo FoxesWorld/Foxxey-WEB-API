@@ -20,11 +20,11 @@
 						if(type === 'success') {
 								if(action === 'logOut') {
 									show('', 'body');
-								}
-							button.notify(message, type);
+								}	
 						} else {
 							console.log(message);
 						}
+						button.notify(message, type);
 						});
 				}
 		
@@ -57,8 +57,8 @@
 								
 							} else {
 								addAnimation('animate__shakeX', 'authBox');
+								button.notify(message,type);
 							}
-							button.notify(message,type);
 						});
 				}
 		

@@ -43,14 +43,12 @@
 
 		function __construct($ip, $initType) {
 			global $config;
-				
+
 				$userDataDB = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata']);
-				$launcherDB = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);
-				
-				//die(var_dump($userDataDB.' '.$launcherDB));
-			
+				$launcherDB = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);				
+
 			//Modules Initialising
-			$this->allModules = functions::modulesInit();
+			$this->allModules	= functions::modulesInit();
 			$this->validModules = $this->allModules['validModules'];
 			$this->wipModules 	= $this->allModules['wipModules'];
 			functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug'], $this->validModules);
@@ -68,7 +66,6 @@
 					case 'API':
 						require (SITE_ROOT.'/api/init.php');
 						$apiInit = new apiInit($ip, $userDataDB, $launcherDB, $_REQUEST);
-						
 					break;
 					
 					case 'updater':

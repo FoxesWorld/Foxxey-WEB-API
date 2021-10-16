@@ -59,6 +59,14 @@ if($config['debugStartUpSound'] === false) {
 					   }
 				   break;
 				   
+				   case 'modPackFiles':
+						if(in_array($requestValue, functions::getServersList($this->launcherDB))) {
+							die(functions::checkDir($requestValue, $this->launcherDB));
+						} else {
+							die('{"message": "Not found a '.$requestValue.' client!"}');
+						}
+				   break;
+				   
 				   //startUpSound using
 				   case 'startUpSound':
 					   require (SITE_ROOT.'/actions/module_startUpSound.class.php');

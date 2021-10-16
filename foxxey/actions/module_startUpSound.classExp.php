@@ -42,7 +42,7 @@ if (!defined('FOXXEY')) {
 		private $useDayTime 	 = false;		//Use DayTime snd? (Morning, Day, Evening, Night)
 		private $useSeasons 	 = false;		//Use Seasons? (Winter, Spring, Summer, Autumn)
 		private $debug 			 = false;
-		private $showDebugPerSnd = false; 
+		private $showDebugPerSnd = true;		//Showing debug information about every sound
 		
 		/* easter */
 		private $easter			 = 'false';
@@ -122,7 +122,10 @@ if (!defined('FOXXEY')) {
 			),
 			
 			'10' => array(
-			
+				'12' => array(
+					'eventName' => '8bit',
+					'musRange'  => '10'
+				),			
 			),
 			
 			'11' => array(
@@ -137,7 +140,7 @@ if (!defined('FOXXEY')) {
 		private $todaysEventArray;
 		
 		/* MultiSound Alpha*/
-		private $musToGen 		= 1;
+		private $musToGen 		= 10;
 		private $sndToGen 		= 1;
 		
 		/* Output Data */
@@ -148,7 +151,10 @@ if (!defined('FOXXEY')) {
 		
 		/* Debug style */
 		//background: url('data:image/png;base64,') no-repeat;
-		private $pageStyle 		= "<style>body{
+		private $pageStyle 		= "<style>
+									@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&family=Roboto&display=swap');
+									body{
+											font-family: 'Roboto', sans-serif;
 											background-color: #91464661;
 											background-size: cover;
 											background-position: center;
@@ -165,7 +171,7 @@ if (!defined('FOXXEY')) {
 											margin: 0;
 										}
 									</style>"; 
-		private $baseDebugStyle = 'border: 1px dashed #a76565; padding: 30px 40px; border-radius: 10px; width: fit-content; margin: 15px;';
+		private $baseDebugStyle = 'border: 1px dashed #a76565; padding: 30px 40px; border-radius: 10px; width: fit-content; margin: 0 auto;';
 		private $audioGenStyle 	= 'border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px 2px;';
 		
 		function __construct($debug = false){
@@ -192,8 +198,17 @@ if (!defined('FOXXEY')) {
 			$this->selectCurrentEvent($this->dayToday, $this->monthToday);
 			$this->maxDuration($debug);
 			if($debug){
-				echo '<h1><i>startUpSound '.$this->serverVersion.'</h1></i>';
-				$this->debugScreen();
+				if(!isset($_REQUEST['startUpSoundAPI'])) {
+					echo '<h1><i style="color: #ce903e">startUpSound '.$this->serverVersion.'</h1></i>';
+					$this->debugScreen();
+				}
+			}
+			
+			if(isset($_REQUEST['startUpSoundAPI'])) {
+				$easterMusNum = count(functions::filesInDirArray($this->AbsolutePath.'/'.$this->eventNow.'/'.$this->musMountPoint.'/easter', '.mp3'));
+				$easterSndNum = count(functions::filesInDirArray($this->AbsolutePath.'/'.$this->eventNow.'/'.$this->sndMountPoint.'/easter', '.mp3'));
+				$api = new startUpSoundAPI($this->serverVersion, $this->musFilesNum, $this->sndFilesNum, $easterMusNum, $easterSndNum, $this->eventNow, $this->cacheFilePath, $this->eventsArray);
+				$api->apiOut();
 			}
 		}
 		
@@ -433,7 +448,7 @@ if (!defined('FOXXEY')) {
 			if($debug === true) {
 					$this->thisEaster[] = '<div style="'.$this->audioGenStyle.'">'.
 							'<h1 style="font-size: large;margin: 0;">Generated '.$of.'</h1>
-							<b>This rand: </b>'.		$easterChance.' <= '.$confRarity.'<br>'.$isEaster.'<br />'.
+							<b>This rand: </b>'.$easterChance.' <= '.$confRarity.'<br>'.$isEaster.'<br />'.
 							'</div>';
 			}
 		}
@@ -448,14 +463,14 @@ if (!defined('FOXXEY')) {
 
 				<div class = "totalInfo">
 					<b>MusFilesNum: 	</b>'	.$this->musFilesNum.'					<br />
-					<b>MusRange: 		</b>'	.$this->todaysEventArray["musRange"].'	<br />
+					<b>MusRange: 		</b>'	.$this->musRange.'	<br />
 					<b>MusToGenAmmount: </b>'	.$this->musToGen.'						<br />
 					<b>Mus duration:	</b> '	.$this->durationMus.'					<br />'.'
 				</div>
 
 				<div class = "totalInfo">
 					<b>SndFilesNum: 	</b>'	.$this->sndFilesNum.'					<br />
-					<b>SndRange: 		</b>'	.$this->todaysEventArray["sndRange"].'	<br />
+					<b>SndRange: 		</b>'	.$this->sndRange.'	<br />
 					<b>SndToGenAmmount: </b>'	.$this->sndToGen.'						<br />
 					<b>Snd duration: 	</b>'	.$this->durationSnd.'					<br />
 				</div>

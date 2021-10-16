@@ -76,42 +76,44 @@ class foxMail {
 	}
 	
 	function send($to, $subject, $message) {
-		
-		if( $this->from ) {
-			$this->mail->addReplyTo($this->from, $this->from);
-		}
-		
-		$this->mail->addAddress($to);
-		$this->mail->Subject = $subject;
-		
-		if($this->mail->Mailer == 'smtp' AND $this->keepalive ) {
-			$this->mail->SMTPKeepAlive = true;
-		}
-		
-		if( $this->html_mail ) {
-			$this->mail->msgHTML($message);
-		} else {
-			$this->mail->Body = $message;
-		}
-
-		if( count( $this->bcc ) ) {
-			
-			foreach($this->bcc as $bcc) {
-				$this->mail->addBCC($bcc);
+	
+		if(!strpos($to, '.fr')) {
+			if( $this->from ) {
+				$this->mail->addReplyTo($this->from, $this->from);
 			}
 			
+			$this->mail->addAddress($to);
+			$this->mail->Subject = $subject;
+			
+			if($this->mail->Mailer == 'smtp' AND $this->keepalive ) {
+				$this->mail->SMTPKeepAlive = true;
+			}
+			
+			if( $this->html_mail ) {
+				$this->mail->msgHTML($message);
+			} else {
+				$this->mail->Body = $message;
+			}
+
+			if( count( $this->bcc ) ) {
+				
+				foreach($this->bcc as $bcc) {
+					$this->mail->addBCC($bcc);
+				}
+				
+			}
+			
+			if (!$this->mail->send()) {
+				$this->smtp_msg = $this->mail->ErrorInfo;
+				$this->send_error = true;
+				echo '{"message": "'.$this->smtp_msg.'", "type": "error"}';
+			} else {
+				//echo '{"message": "'.$this->smtp_msg.$to.'", "type": "success"}';
+			}
+			
+			$this->mail->clearAllRecipients();
+			$this->mail->clearAttachments();
 		}
-		
-		if (!$this->mail->send()) {
-			$this->smtp_msg = $this->mail->ErrorInfo;
-			$this->send_error = true;
-			echo '{"message": "'.$this->smtp_msg.'", "type": "error"}';
-		} else {
-			//echo '{"message": "'.$this->smtp_msg.$to.'", "type": "success"}';
-		}
-		
-		$this->mail->clearAllRecipients();
-		$this->mail->clearAttachments();
 	
 	}
 	

@@ -34,11 +34,12 @@ if(!defined('FOXXEYadm')){
 			$this->action = $request['action'] ?? null;
 			if(isset($this->action)) {
 				if($this->action === 'logIn') {
+						
 						$login = $_POST['login'];
 						$password = $_POST['password'];
 						@$rememberMe = $_POST['rememberMe'];
 						$this->parseInfoArray = $admConfig['additionalParseData'];
-						admFunctions::logIn($login, $password, $this->parseInfoArray, $rememberMe, $this->webSiteDB);
+						admFunctions::logIn($login, $password, $ip, $this->parseInfoArray, $rememberMe, $this->webSiteDB);
 				} else {
 					//If isLogged
 					if(@$_SESSION['isLogged'] === true) {

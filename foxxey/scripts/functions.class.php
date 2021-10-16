@@ -176,6 +176,50 @@ if(!defined('FOXXEY')) {
 				
 				return $returnArray;
 			}
+			
+			public static function getServersList($db, $server = null, $data = null){
+				$ans;
+				if($server == null){
+					$query = "SELECT * FROM `servers`";
+					$servers = $db::getRows($query);
+					foreach($servers as $key) {
+						$ans[] = $key['Server_name'];
+					}
+				} else {
+					if($data) {
+						$query = "SELECT * FROM `servers` WHERE Server_name = '".$server."'";
+						$servers = $db::getRow($query);
+						$ans = $servers[$data];
+					} else {
+						die('{"message": "No data!"}');
+					}
+				}
+
+				
+				return $ans;
+			}
+			
+			public static function checkDir($modpack, $db){
+				$thisVersion = functions::getServersList($db, $modpack, 'version');
+				$scanArray = array(FILES_DIR.'clients/modpacks/'.$modpack, FILES_DIR.'clients/versions/'.$thisVersion);
+				foreach($scanArray as $key){
+				$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($key), RecursiveIteratorIterator::SELF_FIRST);
+					foreach($objects as $name => $object) {
+					$basename = basename($name);
+						$isdir = is_dir($name);
+						if ($basename!="." and $basename!=".." and !is_dir($name)){
+							$str = str_replace(ROOT_DIR, "", str_replace($basename, "", $name));
+								$fileOBJ[] = 
+								[
+									'filename' => $str.$basename,
+									'hash'     => md5($name),
+									'size'     => strval(filesize($name))
+								];
+						}
+					}
+				}
+				return json_encode($fileOBJ, JSON_UNESCAPED_SLASHES);
+			}
 
 			public static function shortDateToUnix($tempTime){
 				
@@ -209,7 +253,7 @@ if(!defined('FOXXEY')) {
 					break;
 				}
 					$totalTime = $duraion * $timeToBan + CURRENT_TIME;
-					
+
 					return $totalTime;
 		}
 			

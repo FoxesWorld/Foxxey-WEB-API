@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: database.class.php
 -----------------------------------------------------
- Verssion: 0.1.2.0 Experimental
+ Verssion: 0.1.2.1 Experimental
 -----------------------------------------------------
  Usage: Database class
 =====================================================
@@ -22,27 +22,31 @@ if(!defined('FOXXEY')) {
 
 class db {
 
-  const CHARSET = 'utf8';
+  //const CHARSET = 'utf8';
  
   private static $db;
 
-  public function __construct($db_user, $db_pass, $db_name, $db_location = 'localhost', $show_error=1){
-      try {
-        db::$db = new PDO(
-          'mysql:host='.$db_location.';dbname='.$db_name,
-          $db_user,
-          $db_pass,
-          $options = [
-              PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-              PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-              PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES ".self::CHARSET
-          ]
-        );
-      } catch (PDOException $e) {
-		  $query = strval($e->queryString);
-		  $message = $e->getMessage();
-		  functions::display_error($message, $query, '1');
-      }
+  public function __construct($db_user, $db_pass, $db_name, $db_location = 'localhost'){
+	  //if(!self::$db) {
+		  try {
+			db::$db = new PDO(
+			  'mysql:host='.$db_location.';dbname='.$db_name,
+			  $db_user,
+			  $db_pass,
+			  $options = [
+				  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+				  PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+				  PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES 'utf8'"
+			  ]
+			);
+		  } catch (PDOException $e) {
+			  $query = strval($e->queryString);
+			  $message = $e->getMessage();
+			  functions::display_error($message, $query, '1');
+		  }
+
+		  return self::$db;
+	  //}
   }
  
   /**

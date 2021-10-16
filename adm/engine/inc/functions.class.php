@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions.class.php
 -----------------------------------------------------
- Version: 0.1.7.1 Experimental
+ Version: 0.1.8.2 Experimental
 -----------------------------------------------------
  Usage: All adminPanel functions
 =====================================================
@@ -54,43 +54,48 @@ if(!defined('FOXXEYadm')){
 			return $currentDate;
 		}
 		
-		public static function logIn($login, $password, $parseInfoArray, $rememberMe, $db) {
+		public static function logIn($login, $password, $ip, $parseInfoArray, $rememberMe, $db) {
 			global $config, $admConfig;
-			$group = json_decode(admFunctions::getUserData($login, 'user_group', $db)) -> user_group ?? null;
+			if($login && $password) {
+				$group = json_decode(admFunctions::getUserData($login, 'user_group', $db)) -> user_group ?? null;
 
-			if(!in_array($group, $admConfig['groupsToShow'])){
-				exit('{"message": "Insufficent rights!", "type": "warn"}');
-			} else {
-				$passwordDB = json_decode(admFunctions::getUserData($login, 'password', $db)) -> password ?? null;
-				if(password_verify($password, $passwordDB)) {
-							
-						//Parsing userInfo
-						foreach($parseInfoArray as $key){
-							$val = json_decode(admFunctions::getUserData($login, $key['name'], $db)) -> {$key['name']};
-							$val = self::textTypeFormatting($val, $key['type']);
-							$_SESSION[$key['name']] = $val;
-						}
-							
-					//Defining systemData
-					$_SESSION['login']    = $login;
-					$_SESSION['pass'] 	  = $password;
-					$_SESSION['isLogged'] = true;
-
-					if($rememberMe) {
-						session_write_close();
-						ini_set('session.cookie_lifetime', 0);
-						session_set_cookie_params(0);
-					}
-					die('{"type": "success", "message": "Successful authorisation!"}');
+				if(!in_array($group, $admConfig['groupsToShow'])){
+					exit('{"message": "Insufficent rights!", "type": "warn"}');
 				} else {
-					//WIP
-					require (SCRIPTS_DIR.'modules/module_antiBrute.class.php');
-						if($config['useAntiBrute'] === true) {
-							//$launcherDB = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);
-							//$antiBrute = new antiBrute($this->ip, $launcherDB, $config['antiBruteDebug']);
+					$passwordDB = json_decode(admFunctions::getUserData($login, 'password', $db)) -> password ?? null;
+					if(password_verify($password, $passwordDB)) {
+								
+							//Parsing userInfo
+							foreach($parseInfoArray as $key){
+								$val = json_decode(admFunctions::getUserData($login, $key['name'], $db)) -> {$key['name']};
+								$val = self::textTypeFormatting($val, $key['type']);
+								$_SESSION[$key['name']] = $val;
+							}
+								
+						//Defining systemData
+						$_SESSION['login']    = $login;
+						$_SESSION['pass'] 	  = $password;
+						$_SESSION['isLogged'] = true;
+
+						if($rememberMe) {
+							session_write_close();
+							ini_set('session.cookie_lifetime', 0);
+							session_set_cookie_params(0);
 						}
-					die('{"message": "Incorrect login or password", "type": "error"}');
+						die('{"type": "success", "message": "Successful authorisation!"}');
+					} else {
+							require (SCRIPTS_DIR.'/functions.class.php');
+							require (SCRIPTS_DIR.'modules/module_antiBrute.class.php');
+							require (SCRIPTS_DIR.'modules/module_randTexts.class.php');
+							if($config['useAntiBrute'] === true) {
+								$launcherDB = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);
+								$antiBrute = new antiBrute($ip, $launcherDB, $config['antiBruteDebug']);
+							}
+						die('{"message": "Incorrect login or password", "type": "error"}');
+					}
 				}
+			} else {
+				exit('{"message": "Sent not all the data!", "type": "error"}');
 			}
 		}
 		
@@ -130,8 +135,11 @@ if(!defined('FOXXEYadm')){
 			global $config;
 			if(file_exists($config['authLog'])) {
 				unlink($config['authLog']);
+				die('{"message": "Log was cleared!", "type": "success"}');
+			} else {
+				die('{"message": "LogFile is empty!", "type": "error"}');
 			}
-			die('{"message": "Log was cleared!", "type": "success"}');
+			
 		}
 		
 		//Used in authorisation
