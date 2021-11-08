@@ -85,6 +85,7 @@ class Authorise {
 			//FILTRATING INPUT DATA
 				$this->login = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->login)));
 				$this->pass  = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->pass)));
+				$this->HWID  = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->HWID)));
 			//*********************
 			
 			//Getting AUTH USERDATA
@@ -94,7 +95,7 @@ class Authorise {
 			$this->fullname  = json_decode($this->webSiteFunc->getUserData($this->login, 'fullname'))	-> fullname   ?? functions::getUserName();
 			
 			if($this->login == '' || $this->pass == '') {
-				exit('{"message": "'.$message['dataNotIsset'].'"}');
+				exit('{"message": "'.$message['dataNotIsset'].$this->login.$this->pass.'"}');
 			} else {
 				//Getting user login location
 				if($config['geoIPcheck'] === true) {
@@ -111,7 +112,7 @@ class Authorise {
 				}
 
 				//IF RealName is Null
-				if($this->realName == null || $this->realPass == null) {
+				if($this->realName == null) {
 					static::$LoggerAuth->WriteLine($this->login.' is an unreal user and does not exist!');
 					exit('{"message": "'.$message['userNotFound'].'"}');
 				} else {
@@ -165,8 +166,8 @@ class Authorise {
 							// Getting Balance
 							if($config['getBalance'] === true) {
 								if(class_exists('userbalance')) {
-									$balance = new userbalance($this->login, false);
-									$units = $balance->getUserBalance()['realmoney'];
+									$balance = new userbalance($this->login, 'realmoney', false);
+									$units = $balance->getUserBalance();
 								} else {
 									$units = 100500;
 									echo '{"message": "Module userbalance not found!", "desc": "Balance can`t be parsed!"},';

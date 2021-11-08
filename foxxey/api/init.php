@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.0.0 Alpha
+ Version: 0.1.0.1 Alpha
 -----------------------------------------------------
  Usage: Initialiasing API (After primary init)
 =====================================================
@@ -29,6 +29,8 @@
 					$this->request = $request;
 					require ('apiFunctions.class.php');
 					$apiFuncftions = new apiFuncftions($ip, $userDataDB, $launcherDB, $_REQUEST);
+				} else {
+					die('{"message": "Undefined Request!"}');
 				}
 			} else {
 				die('{"message": "Undefined IP!"}');

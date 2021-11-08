@@ -73,7 +73,7 @@ $config = array(
 	'mountDir' 			=> SITE_ROOT."/foxxeyData/startUpSoundRepo",
 	'enableVoice' 		=> true,
 	'enableMusic' 		=> true,
-	'easterMusRarity'   => 1,
+	'easterMusRarity'   => 1000,
 	'easterSndRarity'	=> 1,
 	
 	/* E-mail */

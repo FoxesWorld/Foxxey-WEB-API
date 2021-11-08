@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.0.0 Beta
+ Verssion: 0.1.1.0 Beta
 -----------------------------------------------------
  Usage: Parsing userbalance
 =====================================================
@@ -30,17 +30,20 @@ if(!defined('Authorisation')) {
 		private $realUser;
 		
 		protected $balance;
+		protected $currency;
 		protected $realmoney;
 		protected $bonuses;
 		private $db;
 
 		/**
 		 * userbalance constructor.
-		 * @param $login
-		 * @param bool $debug
+		 * @param $login (String)
+		 * @param $currency (String)
+		 * @param bool $debug (Bool)
 		 */
-		function __construct($login, $debug = false){
+		function __construct($login, $currency, $debug = false){
 			global $config;
+			$this->currency = $currency;
 			$this->login = $login;
 			$this->debug = $debug;
 			$this->db = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata'], $config['db_host']);
@@ -63,10 +66,11 @@ if(!defined('Authorisation')) {
 						  "<b>Realmoney: </b>".$this->realmoney."<br>".
 						  "<b>Bonuses: </b>".$this->bonuses;
 				}
-
-			return array("units" 	 => $this->balance,
-						 "realmoney" => $this->realmoney,
-						 "bonuses"	 => $this->bonuses);
+				$outArray = array(
+				"units" 	 => $this->balance,
+				"realmoney"  => $this->realmoney,
+				"bonuses"	 => $this->bonuses);
+			return $outArray[$this->currency];
 			}
 		}
 		

@@ -42,6 +42,7 @@ class updater {
 
 	public function __construct($inputString, $debug = false) {
 		$inputString = json_decode($inputString, true);
+		//Use Cycle!!!
 		updater::$updaterBitDepth = $inputString['b'];	//BitDepth
 		updater::$osName 		  = $inputString['n']; //OsName
 		updater::$JREversion 	  = $inputString['v'];   //JREversion

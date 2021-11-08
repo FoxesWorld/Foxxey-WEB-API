@@ -9,5 +9,6 @@ define('FOXXEY', true);
 	$init = new init(REMOTE_IP, 'updater');
 	$list = list($path, $qs) = explode("?", $_SERVER["REQUEST_URI"], 2);
 	$inputText = base64_decode($qs);
+	//echo 'Sent Request - '.$inputText."\n";
 	$updater = new updater($inputText);
 	
