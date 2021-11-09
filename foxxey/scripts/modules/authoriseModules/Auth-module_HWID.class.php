@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: HWID.class.php
 -----------------------------------------------------
- Version: 0.1.11.0 Gamma
+ Version: 0.1.11.1 Delta
 -----------------------------------------------------
  Usage: Get and synchronise user's HWID
 =====================================================
@@ -197,7 +197,7 @@ if(!defined('Authorisation')) {
 			$mail = new foxMail(1);
 			$mailTpl = $mail->getTemplate('changeHWID');
 				$replaceArr = array("{login}", "{IP}", "{toGetFromNikitaFox}", "{Credits}", "{resetLink}");
-				$replacerArr = array($login, $ip, 'Данные нового ПК (Система, процессор и так далее..)', $credits, 'https://api.foxesworld.ru/launcher.php?changeHWID='.$hash);
+				$replacerArr = array($login, $ip, 'Данные нового ПК (Система, процессор и так далее..)', $credits, 'https://api.foxesworld.ru/renewHWID/'.$hash);
 				$sendText = str_replace($replaceArr, $replacerArr, $mailTpl);
 			$mail->send($sendTo, $sendTitle, $sendText);
 		}
