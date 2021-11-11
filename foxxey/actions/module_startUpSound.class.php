@@ -199,8 +199,8 @@ if (!defined('FOXXEY')) {
 			$this->generateSound(static::$debug);
 			$this->maxDuration(static::$debug);
 			if(isset($_REQUEST['startUpSoundAPI'])) {
-				$easterMusNum = count(functions::filesInDirArray(static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$musMountPoint.'/easter', '.mp3'));
-				$easterSndNum = count(functions::filesInDirArray(static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$sndMountPoint.'/easter', '.mp3'));
+				$easterMusNum = count(filesInDir::filesInDirArray(static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$musMountPoint.'/easter', '.mp3'));
+				$easterSndNum = count(filesInDir::filesInDirArray(static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$sndMountPoint.'/easter', '.mp3'));
 				$api = new startUpSoundAPI(static::$serverVersion, static::$musFilesNum, static::$soundFilesNum, $easterMusNum, $easterSndNum, static::$eventNow, $this->cacheFilePath, $this->eventsArray);
 				$api->apiOut();
 			}
@@ -298,7 +298,7 @@ if (!defined('FOXXEY')) {
 					}
 
 					if(is_dir($currentMusFolder)) {
-						startUpSound::$musFilesNum = count(functions::filesInDirArray($currentMusFolder, '.mp3'));
+						startUpSound::$musFilesNum = count(filesInDir::filesInDirArray($currentMusFolder, '.mp3'));
 						if(static::$isEasterMus === 'true'){	
 							if(static::$musFilesNum < 1){
 								$currentMusFolder = str_replace('/easter', "", $currentMusFolder);
@@ -363,7 +363,7 @@ if (!defined('FOXXEY')) {
 				$this->easter($config['easterSndRarity'], static::$debug, 'sound');
 				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$sndMountPoint.static::$seasonNow.static::$dayTimeNow.static::$easter;	//Folder of Sounds
 				if(is_dir($currentSoundFolder)) {
-					startUpSound::$soundFilesNum = count(functions::filesInDirArray($currentSoundFolder, '.mp3'));
+					startUpSound::$soundFilesNum = count(filesInDir::filesInDirArray($currentSoundFolder, '.mp3'));
 					if(static::$isEasterSnd === 'true'){	
 						if(startUpSound::$soundFilesNum < 1){
 							$currentSoundFolder = str_replace('/easter', "", $currentSoundFolder);

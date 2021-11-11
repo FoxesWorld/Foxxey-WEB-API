@@ -205,8 +205,8 @@ if (!defined('FOXXEY')) {
 			}
 			
 			if(isset($_REQUEST['startUpSoundAPI'])) {
-				$easterMusNum = count(functions::filesInDirArray($this->AbsolutePath.'/'.$this->eventNow.'/'.$this->musMountPoint.'/easter', '.mp3'));
-				$easterSndNum = count(functions::filesInDirArray($this->AbsolutePath.'/'.$this->eventNow.'/'.$this->sndMountPoint.'/easter', '.mp3'));
+				$easterMusNum = count(filesInDir::filesInDirArray($this->AbsolutePath.'/'.$this->eventNow.'/'.$this->musMountPoint.'/easter', '.mp3'));
+				$easterSndNum = count(filesInDir::filesInDirArray($this->AbsolutePath.'/'.$this->eventNow.'/'.$this->sndMountPoint.'/easter', '.mp3'));
 				$api = new startUpSoundAPI($this->serverVersion, $this->musFilesNum, $this->sndFilesNum, $easterMusNum, $easterSndNum, $this->eventNow, $this->cacheFilePath, $this->eventsArray);
 				$api->apiOut();
 			}
@@ -249,7 +249,7 @@ if (!defined('FOXXEY')) {
 							}
 
 							if(is_dir($currentMusFolder)) {
-								$this->musFilesNum = count(functions::filesInDirArray($currentMusFolder, '.mp3'));
+								$this->musFilesNum = count(filesInDir::filesInDirArray($currentMusFolder, '.mp3'));
 								if($this->isEasterMus === 'true'){
 									if($this->musFilesNum < 1){
 										$currentMusFolder = str_replace('/easter', "", $currentMusFolder);
@@ -300,7 +300,7 @@ if (!defined('FOXXEY')) {
 							$this->easter($config['easterSndRarity'], $this->debug, 'sound');
 							$currentSoundFolder = $this->AbsolutePath.'/'.$this->eventNow.'/'.$this->sndMountPoint.$this->seasonNow.$this->dayTimeNow.$this->easter;
 							if(is_dir($currentSoundFolder)) {
-								$this->sndFilesNum = count(functions::filesInDirArray($currentSoundFolder, '.mp3'));
+								$this->sndFilesNum = count(filesInDir::filesInDirArray($currentSoundFolder, '.mp3'));
 									if($this->isEasterSnd === 'true'){
 										if($this->sndFilesNum < 1){
 											$currentSoundFolder = str_replace('/easter', "", $currentSoundFolder);

@@ -1,0 +1,53 @@
+<?php
+/**
+ * Script to get list of files with !ignoreFiles option
+ *
+ * @version	2021.11.11
+ * @author  Aiden Fox
+ * @link    https://github.com/AidenF0X
+ * @license	GNU/GPL http://www.gnu.org/licenses/gpl.html
+ 
+ * FOXXEY library file `dbPrepare`
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
+if(!defined('FOXXEY')) {
+	die ('{"message": "Not in FOXXEY thread"}');
+}
+	class dbPrepare {
+		
+		private $dbHost;
+		private $dbPort;
+		private $dbUser;
+		private $dbPass;
+		private $dbName;
+		private $db;
+		private $dbQuery;
+
+		function __construct(){
+			global $config;
+			$this->dbPort = $config['db_port'];
+			$this->dbUser = $config['db_user'];
+			$this->dbPass = $config['db_pass'];
+			$this->dbName = $config['dbname_launcher'];
+			$this->dbHost = $config['db_host'];
+
+			$this->dbQuery = file_get_contents(FOXXEYDATA."fox_launcher.sql");
+			$this->db = new db($this->dbUser, $this->dbPass, $this->dbName, $this->dbHost);
+		}
+		
+		public function dbPrepare(){
+			try {
+				$this->db::run($this->dbQuery);
+			} catch(PDOException $pe) {
+				die('{"message": "Spoiled our SQL"}');
+			}		
+		}
+		
+	}

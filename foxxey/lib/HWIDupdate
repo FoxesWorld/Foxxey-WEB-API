@@ -1,0 +1,38 @@
+<?php
+
+	class HWIDupdate {
+		
+		private static $db;
+		
+		public static function confirmHWIDchange($hash){
+			global $config, $message;
+			self::$db = new db($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
+			$hash = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($hash))));
+			$query = "SELECT * FROM HWIDrenew WHERE hash = '".$hash."'";
+			$data = self::$db->getRow($query);
+				if($data) {
+					$timestamp = $data['timestamp'];
+					if(date::checkTime($timestamp) === false){
+						$login = $data['login'];
+						$hwidNew = $data['newHWID'];
+						self::changeNewHWID($login, $hwidNew);
+						die('{"message": "'.$message['Success'].'"}');
+					} else {
+						die('{"message": "'.$message['oldToken'].'"}');
+					}
+				} else {
+					die('{"message": "'.$message['cantFindHash'].'"}');
+				}
+		}
+		
+		private static function changeNewHWID($login, $hwidNew) {
+			global $message;
+			$queryChange = "UPDATE usersHWID SET `hwid`='".$hwidNew."' WHERE login = '".$login."'";
+			$queryDelete = "DELETE FROM HWIDrenew WHERE login = '".$login."'";
+			$data = self::$db->run($queryChange.';'.$queryDelete);
+			if(!$data){
+				die('{"message": "'.$message['Failed'].'"}');
+			}
+		}
+	
+	}

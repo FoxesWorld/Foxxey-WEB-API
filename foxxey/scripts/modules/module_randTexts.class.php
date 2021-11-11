@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: randTexts.class.php
 -----------------------------------------------------
- Verssion: 0.1.3.1 Alpha
+ Verssion: 0.1.4.1 Alpha
 -----------------------------------------------------
  Usage: Generate random text to entertain user
 =====================================================
@@ -64,6 +64,31 @@ if (!defined('FOXXEY')) {
 		
 		private function prepareWorkDir(){
 			//WIP
+		}
+
+		public static function getUserName(){
+			global $config;
+				if(class_exists('randTexts')) {
+					$randTexts = new randTexts('noName', $config['randTextsDebug']);
+						$name = $randTexts->textOut();
+					} else {
+						echo '{"message": "Module randTexts not found!", "desc": "Can`t say an unknown user who is he today!"},';
+						$name = 'Unnamed user';
+					}
+				return $name;
+			}
+		
+
+		public static function wrongHWIDmessage(){
+			global $config;
+					if(class_exists('randTexts')) {
+						$randTexts = new randTexts('wrongHWID', $config['randTextsDebug']);
+						$name = $randTexts->textOut();
+					} else {
+						echo '{"message": "Module randTexts not found!", "desc": "Can`t say user how wrong he is!"},';
+						$name = 'Incorrect HWID';
+					}
+			return $name;
 		}
 	
 	}

@@ -32,7 +32,7 @@
 			
 			if($toDate !== "" && $toDate !== NULL) {
 				$this->toDate = $toDate;
-				$this->banTime = functions::shortDateToUnix($toDate);
+				$this->banTime = date::shortDateToUnix($toDate);
 				$this->banIP();
 			}
 		}

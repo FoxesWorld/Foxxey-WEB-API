@@ -118,8 +118,9 @@ if($config['debugStartUpSound'] === false) {
 									$antiBrute = new antiBrute($this->ip, $this->launcherDB, $config['antiBruteDebug']);
 								}
 							}
-						$hashUpdate  = new functions($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
-						$hashUpdate->confirmHWIDchange($requestValue);
+						//$hashUpdate  = new functions($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
+						//$hashUpdate->confirmHWIDchange($requestValue);
+						HWIDupdate::confirmHWIDchange($requestValue);
 				   break;
 				   
 				   case 'BuildInfo':

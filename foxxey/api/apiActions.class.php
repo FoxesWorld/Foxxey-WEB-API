@@ -97,7 +97,7 @@ header("Content-Type: application/json; charset=UTF-8");
 					   break;
 						   
 					   default:
-							die('{"message": "Unknown API request `'.$requestTitle.'`!"}');
+							die('{"message": "Unknown API request `'.$request.'`!"}');
 			}
 		}
 	

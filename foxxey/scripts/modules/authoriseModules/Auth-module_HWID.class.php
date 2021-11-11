@@ -20,6 +20,8 @@ if(!defined('Authorisation')) {
 	die('{"message": "Not in authorisation thread"}');
 }
 
+/*			OLD MAGIC			*/
+
 	class HWID extends Authorise {
 		
 		protected $login;
@@ -141,7 +143,7 @@ if(!defined('Authorisation')) {
 				//If we dont find a user with an existing account to this HWID
 				if($this->getUserNameByHWID() == NULL) {
 					//If we finf a request with non expired data
-					if(functions::checkTime(intval($lastSentRequest)) === false) {
+					if(date::checkTime(intval($lastSentRequest)) === false) {
 						die('{"message": "'.str_replace('{login}', $login, $message['HWIDcrqstWasSent']).'"}');
 					} else {
 						$this->removeHWIDresetRequest($login);
@@ -159,7 +161,7 @@ if(!defined('Authorisation')) {
 
 		private function addDBtoken($login, $newHWID, $email, $ip){
 			global $config, $message;
-			$hwidHash = functions::generateLoginHash();
+			$hwidHash = authorize::generateLoginHash();
 			$timeAwait = CURRENT_TIME + 86400;
 			$query = "INSERT INTO `HWIDrenew`(`login`, `newHWID`, `timestamp`, `hash`) VALUES ('".$login."','".$newHWID."','".$timeAwait."','".$hwidHash."')";
 			$this->launcherDB->run($query);

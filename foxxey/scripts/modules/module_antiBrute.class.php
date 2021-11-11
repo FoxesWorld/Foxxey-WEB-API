@@ -60,7 +60,7 @@ if (!defined('FOXXEY')) {
 				$this->banIp();
 			}
 
-			if(functions::checkTime($this->DBtime) === false){
+			if(date::checkTime($this->DBtime) === false){
 				if(class_exists('randTexts')) {
 					$randTexts = new randTexts('antiBrute', $config['randTextsDebug']);
 					exit ('{"message": "'.$randTexts->textOut().'"}');

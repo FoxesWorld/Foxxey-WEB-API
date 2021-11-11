@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.15.6 Alpha
+ Verssion: 0.1.16.6 Alpha
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -39,7 +39,7 @@ class Authorise {
 		private $ip;
 		private $HWIDstatus;
 		private $database;
-		private $webSiteFunc;
+		private $webSiteDB;
 		private $launcherDB;
 		private $randTexts;
 		private $noName;
@@ -64,7 +64,7 @@ class Authorise {
 			global $config;
 			Authorise::IncludeAuthModules();
 			try {
-				$this->webSiteFunc  = new functions($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
+				$this->webSiteDB  = new db($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
 			} catch(PDOException $pe) {
 				
 			}
@@ -89,10 +89,9 @@ class Authorise {
 			//*********************
 			
 			//Getting AUTH USERDATA
-			$this->realName  = json_decode($this->webSiteFunc->getUserData($this->login, 'name'))		-> name		  ?? null;
-			$this->realPass  = json_decode($this->webSiteFunc->getUserData($this->login, 'password'))	-> password	  ?? null;
-			$this->realMail  = json_decode($this->webSiteFunc->getUserData($this->login, 'email'))		-> email	  ?? null;
-			$this->fullname  = json_decode($this->webSiteFunc->getUserData($this->login, 'fullname'))	-> fullname   ?? functions::getUserName();
+			$this->realName  = json_decode($this->getUserData($this->login, 'name'))		-> name		  ?? null;
+			$this->realPass  = json_decode($this->getUserData($this->login, 'password'))	-> password	  ?? null;
+			$this->realMail  = json_decode($this->getUserData($this->login, 'email'))		-> email	  ?? null;
 			
 			if($this->login == '' || $this->pass == '') {
 				exit('{"message": "'.$message['dataNotIsset'].$this->login.$this->pass.'"}');
@@ -156,12 +155,12 @@ class Authorise {
 						if($this->HWIDstatus === 'true'){ //If HWID is correct
 								static::$LoggerAuth->WriteLine('Successful authorisation for '.$HWIDuser.' with the correct HWID');
 								$this->successfulAuth($this->login);
-								functions::passwordReHash($this->pass, $this->realPass, $this->realName);
+								authorize::passwordReHash($this->pass, $this->realPass, $this->realName);
 								
 								//GETTING PERSONAL DATA
-								$this->fullname  = json_decode($this->webSiteFunc->getUserData($this->login, 'fullname'))	-> fullname   ?? functions::getUserName();
-								$this->userGroup = json_decode($this->webSiteFunc->getUserData($this->login, 'user_group'))	-> user_group ?? 4;
-								$this->regDate 	 = json_decode($this->webSiteFunc->getUserData($this->login, 'reg_date'))	-> reg_date	  ?? null;
+								$this->fullname  = json_decode($this->getUserData($this->login, 'fullname'))	-> fullname   ?? randTexts::getUserName();
+								$this->userGroup = json_decode($this->getUserData($this->login, 'user_group'))	-> user_group ?? 4;
+								$this->regDate 	 = json_decode($this->getUserData($this->login, 'reg_date'))	-> reg_date	  ?? null;
 
 							// Getting Balance
 							if($config['getBalance'] === true) {
@@ -213,6 +212,19 @@ class Authorise {
 		private function successfulAuth($login) {
 			$query = "INSERT INTO `successfulAuth`(`login`) VALUES ('".$login."')";
 			$this->launcherDB::run($query);
+		}
+		
+		public function getUserData($login,$data){
+			$query = "SELECT $data FROM dle_users WHERE name = '$login'";
+			$selectedValue = $this->webSiteDB->getRow($query);
+				if($selectedValue["$data"]){
+						$gotData = $selectedValue["$data"];
+						$answer = array('type' => 'success', 'username' => $login, $data => $gotData);
+						$answer = json_encode($answer);
+					} else {
+						$answer = "{'type', 'error', 'message', 'login not found'}";
+					}
+			return $answer;
 		}
 		
 		private function incorrectPass($login, $HWIDuser) {
