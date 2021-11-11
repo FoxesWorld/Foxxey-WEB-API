@@ -61,7 +61,7 @@
 					case 'launcher':	
 						$dbPrepare = new dbPrepare;
 						$dbPrepare->dbPrepare();
-						require(SCRIPTS_DIR.'actionScript.php');
+						require(SITE_ROOT.'/actionScript.lib');
 						$action = new actionScript($launcherDB, $userDataDB, $ip);
 					break;
 					

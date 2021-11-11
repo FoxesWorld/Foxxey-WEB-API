@@ -35,7 +35,7 @@ if (!defined('FOXXEY')) {
 		 * @param bool $debug
 		 */
 		function __construct($textType, $debug = false){
-			$this->textsDir = SITE_ROOT.'/messages/randTexts/';
+			$this->textsDir = FOXXEYDATA.'messages/randTexts/';
 			$this->debug = $debug;
 			$this->textToSend = $textType;
 

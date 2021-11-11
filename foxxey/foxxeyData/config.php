@@ -123,4 +123,4 @@ $config = array(
 		  "12" => "декабря"
 			));
 
-require (SITE_ROOT.'/messages/messages.lng');
+require (FOXXEYDATA.'messages/messages.lng');
