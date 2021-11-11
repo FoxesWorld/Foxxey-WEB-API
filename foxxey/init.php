@@ -9,7 +9,7 @@
 -----------------------------------------------------
  This code is reserved
 -----------------------------------------------------
- File: config.php
+ File: init.php
 -----------------------------------------------------
  Version: 0.1.6.4 Alpha
 -----------------------------------------------------
@@ -54,6 +54,7 @@
 			functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug'], $this->validModules);
 			$this->longTermBan = new longTermBan($ip, $launcherDB);
 			if($this->longTermBan->checkBan() === false) {
+				functions::libFilesInclude();
 
 				switch($initType){
 					case 'launcher':	
@@ -82,4 +83,3 @@
 			}
 		}
 	}
-	

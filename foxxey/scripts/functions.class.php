@@ -121,7 +121,7 @@ if(!defined('FOXXEY')) {
 				if($debug === true){ $visualCounter = 1; echo "Modules to include: \n";}
 				switch ($modulesArray) {
 					case null:
-						$filesAray = functions::filesInDirArray($dirInclude,'.php');
+						$filesAray = filesInDir::filesInDirArray($dirInclude,'.php');
 						$count = count($filesAray);
 						for($i = 0; $i < $count; $i++){
 							if($debug === true){ echo $visualCounter.') '.$filesAray[$i]."\n";$visualCounter++;}
@@ -161,7 +161,7 @@ if(!defined('FOXXEY')) {
 			}
 			
 			public static function modulesInit() {
-				$allModules = functions::filesInDirArray(SCRIPTS_DIR.'modules','.php');
+				$allModules = filesInDir::filesInDirArray(SCRIPTS_DIR.'modules','.php');
 				for($i = 0; $i < count($allModules); $i++){
 					if(strpos($allModules[$i],'.wip.')) {
 						$wipModules[] = $allModules[$i];
@@ -257,6 +257,7 @@ if(!defined('FOXXEY')) {
 					return $totalTime;
 			}
 			
+			//Deprecated (To be removed)
 			public static function filesInDirArray ($dir, $fileMask){
 				$files = array();
 				if(is_dir($dir)) {
@@ -274,6 +275,18 @@ if(!defined('FOXXEY')) {
 					return 'Directory not found - '.$dir;
 				}
 				return $files;
+			}
+			
+			public static function libFilesInclude(){
+				$libDir = SITE_ROOT.'/lib';
+				$openDir = opendir($libDir);
+				while($file = readdir($openDir)){
+					if($file == '.' || $file == '..'){
+						continue;
+					} else {
+						require_once ($libDir.'/'.$file);
+					}
+				}
 			}
 
 			public static function getUserName(){

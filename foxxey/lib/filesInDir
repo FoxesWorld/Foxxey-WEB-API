@@ -1,0 +1,84 @@
+<?php
+/**
+ * Script to get list of files with !ignoreFiles option
+ *
+ * @version	2021.11.11
+ * @author  Aiden Fox
+ * @link    https://github.com/AidenF0X
+ * @license	GNU/GPL http://www.gnu.org/licenses/gpl.html
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
+	class filesInDir {
+
+		private static $ignoreFileName = '!ignoredFiles';
+		private static $explodeSymbol = ',';
+		public static $allFilesArray = array();
+		public static $ignoreFilesArray = array();
+		private static $ignoreFilePath  = array();
+
+		public static function filesInDirArray($path, $mask, $useIgnoreFile = true, $debug = false){
+			if(is_dir($path)) {
+				$openDir = opendir($path);
+				self::$ignoreFilePath = $path.'/'.self::$ignoreFileName;
+				self::$ignoreFilesArray = self::getIgnoreFile($debug);
+					while($file = readdir($openDir)){
+						if($file == '.' || $file == '..'){
+							continue;
+						} else {
+							if($file !== self::$ignoreFileName) {
+								if($mask == '*'){
+									$files[] = $file;
+								} else {
+									if(strpos($file, $mask) !== false){
+											$files[] = $file;
+									}
+								}
+							}
+						}
+					}
+			} else {
+				return 'Directory not found - '.$path;
+			}
+
+			self::$allFilesArray = $files ?? array('');
+			if($useIgnoreFile) {
+				return self::filterFiles(self::$allFilesArray, self::$ignoreFilesArray, $debug);
+			} else {
+				return self::$allFilesArray;
+			}
+		}
+
+		private static function getIgnoreFile($debug = false){
+			if(file_exists(self::$ignoreFilePath)) {
+				if($debug) echo 'Ignore file was found! <br/>';
+				$fileContents = (Array) file(self::$ignoreFilePath);
+				$exploded = @explode(self::$explodeSymbol, $fileContents[0]);
+				if(count($exploded) > 0) {
+					$explodedArray = $exploded;
+					if(count($explodedArray) < 2) {
+						$explodedArray = $fileContents;
+					}
+					return $explodedArray; 
+				} else {
+					return array();
+				}
+			} else {
+				return array();
+				if($debug) echo 'Ignore file not found! <br/>';
+			}
+		}
+
+		private static function filterFiles($allFiles = array(), $ignoreList = array(), $debug = false){
+			$filesArray = array_merge(array_diff($allFiles,$ignoreList),array_diff($ignoreList,$allFiles));
+			sort($filesArray);
+			return array_diff($filesArray, array(''));
+		}
+
+	}

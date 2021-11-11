@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: actionScript.php
 -----------------------------------------------------
- Version: 0.2.5.1 Experimental
+ Version: 0.2.5.2 Experimental
 -----------------------------------------------------
  Usage: Global ACTIONS module hooking
 =====================================================
@@ -114,10 +114,16 @@ if($config['debugStartUpSound'] === false) {
 				   //Changing HWID
 				   case 'changeHWID':
 				   			if($config['useAntiBrute'] === true) {
-								$antiBrute = new antiBrute($this->ip, $this->launcherDB, $config['antiBruteDebug']);
+								if(class_exists('antiBrute')){
+									$antiBrute = new antiBrute($this->ip, $this->launcherDB, $config['antiBruteDebug']);
+								}
 							}
 						$hashUpdate  = new functions($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
 						$hashUpdate->confirmHWIDchange($requestValue);
+				   break;
+				   
+				   case 'BuildInfo':
+						die('{"message": "DarkFoxes was here!"}');
 				   break;
 
 				   default:
