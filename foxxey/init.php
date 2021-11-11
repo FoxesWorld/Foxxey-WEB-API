@@ -48,13 +48,14 @@
 				$launcherDB = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);				
 
 			//Modules Initialising
+			functions::libFilesInclude();  // Base Functions (Will replace deprecated modules)
 			$this->allModules	= functions::modulesInit();
 			$this->validModules = $this->allModules['validModules'];
 			$this->wipModules 	= $this->allModules['wipModules'];
 			functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug'], $this->validModules);
 			$this->longTermBan = new longTermBan($ip, $launcherDB);
 			if($this->longTermBan->checkBan() === false) {
-				functions::libFilesInclude();
+				
 
 				switch($initType){
 					case 'launcher':	
