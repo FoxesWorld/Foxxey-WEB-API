@@ -119,7 +119,7 @@ class foxMail {
 	
 	function getTemplate($name) {
 		ob_start();
-		include (FOXXEYDATA.'mail/'.$name.".tpl");
+		include (ETC.'mail/'.$name.".tpl");
 		$text = ob_get_clean();
 		return $text;
     }

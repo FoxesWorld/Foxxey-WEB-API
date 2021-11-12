@@ -28,7 +28,7 @@ if (!defined('FOXXEY')) {
 	class startUpSound {
 		
 		/* IO Utils */
-		private $cacheFilePath 	 = FOXXEYDATA.'startUpSound.timetable';
+		private $cacheFilePath 	 = ETC.'startUpSound.timetable';
 		private $AbsolutePath;
 		private $musMountPoint 	 = 'mus';
 		private $sndMountPoint 	 = 'snd';

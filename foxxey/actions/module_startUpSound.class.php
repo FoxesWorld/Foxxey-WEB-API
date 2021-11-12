@@ -41,7 +41,7 @@ if (!defined('FOXXEY')) {
 	class startUpSound {
 
 		/* Base utils */
-		private $cacheFilePath 			= FOXXEYDATA.'startUpSound.timetable';
+		private $cacheFilePath 			= ETC.'startUpSound.timetable';
 		private static $serverVersion 	= '0.3.30.12 Blazing';
 		private static $AbsolutesoundPath;
 		private static $currentDate 	= CURRENT_DATE;

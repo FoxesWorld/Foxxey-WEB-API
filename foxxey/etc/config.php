@@ -36,7 +36,7 @@ if(!defined('FOXXEY')) {
 	define('INCDIR', 	  ROOT_DIR.'/'.webDir.'/include/');
 	define('FILES_DIR',   ROOT_DIR.'/files/');
 	define('SITE_ROOT',   ROOT_DIR.'/'.webDir);
-	define('FOXXEYDATA',  SITE_ROOT.'/foxxeyData/');
+	define('ETC', 		  SITE_ROOT.'/etc/');
 	define('CURRENT_TIME',time());
 	define('CURRENT_DATE',date("d.m.Y"));
 
@@ -48,7 +48,7 @@ $config = array(
 	'not_allowed_symbol'=> array ("\x22", "\x60", "\t", '\n', '\r', "\n", "\r", '\\', ",", "/", "¬", "#", ";", ":", "~", "[", "]", "{", "}", ")", "(", "*", "^", "%", "$", "<", ">", "?", "!", '"', "'", " ", "&" ),
 
 	/* DEBUG */
-	'modulesDebug'		=> true,
+	'modulesDebug'		=> false,
 	'HWIDdebug'			=> false,
 	'foxCheckDebug'		=> false,
 	'debugStartUpSound' => false,
@@ -80,7 +80,7 @@ $config = array(
 			'errorLog'			=> FILES_DIR.'/logs/Errors.log',
 	
 	/* startUpSound */
-	'mountDir' 			=> SITE_ROOT."/foxxeyData/startUpSoundRepo",
+	'mountDir' 			=> SITE_ROOT."/etc/startUpSoundRepo",
 	'enableVoice' 		=> true,
 	'enableMusic' 		=> true,
 	'easterMusRarity'   => 1000,
@@ -133,4 +133,4 @@ $config = array(
 		  "12" => "декабря"
 			));
 
-require (FOXXEYDATA.'messages/messages.lng');
+require (ETC.'messages/messages.lng');

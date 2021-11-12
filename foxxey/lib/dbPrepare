@@ -38,7 +38,7 @@ if(!defined('FOXXEY')) {
 			$this->dbName = $config['dbname_launcher'];
 			$this->dbHost = $config['db_host'];
 
-			$this->dbQuery = file_get_contents(FOXXEYDATA."fox_launcher.sql");
+			$this->dbQuery = file_get_contents(ETC."fox_launcher.sql");
 			$this->db = new db($this->dbUser, $this->dbPass, $this->dbName, $this->dbHost);
 		}
 		
