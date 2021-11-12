@@ -130,7 +130,7 @@ class foxMail {
 	
 	private static function IncludestartUpSoundModules(){
 		global $config;
-		$modulesDir = SCRIPTS_DIR.'/modules/mailModules';
+		$modulesDir = INCDIR.'mail';
 			if(!is_dir($modulesDir)){
 				mkdir($modulesDir);
 			}

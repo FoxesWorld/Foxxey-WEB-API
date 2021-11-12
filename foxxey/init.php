@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: init.php
 -----------------------------------------------------
- Version: 0.1.6.4 Alpha
+ Version: 0.1.7.4 Alpha
 -----------------------------------------------------
  Usage: Initialising&Including modules
 =====================================================
@@ -21,21 +21,14 @@
 		die ('{"message": "Not in FOXXEY thread"}');
 	} else {
 		require ($_SERVER['DOCUMENT_ROOT'].'/foxxey/foxxeyData/config.php');
-		require (SCRIPTS_DIR.'database.class.php');
-		require (SCRIPTS_DIR.'functions.class.php');
+		require (SITE_ROOT.'/initFunctions');
 	}
 
 
 	class init {
 		
 		private $longTermBan;
-		
-		//Modules==================
-		protected $wipModules;
-		protected $validModules;
-		protected $allModules;
-		//=========================
-		
+
 		//Databases================
 		protected $launcherDB;
 		protected $userDataDB;
@@ -43,16 +36,12 @@
 
 		function __construct($ip, $initType) {
 			global $config;
+			//Including libraries
+			functions::libFilesInclude();
 
 				$userDataDB = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata']);
 				$launcherDB = new db($config['db_user'],$config['db_pass'],$config['dbname_launcher']);				
 
-			//Modules Initialising
-			functions::libFilesInclude();  // Base Functions (Will replace deprecated modules)
-			$this->allModules	= functions::modulesInit();
-			$this->validModules = $this->allModules['validModules'];
-			$this->wipModules 	= $this->allModules['wipModules'];
-			functions::includeModules(SCRIPTS_DIR.'modules', $config['modulesDebug'], $this->validModules);
 			$this->longTermBan = new longTermBan($ip, $launcherDB);
 			if($this->longTermBan->checkBan() === false) {
 				
@@ -71,7 +60,7 @@
 					break;
 					
 					case 'updater':
-						require (SCRIPTS_DIR.'updater.class.php');
+						require (SITE_ROOT.'/updater');
 					break;
 					
 					default:

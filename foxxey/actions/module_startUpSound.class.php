@@ -591,7 +591,7 @@ if (!defined('FOXXEY')) {
 
 		private static function IncludestartUpSoundModules(){
 			global $config;
-			$modulesDir = SCRIPTS_DIR.'modules/startUpSoundModules';
+			$modulesDir = INCDIR.'startupsound';
 			if(!is_dir($modulesDir)){
 				mkdir($modulesDir);
 			}

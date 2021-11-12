@@ -1,0 +1,79 @@
+<?php
+/**
+ * Script to get list of files with !ignoreFiles option
+ *
+ * @version	2021.11.11
+ * @author  Aiden Fox
+ * @link    https://github.com/AidenF0X
+ * @license	GNU/GPL http://www.gnu.org/licenses/gpl.html
+ 
+ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ SOFTWARE.
+ */
+	class file {
+		
+		private static $filePath;
+		private static $writeNode;
+		private static $fileResourceLink;
+		private static $rights;
+		private static $fileSize;
+		private static $message;
+		private static $fileContents;
+		private static $recordedContents;
+		private static $outArray;
+		
+		public static function efile($filePath, $str = null){
+			if($filePath) {
+				if(file_exists($filePath)) {
+					self::$filePath = $filePath;
+					self::$fileSize = filesize(self::$filePath);
+					self::$rights = getPerms::permissions($filePath);
+					self::fileMode($filePath, $str);
+						switch(self::$writeNode){
+							case 'w':
+								self::$recordedContents = fputs (self::$fileResourceLink, $str);
+								$aferRecording = filesize(self::$filePath);
+								$recorded = $aferRecording - self::$fileSize; 
+								self::$outArray[] =  array('recorded' => $recorded); 
+								readfile(self::$filePath);
+								self::$fileContents = ob_get_clean();
+							break;
+							
+							case 'r':
+								readfile(self::$filePath);
+								self::$fileContents = ob_get_clean();
+							break;
+						}
+
+				self::$outArray = array('path' => self::$filePath, 'size' => self::$fileSize, 'rights' => self::$rights, 'content' => self::$fileContents, 'message' => self::$message);		 
+				} else {
+					return 'File '.self::$filePath.' can`t be found!';
+				}
+				fclose (self::$fileResourceLink);
+				return self::$outArray;
+			}
+		}
+		
+		private static function fileMode($file, $str){
+			if($str) {
+					$strLen = strlen($str);
+				if(self::$rights == 'rrwxrwxrwx') {
+					self::$message = 'Writing '.$strLen.' bytes';
+					self::$writeNode = 'w';
+				} else {
+					self::$writeNode = 'r';
+					self::$message = 'Not enough rights for that file';
+				}
+			} else {
+				self::$message = 'Reading file';
+				self::$writeNode = 'r';
+			}
+			self::$fileResourceLink = fopen($file,self::$writeNode);
+		}
+
+	}

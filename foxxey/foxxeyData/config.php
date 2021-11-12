@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.2.5 Alpha
+ Version: 0.1.2.6 Alpha
 -----------------------------------------------------
  Usage: WEB API settings
 =====================================================
@@ -20,11 +20,20 @@ header("Content-Type: application/json; charset=UTF-8");
 if(!defined('FOXXEY')) {
 	die ('{"message": "Not in FOXXEY thread"}');
 }
+/*
+	$globalVars = array('ROOT_DIR'     => $_SERVER['DOCUMENT_ROOT'],
+						'ADMIN_DIR'    =>   $globalVars['ROOT_DIR'].'/adm/',
+						'SCRIPTS_DIR'  => $globalVars['ROOT_DIR'].'/'.$globalVars['webDir'].'/scripts/',
+						'INCDIR' 	   => $globalVars['ROOT_DIR'].'/'.$globalVars['webDir'].'/include/',
+						'webDir' 	   => 'foxxey',
+						'CURRENT_TIME' => time(), 
+						'CURRENT_DATE' => date("d.m.Y"),
+	); */
 
 	define('webDir', 	  'foxxey');
 	define('ROOT_DIR', 	  $_SERVER['DOCUMENT_ROOT']);
-	define('ADMIN_DIR', ROOT_DIR.'/adm/');
-	define('SCRIPTS_DIR', ROOT_DIR.'/'.webDir.'/scripts/');
+	define('ADMIN_DIR',   ROOT_DIR.'/adm/');
+	define('INCDIR', 	  ROOT_DIR.'/'.webDir.'/include/');
 	define('FILES_DIR',   ROOT_DIR.'/files/');
 	define('SITE_ROOT',   ROOT_DIR.'/'.webDir);
 	define('FOXXEYDATA',  SITE_ROOT.'/foxxeyData/');
@@ -35,10 +44,11 @@ $config = array(
 
 	/* Foxxey settings */
 	'webserviceName' 	=> 'FoxesWorld | Foxxey',
+	'timezone'			=> 'Europe/Moscow',
 	'not_allowed_symbol'=> array ("\x22", "\x60", "\t", '\n', '\r', "\n", "\r", '\\', ",", "/", "¬", "#", ";", ":", "~", "[", "]", "{", "}", ")", "(", "*", "^", "%", "$", "<", ">", "?", "!", '"', "'", " ", "&" ),
 
 	/* DEBUG */
-	'modulesDebug'		=> false,
+	'modulesDebug'		=> true,
 	'HWIDdebug'			=> false,
 	'foxCheckDebug'		=> false,
 	'debugStartUpSound' => false,

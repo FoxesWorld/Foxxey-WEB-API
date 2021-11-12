@@ -22,9 +22,9 @@ if(!defined('FOXXEY')) {
 }
 	class filesInDir {
 
-		private static $ignoreFileName = '!ignoredFiles';
-		private static $explodeSymbol = ',';
-		public static $allFilesArray = array();
+		private static $ignoreFileName 	= '!ignoredFiles';
+		private static $explodeSymbol 	= ',';
+		public static $allFilesArray 	= array();
 		public static $ignoreFilesArray = array();
 		private static $ignoreFilePath  = array();
 
@@ -42,7 +42,9 @@ if(!defined('FOXXEY')) {
 									$files[] = $file;
 								} else {
 									if(strpos($file, $mask) !== false){
+										if(!is_dir($path.'/'.$file)) {
 											$files[] = $file;
+										}
 									}
 								}
 							}

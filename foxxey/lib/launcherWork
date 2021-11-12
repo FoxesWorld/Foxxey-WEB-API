@@ -1,0 +1,27 @@
+<?php
+
+	class servers {
+		
+		public static function getServersList($db, $server = null, $data = null){
+			$ans;
+			if($server == null){
+					$query = "SELECT * FROM `servers`";
+					$servers = $db::getRows($query);
+					foreach($servers as $key) {
+					$ans[] = $key['Server_name'];
+				}
+			
+			} else {
+					if($data) {
+						$query = "SELECT * FROM `servers` WHERE Server_name = '".$server."'";
+						$servers = $db::getRow($query);
+						$ans = $servers[$data];
+					} else {
+						die('{"message": "No data!"}');
+					}
+			}
+
+			return $ans;
+		}
+		
+	}

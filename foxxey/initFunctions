@@ -27,22 +27,23 @@ if(!defined('FOXXEY')) {
 			public static function includeModules($dirInclude, $debug = false, $modulesArray = null) {
 				$count = 1;
 				$IncludingText = '';
-				if($debug === true){ $visualCounter = 1; echo "Modules to include: \n";}
+				if($debug){ $visualCounter = 1; echo "Include: \n";}
 				switch ($modulesArray) {
 					case null:
-						$filesAray = filesInDir::filesInDirArray($dirInclude,'.php');
+						$filesAray = filesInDir::filesInDirArray($dirInclude,'*');
 						$count = count($filesAray);
 						for($i = 0; $i < $count; $i++){
-							if($debug === true){ echo $visualCounter.') '.$filesAray[$i]."\n";$visualCounter++;}
-							require ($dirInclude.'/'.$filesAray[$i]);
-							
+							if(is_file($dirInclude.'/'.$filesAray[$i])) {
+								require ($dirInclude.'/'.$filesAray[$i]);
+								if($debug){ echo $visualCounter.') '.$filesAray[$i]."\n";$visualCounter++;}
+							}
 						}
 					break;
-					
+
 					case is_array($modulesArray):
 						$count = count($modulesArray);
 						for($i = 0; $i < $count; $i++){
-							if($debug === true){
+							if($debug){
 								echo $visualCounter.') '.$modulesArray[$i]."\n";
 								$visualCounter++;
 							}
@@ -50,25 +51,26 @@ if(!defined('FOXXEY')) {
 						}	
 					break;
 				}
-				if($debug === true){echo 'Total modules: '.$count."\n\n";}
 			}
 			
-			//Remove or replace!!! (Too much modules)
-			public static function modulesInit() {
-				$allModules = filesInDir::filesInDirArray(SCRIPTS_DIR.'modules','.php');
-				for($i = 0; $i < count($allModules); $i++){
-					if(strpos($allModules[$i],'.wip.')) {
-						$wipModules[] = $allModules[$i];
+			//Mainframe
+			public static function libFilesInclude(){
+				global $config;
+				$visualCounter = 1;
+				$libDir = SITE_ROOT.'/lib';
+				$openDir = opendir($libDir);
+				if($config['modulesDebug']){ $visualCounter = 1; echo "libraries to include: \n";}
+				while($file = readdir($openDir)){
+					if($file == '.' || $file == '..'){
+						continue;
 					} else {
-						$validModules[] = $allModules[$i];
+						if($config['modulesDebug']){ echo $visualCounter.') '.$file."\n";$visualCounter++;}
+						require_once ($libDir.'/'.$file);
 					}
 				}
-				$returnArray = array(
-					'validModules' => $validModules,
-					'wipModules'   => @$wipModules
-				);
-				
-				return $returnArray;
+				if($config['modulesDebug']){
+					echo "\n";
+				}
 			}
 			
 			//Murge to servers library
@@ -90,7 +92,6 @@ if(!defined('FOXXEY')) {
 					}
 				}
 
-				
 				return $ans;
 			}
 			
@@ -115,18 +116,5 @@ if(!defined('FOXXEY')) {
 					}
 				}
 				return json_encode($fileOBJ, JSON_UNESCAPED_SLASHES);
-			}
-			
-			//Mainframe
-			public static function libFilesInclude(){
-				$libDir = SITE_ROOT.'/lib';
-				$openDir = opendir($libDir);
-				while($file = readdir($openDir)){
-					if($file == '.' || $file == '..'){
-						continue;
-					} else {
-						require_once ($libDir.'/'.$file);
-					}
-				}
 			}
 	}

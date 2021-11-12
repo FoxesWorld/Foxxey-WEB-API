@@ -1,0 +1,26 @@
+<?php
+
+	class mainSite {
+		
+		private static $siteDB;
+		
+		private static function dbFill(){
+			global $config;
+			self::$siteDB  = new db($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
+		}
+		
+		public static function getUserData($login,$data){
+			$query = "SELECT $data FROM dle_users WHERE name = '$login'";
+			if(!self::$siteDB) {self::dbFill();}
+			$selectedValue = self::$siteDB->getRow($query);
+				if($selectedValue["$data"]){
+						$gotData = $selectedValue["$data"];
+						$answer = array('type' => 'success', 'username' => $login, $data => $gotData);
+						$answer = json_encode($answer);
+					} else {
+						$answer = "{'type', 'error', 'message', 'login not found'}";
+					}
+			return $answer;
+		}
+		
+	}

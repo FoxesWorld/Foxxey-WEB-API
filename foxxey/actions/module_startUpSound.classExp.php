@@ -365,6 +365,7 @@ if (!defined('FOXXEY')) {
 			}
 
 			foreach ($this->eventsArray as $key => $value) {
+				$eventName = 'common';
 					if($monthToday == $key){
 					$this->monthNowArray = $value;
 						foreach ($this->monthNowArray as $key => $value){
@@ -373,8 +374,6 @@ if (!defined('FOXXEY')) {
 								$eventName = $this->todaysEventArray['eventName'] 	?? 'common';
 								$sndRange = $this->todaysEventArray['sndRange'] 	?? 0;
 								$musRange = $this->todaysEventArray['musRange'] 	?? 0;
-							} else {
-								$eventName = 'common';
 							}
 						}
 						$eventArray['eventNow']   = $eventName ?? 'common';
@@ -538,7 +537,7 @@ if (!defined('FOXXEY')) {
 		
 		private function IncludestartUpSoundModules(){
 			global $config;
-			$modulesDir = SCRIPTS_DIR.'modules/startUpSoundModules';
+			$modulesDir = INCDIR.'startupsound';
 			if(!is_dir($modulesDir)){
 				mkdir($modulesDir);
 			}

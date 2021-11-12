@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: actionScript.php
 -----------------------------------------------------
- Version: 0.2.5.2 Experimental
+ Version: 0.2.6.2 Experimental
 -----------------------------------------------------
  Usage: Global ACTIONS module hooking
 =====================================================
@@ -118,8 +118,6 @@ if($config['debugStartUpSound'] === false) {
 									$antiBrute = new antiBrute($this->ip, $this->launcherDB, $config['antiBruteDebug']);
 								}
 							}
-						//$hashUpdate  = new functions($config['db_user'], $config['db_pass'], $config['dbname_launcher'], $config['db_host']);
-						//$hashUpdate->confirmHWIDchange($requestValue);
 						HWIDupdate::confirmHWIDchange($requestValue);
 				   break;
 				   

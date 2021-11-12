@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.16.6 Alpha
+ Verssion: 0.1.17.6 Exp
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -89,12 +89,12 @@ class Authorise {
 			//*********************
 			
 			//Getting AUTH USERDATA
-			$this->realName  = json_decode($this->getUserData($this->login, 'name'))		-> name		  ?? null;
-			$this->realPass  = json_decode($this->getUserData($this->login, 'password'))	-> password	  ?? null;
-			$this->realMail  = json_decode($this->getUserData($this->login, 'email'))		-> email	  ?? null;
+			$this->realName  = json_decode(mainSite::getUserData($this->login, 'name'))		-> name		  ?? null;
+			$this->realPass  = json_decode(mainSite::getUserData($this->login, 'password'))	-> password	  ?? null;
+			$this->realMail  = json_decode(mainSite::getUserData($this->login, 'email'))		-> email	  ?? null;
 			
 			if($this->login == '' || $this->pass == '') {
-				exit('{"message": "'.$message['dataNotIsset'].$this->login.$this->pass.'"}');
+				exit('{"message": "'.$message['dataNotIsset'].'"}');
 			} else {
 				//Getting user login location
 				if($config['geoIPcheck'] === true) {
@@ -158,9 +158,9 @@ class Authorise {
 								authorize::passwordReHash($this->pass, $this->realPass, $this->realName);
 								
 								//GETTING PERSONAL DATA
-								$this->fullname  = json_decode($this->getUserData($this->login, 'fullname'))	-> fullname   ?? randTexts::getUserName();
-								$this->userGroup = json_decode($this->getUserData($this->login, 'user_group'))	-> user_group ?? 4;
-								$this->regDate 	 = json_decode($this->getUserData($this->login, 'reg_date'))	-> reg_date	  ?? null;
+								$this->fullname  = json_decode(mainSite::getUserData($this->login, 'fullname'))	-> fullname   ?? randTexts::getUserName();
+								$this->userGroup = json_decode(mainSite::getUserData($this->login, 'user_group'))	-> user_group ?? 4;
+								$this->regDate 	 = json_decode(mainSite::getUserData($this->login, 'reg_date'))	-> reg_date	  ?? null;
 
 							// Getting Balance
 							if($config['getBalance'] === true) {
@@ -209,32 +209,22 @@ class Authorise {
 			}
 		}
 		
+		//Will be replaced
 		private function successfulAuth($login) {
 			$query = "INSERT INTO `successfulAuth`(`login`) VALUES ('".$login."')";
 			$this->launcherDB::run($query);
 		}
 		
-		public function getUserData($login,$data){
-			$query = "SELECT $data FROM dle_users WHERE name = '$login'";
-			$selectedValue = $this->webSiteDB->getRow($query);
-				if($selectedValue["$data"]){
-						$gotData = $selectedValue["$data"];
-						$answer = array('type' => 'success', 'username' => $login, $data => $gotData);
-						$answer = json_encode($answer);
-					} else {
-						$answer = "{'type', 'error', 'message', 'login not found'}";
-					}
-			return $answer;
-		}
-		
+		//Will be replaced
 		private function incorrectPass($login, $HWIDuser) {
 			$query = "INSERT INTO `wrongPass`(`login`, `realLogin`) VALUES ('".$login."', '".$HWIDuser."')";
 			$this->launcherDB::run($query);
 		}
 		
+		//Will be replaced
 		private static function IncludeAuthModules(){
 			global $config;
-			$modulesDir = SCRIPTS_DIR.'modules/authoriseModules';
+			$modulesDir = INCDIR.'authorise';
 			if(!is_dir($modulesDir)){
 				mkdir($modulesDir);
 			}
