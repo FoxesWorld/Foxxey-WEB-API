@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.3.30.12 Blazing
+ Version: 0.3.32.12 Blazing
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -42,7 +42,7 @@ if (!defined('FOXXEY')) {
 
 		/* Base utils */
 		private $cacheFilePath 			= ETC.'startUpSound.timetable';
-		private static $serverVersion 	= '0.3.30.12 Blazing';
+		private static $serverVersion 	= '0.3.31.12 Blazing';
 		private static $AbsolutesoundPath;
 		private static $currentDate 	= CURRENT_DATE;
 		private static $musMountPoint 	= 'mus';
@@ -163,8 +163,9 @@ if (!defined('FOXXEY')) {
 		private static $soundRangeDebug		= '';		//Debug info of the range
 
 		//Initialisation
-		function __construct($debug = false) {
+		function __construct() {
 			global $config;
+			self::confGen();
 
 			$dateExploded = explode ('.',CURRENT_DATE);
 			$this->dayToday = $dateExploded[0];
@@ -172,21 +173,12 @@ if (!defined('FOXXEY')) {
 			$this->yearToday = $dateExploded[2];
 
 			if(!isset($_REQUEST['startUpSoundAPI'])) {
-				if(!file_exists($this->cacheFilePath)){
-					$this->WriteFile();
-				} else {
-					if(is_array($this->readEventFile())){
-						$this->eventsArray = $this->readEventFile();
-					} else {
-						$this->WriteFile();
-						$this->eventsArray = $this->readEventFile();
-					}
-				}
+				$this->eventsArray = file::efile($this->cacheFilePath, true, $this->eventsArray)['content'];
 			}
 
 			startUpSound::IncludestartUpSoundModules();
 			startUpSound::$AbsolutesoundPath = $config['mountDir'];
-			startUpSound::$debug = $debug;
+			startUpSound::$debug = $debug ?? false;
 			$this->selectCurrentEvent($this->dayToday, $this->monthToday);
 				if(static::$useDayTime) {
 					$this->dayTimeGetting();
@@ -515,6 +507,7 @@ if (!defined('FOXXEY')) {
 		 * @return jsonAnswer
 		 */
 		private function outputJson() {
+			$mountPoint = str_replace(SITE_ROOT, '', static::$AbsolutesoundPath);
 			$outputArray = array(
 					"maxDuration" 		=> (Integer)static::$maxDuration,
 					"selectedMusic" 	=> (String) static::$selectedMusic,
@@ -523,7 +516,8 @@ if (!defined('FOXXEY')) {
 					"MusicMd5" 			=> (String) static::$musMd5,
 					"eventInfo"			=> (String) static::$soundAdditionalData,
 					"eventName" 		=> (String) static::$eventNow,
-					'serverVersion'		=> (String) static::$serverVersion);
+					'serverVersion'		=> (String) static::$serverVersion,
+					'mountPoint'		=>  (String) $mountPoint);
 
 			return json_encode($outputArray, JSON_UNESCAPED_SLASHES);
 		}
@@ -588,6 +582,15 @@ if (!defined('FOXXEY')) {
 			}
 			
 		}
+		
+		private static function confGen(){
+			$confArray = array('startupsound' => 
+			array(
+				'debug' => true
+			));
+
+			$ini = new conff(ETC.'startupsound.ini', $confArray);
+		}
 
 		private static function IncludestartUpSoundModules(){
 			global $config;
@@ -598,16 +601,4 @@ if (!defined('FOXXEY')) {
 			functions::includeModules($modulesDir, $config['modulesDebug']);
 		}
 
-		/* FilesWork */
-		private function readEventFile(){
-			$data = file_get_contents($this->cacheFilePath);
-			$out = unserialize($data);
-
-			return $out;
-		}
-
-		private function WriteFile(){
-			$data = serialize($this->eventsArray);
-			file_put_contents($this->cacheFilePath, $data);
-		}
 	}

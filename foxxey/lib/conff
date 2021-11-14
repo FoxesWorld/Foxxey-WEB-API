@@ -1,0 +1,129 @@
+<?php
+if (!defined('NL')) {
+	define('NL',chr(13).chr(10));
+}
+
+class conff {
+
+    private $filename;
+	private $fileContent;
+	private $fileSize;
+	public $arr;
+	
+	/* INTENAL BOOLs */
+	private $debug;
+	private $readStatus;
+
+    function __construct($file = null, $toRecord = null, $debug = false){
+		$this->debug = $debug;
+        if ($file) {
+			$this->filename = $file;
+			if(file_exists($this->filename)){
+				$this->arr = parse_ini_file($this->filename, true);
+				$this->readStatus = $this->fileStatus($this->filename);
+				$this->fileSize = filesize($this->filename);
+					if($toRecord){
+						if($this->fileSize == 0) {
+							$preparedIni = $this->writeFile($toRecord);
+							$this->updateFile();
+							if($this->debug){echo'Recording file '.$this->filename;}
+						}
+					} else {
+						  $this->readInIarray($this->arr);
+						  if($this->debug){echo'Reading file '.$this->filename;}
+						  return $this->arr;
+					}
+			} else {
+				file::efile($file);
+			}
+		} else {
+			return 'No file name was entered!';
+		}
+    }
+	
+	function eraseSection($section){
+        if (isset($this->arr[$section])) {
+			unset($this->arr[$section]);
+		}
+		$this->updateFile();
+    }
+	
+	function deleteKey($section, $key){
+        if (isset($this->arr[$section][$key]))
+            unset($this->arr[$section][$key]);
+		$this->updateFile();
+    }
+
+    private function fileStatus($file){
+        if (file_exists($file) && is_readable($file)){
+			$result = true;
+        } else {
+			$result = false;
+		}
+        return $result;
+    }
+
+    private function readInIarray($array){
+		foreach($array as $key => $value){
+			$header = $key;
+			foreach ($value as $key => $value){
+				$this->arr[] = array($key => $value);
+			}
+		}
+    }
+	
+	private function writeFile($array){
+		foreach ($array as $key => $value){
+			$header = $key;
+			foreach($value as $key => $value){
+				$iniWrite[] = $this->setWrite($header, $key, $value);
+			}
+		}
+		
+		return $iniWrite;
+	}
+
+	private function setWrite($section, $key, $value){
+			if (is_bool($value)) {
+				$value = $value ? 1 : 0;
+			}
+			$this->arr[$section][$key] = $value;
+	}
+	
+    private function updateFile(){
+        $result = '';
+        foreach ($this->arr as $sname=>$section){
+            $result .= '['.$sname.']'.NL;
+            foreach ($section as $key=>$value){
+                $result .= $key .'='.$value . NL;
+            }
+            $result .= NL;
+        }
+           $result = file::efile($this->filename, $result);
+           return true;
+    }
+	
+	
+	
+/*
+    function read($section, $key, $def = ''){
+        if (isset($this->arr[$section][$key])){
+            return $this->arr[$section][$key];
+        } else
+            return $def;
+    }
+
+    function readSections(&$array){
+        $array = array_keys($this->arr);
+        return $array;
+    }
+
+    function readKeys($section, &$array){
+        if (isset($this->arr[$section])){
+            $array = array_keys($this->arr[$section]);
+            return $array;
+        }
+        return array();
+    }
+	*/
+}
