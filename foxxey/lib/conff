@@ -7,6 +7,7 @@ class conff {
 
     private $filename;
 	private $fileContent;
+	private $sectionTitle;
 	private $fileSize;
 	public $arr;
 	
@@ -14,33 +15,72 @@ class conff {
 	private $debug;
 	private $readStatus;
 
-    function __construct($file = null, $toRecord = null, $debug = false){
+    public function __construct($file = null, $toRecord = null, $debug = false){
 		$this->debug = $debug;
         if ($file) {
 			$this->filename = $file;
-			if(file_exists($this->filename)){
+				file::efile($this->filename);
 				$this->arr = parse_ini_file($this->filename, true);
-				$this->readStatus = $this->fileStatus($this->filename);
+				$this->readStatus = $this->readStatus($this->filename);
 				$this->fileSize = filesize($this->filename);
-					if($toRecord){
-						if($this->fileSize == 0) {
-							$preparedIni = $this->writeFile($toRecord);
-							$this->updateFile();
-							if($this->debug){echo'Recording file '.$this->filename;}
-						}
-					} else {
-						  $this->readInIarray($this->arr);
-						  if($this->debug){echo'Reading file '.$this->filename;}
-						  return $this->arr;
-					}
-			} else {
-				file::efile($file);
-			}
+				if($debug){echo "Array to record was passed \n";}
+				switch($toRecord){
+					case null:
+						return $this->arr;
+					break;
+					
+					default:
+						if($debug){echo 'filesize is - '.$this->fileSize."\n";}
+							switch($this->fileSize){				
+								case 0:
+									$this->writeFile($toRecord);
+									$this->updateFile();
+								break;
+								
+								default:
+									if($debug){echo 'Shoving file contents'."\n";}
+									return $this->arr;
+								break;
+							}
+					break;
+				}
+				 
 		} else {
 			return 'No file name was entered!';
 		}
     }
 	
+	public static function confGen($opdl, $confArray = null){
+		$ini = new conff(ETC.$opdl.'.ini', $confArray);
+
+		return $ini;
+	}
+
+    private function readStatus($file){
+		switch(is_readable($file)){
+			case true:
+				return true;
+			break;
+
+			case false:
+				return false;
+			break;
+		}
+    }
+
+    public function readInIarray(){
+		foreach($this->arr as $key => $value){
+			$header = $key;
+			foreach ($value as $key => $value){
+				$iniConf[$header][$key]=$value;
+			}
+		}
+		return $iniConf[$header];
+    }
+	
+
+	
+	/* File Formatting */
 	function eraseSection($section){
         if (isset($this->arr[$section])) {
 			unset($this->arr[$section]);
@@ -54,33 +94,13 @@ class conff {
 		$this->updateFile();
     }
 
-    private function fileStatus($file){
-        if (file_exists($file) && is_readable($file)){
-			$result = true;
-        } else {
-			$result = false;
-		}
-        return $result;
-    }
-
-    private function readInIarray($array){
-		foreach($array as $key => $value){
-			$header = $key;
-			foreach ($value as $key => $value){
-				$this->arr[] = array($key => $value);
-			}
-		}
-    }
-	
 	private function writeFile($array){
 		foreach ($array as $key => $value){
 			$header = $key;
 			foreach($value as $key => $value){
-				$iniWrite[] = $this->setWrite($header, $key, $value);
+				$this->setWrite($header, $key, $value);
 			}
 		}
-		
-		return $iniWrite;
 	}
 
 	private function setWrite($section, $key, $value){
@@ -89,7 +109,7 @@ class conff {
 			}
 			$this->arr[$section][$key] = $value;
 	}
-	
+
     private function updateFile(){
         $result = '';
         foreach ($this->arr as $sname=>$section){
@@ -99,10 +119,9 @@ class conff {
             }
             $result .= NL;
         }
-           $result = file::efile($this->filename, $result);
+           $result = file::efile($this->filename, false, $result);
            return true;
     }
-	
 	
 	
 /*

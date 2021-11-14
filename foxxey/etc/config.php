@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: config.php
 -----------------------------------------------------
- Version: 0.1.2.6 Alpha
+ Version: 0.1.3.6 Release
 -----------------------------------------------------
  Usage: WEB API settings
 =====================================================
@@ -78,13 +78,6 @@ $config = array(
 		/* Logging */
 			'authLog'			=> FILES_DIR.'/logs/AuthLog.log',
 			'errorLog'			=> FILES_DIR.'/logs/Errors.log',
-	
-	/* startUpSound */
-	'mountDir' 			=> SITE_ROOT."/etc/startUpSoundRepo",
-	'enableVoice' 		=> true,
-	'enableMusic' 		=> true,
-	'easterMusRarity'   => 1000,
-	'easterSndRarity'	=> 1,
 	
 	/* E-mail */
 	'encoding' 			=> 'UTF-8',

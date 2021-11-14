@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.3.32.12 Blazing
+ Version: 0.3.35.12 Insane
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -41,8 +41,10 @@ if (!defined('FOXXEY')) {
 	class startUpSound {
 
 		/* Base utils */
-		private $cacheFilePath 			= ETC.'startUpSound.timetable';
-		private static $serverVersion 	= '0.3.31.12 Blazing';
+		private $opdl					= 'startupsound';
+		private $config					= array();
+		private $cacheFilePath 			= ETC.'startupsound.timetable';
+		private static $serverVersion 	= '0.3.35.12 Insane';
 		private static $AbsolutesoundPath;
 		private static $currentDate 	= CURRENT_DATE;
 		private static $musMountPoint 	= 'mus';
@@ -56,6 +58,15 @@ if (!defined('FOXXEY')) {
 		private static $soundFilesNum 	= 0;
 		private static $easter 			= "";
 		private static $debug 			= false;
+		private $defaultConfig = array('startupsound' => 
+		array(
+			'debug' => false,
+			'mountDir' 			=> SITE_ROOT."/etc/startUpSoundRepo",
+			'enableVoice' 		=> true,
+			'enableMusic' 		=> true,
+			'easterMusRarity'   => 1000,
+			'easterSndRarity'	=> 1
+		));
 
 		/* Date */
 		private $dayToday;
@@ -164,8 +175,9 @@ if (!defined('FOXXEY')) {
 
 		//Initialisation
 		function __construct() {
-			global $config;
-			self::confGen();
+
+			$conf = conff::confGen($this->opdl, $this->defaultConfig);
+			$this->config = $conf->readInIarray();
 
 			$dateExploded = explode ('.',CURRENT_DATE);
 			$this->dayToday = $dateExploded[0];
@@ -177,7 +189,7 @@ if (!defined('FOXXEY')) {
 			}
 
 			startUpSound::IncludestartUpSoundModules();
-			startUpSound::$AbsolutesoundPath = $config['mountDir'];
+			startUpSound::$AbsolutesoundPath = $this->config['mountDir'];
 			startUpSound::$debug = $debug ?? false;
 			$this->selectCurrentEvent($this->dayToday, $this->monthToday);
 				if(static::$useDayTime) {
@@ -277,12 +289,11 @@ if (!defined('FOXXEY')) {
 		 * @return String {Random mus with parameters}
 		 */
 		private function generateMusic($debug = false) {
-			global $config;
 			$minRange = 1; 			//Min genRange
 			$unExistingFolder = ''; //Exception message
 
-			if($config['enableMusic'] === true) {
-			$this->easter($config['easterMusRarity'], static::$debug, 'music');
+			if($this->config['enableMusic']) {
+			$this->easter($this->config['easterMusRarity'], static::$debug, 'music');
 					if(static::$musPerEvent === true) {
 						$currentMusFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$musMountPoint.static::$easter;
 					} else {
@@ -347,12 +358,11 @@ if (!defined('FOXXEY')) {
 		 * @return String {Random sound with parameters}
 		 */
 		private function generateSound($debug = false) {
-			global $config;
 			$minRange = 1; 			//Min genRange
 			$unExistingFolder = ''; //Exception message
 
-			if($config['enableVoice'] === true) {
-				$this->easter($config['easterSndRarity'], static::$debug, 'sound');
+			if($this->config['enableVoice']) {
+				$this->easter($this->config['easterSndRarity'], static::$debug, 'sound');
 				$currentSoundFolder = static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$sndMountPoint.static::$seasonNow.static::$dayTimeNow.static::$easter;	//Folder of Sounds
 				if(is_dir($currentSoundFolder)) {
 					startUpSound::$soundFilesNum = count(filesInDir::filesInDirArray($currentSoundFolder, '.mp3'));
@@ -413,17 +423,16 @@ if (!defined('FOXXEY')) {
 		 * @return String easter
 		 */
 		private function easter($chance, $debug = false, $of) {
-			global $config;
 			$minRange = 1;
 			$maxRange = 1000;
 			$easterChance = mt_rand($minRange, $maxRange);
 			switch($of){
 				case 'sound':
-					$confRarity = $config['easterSndRarity'];
+					$confRarity = $this->config['easterSndRarity'];
 				break;
 				
 				case 'music':
-					$confRarity = $config['easterMusRarity'];
+					$confRarity = $this->config['easterMusRarity'];
 				break;
 			}
 				if ($easterChance <= $chance){
@@ -581,15 +590,6 @@ if (!defined('FOXXEY')) {
 				break;				
 			}
 			
-		}
-		
-		private static function confGen(){
-			$confArray = array('startupsound' => 
-			array(
-				'debug' => true
-			));
-
-			$ini = new conff(ETC.'startupsound.ini', $confArray);
 		}
 
 		private static function IncludestartUpSoundModules(){
