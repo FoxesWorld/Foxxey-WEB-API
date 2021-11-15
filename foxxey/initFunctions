@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: functions,class.php
 -----------------------------------------------------
- Version: 0.1.8.7 Beta
+ Version: 0.1.9.7 Beta
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
@@ -22,37 +22,7 @@ if(!defined('FOXXEY')) {
 }
 
 	class functions {
-			
-			//Remove or replace
-			public static function includeModules($dirInclude, $debug = false, $modulesArray = null) {
-				$count = 1;
-				$IncludingText = '';
-				if($debug){ $visualCounter = 1; echo "Include: \n";}
-				switch ($modulesArray) {
-					case null:
-						$filesAray = filesInDir::filesInDirArray($dirInclude,'*');
-						$count = count($filesAray);
-						for($i = 0; $i < $count; $i++){
-							if(is_file($dirInclude.'/'.$filesAray[$i])) {
-								require ($dirInclude.'/'.$filesAray[$i]);
-								if($debug){ echo $visualCounter.') '.$filesAray[$i]."\n";$visualCounter++;}
-							}
-						}
-					break;
 
-					case is_array($modulesArray):
-						$count = count($modulesArray);
-						for($i = 0; $i < $count; $i++){
-							if($debug){
-								echo $visualCounter.') '.$modulesArray[$i]."\n";
-								$visualCounter++;
-							}
-							require ($dirInclude.'/'.$modulesArray[$i]);
-						}	
-					break;
-				}
-			}
-			
 			//Mainframe
 			public static function libFilesInclude(){
 				global $config;

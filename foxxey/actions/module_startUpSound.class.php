@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.3.35.12 Insane
+ Version: 0.3.36.12 Insane
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -41,10 +41,9 @@ if (!defined('FOXXEY')) {
 	class startUpSound {
 
 		/* Base utils */
-		private $opdl					= 'startupsound';
-		private $config					= array();
+
 		private $cacheFilePath 			= ETC.'startupsound.timetable';
-		private static $serverVersion 	= '0.3.35.12 Insane';
+		private static $serverVersion 	= '0.3.36.12 Insane';
 		private static $AbsolutesoundPath;
 		private static $currentDate 	= CURRENT_DATE;
 		private static $musMountPoint 	= 'mus';
@@ -58,6 +57,10 @@ if (!defined('FOXXEY')) {
 		private static $soundFilesNum 	= 0;
 		private static $easter 			= "";
 		private static $debug 			= false;
+		
+		/*CONFIG*/
+		private $mdlName					= 'startupsound';
+		private $config					= array();
 		private $defaultConfig = array('startupsound' => 
 		array(
 			'debug' => false,
@@ -176,7 +179,7 @@ if (!defined('FOXXEY')) {
 		//Initialisation
 		function __construct() {
 
-			$conf = conff::confGen($this->opdl, $this->defaultConfig);
+			$conf = conff::confGen($this->mdlName, $this->defaultConfig);
 			$this->config = $conf->readInIarray();
 
 			$dateExploded = explode ('.',CURRENT_DATE);
@@ -188,7 +191,7 @@ if (!defined('FOXXEY')) {
 				$this->eventsArray = file::efile($this->cacheFilePath, true, $this->eventsArray)['content'];
 			}
 
-			startUpSound::IncludestartUpSoundModules();
+			filesInDir::getIncludes($this->mdlName);
 			startUpSound::$AbsolutesoundPath = $this->config['mountDir'];
 			startUpSound::$debug = $debug ?? false;
 			$this->selectCurrentEvent($this->dayToday, $this->monthToday);
@@ -590,15 +593,6 @@ if (!defined('FOXXEY')) {
 				break;				
 			}
 			
-		}
-
-		private static function IncludestartUpSoundModules(){
-			global $config;
-			$modulesDir = INCDIR.'startupsound';
-			if(!is_dir($modulesDir)){
-				mkdir($modulesDir);
-			}
-			functions::includeModules($modulesDir, $config['modulesDebug']);
 		}
 
 	}

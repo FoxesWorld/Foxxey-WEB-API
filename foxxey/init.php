@@ -20,7 +20,7 @@
 	if(!defined('FOXXEY')) {
 		die ('{"message": "Not in FOXXEY thread"}');
 	} else {
-		require ($_SERVER['DOCUMENT_ROOT'].'/foxxey/etc/config.php');
+		require ($_SERVER['DOCUMENT_ROOT'].'/foxxey/etc/main.cfg');
 		require (SITE_ROOT.'/initFunctions');
 	}
 

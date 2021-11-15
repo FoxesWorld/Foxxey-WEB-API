@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.17.6 Exp
+ Verssion: 0.1.19.6 Post Exp
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -54,6 +54,18 @@ class Authorise {
 		private $userGroup;
 		private $regDate;
 		
+		/* CONFIG */
+		private $mdlName					= 'authorise';
+		private $authModules			= array();
+		private $defaultConfig = array('authorise' => 
+		array(
+			'checkHWID'    => true,
+			'geoIPcheck'   => true,
+			'useAntiBrute' => true,
+			'getBalance'   => true,
+			'foxChecking'  => true,
+		));
+		
 		 /**
 		 * Authorise constructor.
 		 * @param $login
@@ -61,8 +73,11 @@ class Authorise {
 		 * @param $HWID
 		 */
 		function __construct($login, $pass, $HWID, $launcherDB, $userDataDB, $ip){
+			$conf = conff::confGen($this->mdlName, $this->defaultConfig);
+			$this->authModules = $conf->readInIarray();
+			
 			global $config;
-			Authorise::IncludeAuthModules();
+			filesInDir::getIncludes($this->mdlName);
 			try {
 				$this->webSiteDB  = new db($config['db_user'], $config['db_pass'], $config['db_database'], $config['db_host']);
 			} catch(PDOException $pe) {
@@ -97,7 +112,7 @@ class Authorise {
 				exit('{"message": "'.$message['dataNotIsset'].'"}');
 			} else {
 				//Getting user login location
-				if($config['geoIPcheck'] === true) {
+				if($this->authModules['geoIPcheck']) {
 					if(class_exists('geoPlugin')) {
 						$geoplugin = new geoPlugin($this->ip);
 						if($geoplugin->countryCode !== null) {
@@ -126,7 +141,7 @@ class Authorise {
 						}
 
 						// Checking HWID
-								if($config['checkHWID'] === true) {
+								if($this->authModules['checkHWID']) {
 									if(class_exists('HWID')) {
 										$hardwareCheck = new HWID($this->login, $this->HWID, $this->launcherDB, $config['HWIDdebug']);
 										$HWIDuser = $hardwareCheck->getUserNameByHWID() ?? $this->HWID;
@@ -143,7 +158,7 @@ class Authorise {
 						//==============
 
 						if(!$this->correctLogin) { //If Login is incorrect
-							if($config['useAntiBrute'] === true) {
+							if($this->authModules['useAntiBrute']) {
 								$antiBrute = new antiBrute($this->ip, $this->launcherDB, $config['antiBruteDebug']);
 							}
 							static::$LoggerAuth->WriteLine('Incorrect login for '.$this->ip.' as '.$this->login.' using `'.$this->pass.'` Bruting by '.$HWIDuser);
@@ -163,7 +178,7 @@ class Authorise {
 								$this->regDate 	 = json_decode(mainSite::getUserData($this->login, 'reg_date'))	-> reg_date	  ?? null;
 
 							// Getting Balance
-							if($config['getBalance'] === true) {
+							if($this->authModules['getBalance']) {
 								if(class_exists('userbalance')) {
 									$balance = new userbalance($this->login, 'realmoney', false);
 									$units = $balance->getUserBalance();
@@ -175,7 +190,7 @@ class Authorise {
 							//================
 
 							// Fox checking
-							if($config['foxChecking'] === true) {
+							if($this->authModules['foxChecking']) {
 								if(class_exists('foxCheck')) {
 									$checkFox = new foxCheck($this->login, $config['foxCheckDebug'], $this->userDataDB, static::$LoggerAuth);
 									if($checkFox->checkFox() === true){
@@ -220,14 +235,5 @@ class Authorise {
 			$query = "INSERT INTO `wrongPass`(`login`, `realLogin`) VALUES ('".$login."', '".$HWIDuser."')";
 			$this->launcherDB::run($query);
 		}
-		
-		//Will be replaced
-		private static function IncludeAuthModules(){
-			global $config;
-			$modulesDir = INCDIR.'authorise';
-			if(!is_dir($modulesDir)){
-				mkdir($modulesDir);
-			}
-			functions::includeModules($modulesDir, $config['modulesDebug']);
-		}
+
 }

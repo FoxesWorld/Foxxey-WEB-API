@@ -97,7 +97,7 @@ class db {
     } catch (PDOException $e) {
 		  $message = $e->getMessage();
 		  $num = $e->getCode();
-		  functions::display_error($message, $num, $query);
+		  self::display_error($message, $num, $query);
     }
   }
 

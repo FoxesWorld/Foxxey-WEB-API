@@ -13,7 +13,7 @@ Ini_Set('display_errors', true);
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 1.2.0.0 Experimental
+ Version: 1.2.1.0 Experimental
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -28,7 +28,7 @@ if (!defined('FOXXEY')) {
 	class startUpSound {
 		
 		/* IO Utils */
-		private $cacheFilePath 	 = ETC.'startUpSound.timetable';
+		private $cacheFilePath 	 = ETC.'startupsound.timetable';
 		private $AbsolutePath;
 		private $musMountPoint 	 = 'mus';
 		private $sndMountPoint 	 = 'snd';
@@ -36,7 +36,7 @@ if (!defined('FOXXEY')) {
 		private $sndFilesNum 	 = 0;
 		
 		/* Kernel settings */
-		private $serverVersion 	 = '1.2.0.0 Experimental';
+		private $serverVersion 	 = '1.2.1.0 Experimental';
 		private $eventNow 		 = 'common';
 		private $musPerEvent 	 = true;	
 		private $useDayTime 	 = false;		//Use DayTime snd? (Morning, Day, Evening, Night)
@@ -149,6 +149,19 @@ if (!defined('FOXXEY')) {
 		private $sleepTime;
 		private $additionalInfo = 'NoData';
 		
+		/*CONFIG*/
+		private $mdlName					= 'startupsound';
+		private $config					= array();
+		private $defaultConfig = array('startupsound' => 
+		array(
+			'debug' => false,
+			'mountDir' 			=> SITE_ROOT."/etc/startUpSoundRepo",
+			'enableVoice' 		=> true,
+			'enableMusic' 		=> true,
+			'easterMusRarity'   => 1000,
+			'easterSndRarity'	=> 1
+		));
+		
 		/* Debug style */
 		//background: url('data:image/png;base64,') no-repeat;
 		private $pageStyle 		= "<style>
@@ -175,24 +188,14 @@ if (!defined('FOXXEY')) {
 		private $audioGenStyle 	= 'border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px 2px;';
 		
 		function __construct($debug = false){
-			global $config;
-			$this->AbsolutePath = $config['mountDir'];
+			$conf = conff::confGen($this->mdlName, $this->defaultConfig);
+			$this->config = $conf->readInIarray();
+			$this->AbsolutePath = $this->config['mountDir'];
 			$this->debug = $debug;
 			$this->fillDate(CURRENT_DATE);
-			$this->IncludestartUpSoundModules();
-			
+			filesInDir::getIncludes($this->mdlName);
+			$this->eventsArray = file::efile($this->cacheFilePath, true, $this->eventsArray)['content'];
 
-			
-			if(!file_exists($this->cacheFilePath)){
-				$this->WriteFile();
-			} else {
-				if(is_array($this->readEventFile())){
-					$this->eventsArray = $this->readEventFile();
-				} else {
-					$this->WriteFile();
-					$this->eventsArray = $this->readEventFile();
-				}
-			}
 			$this->genAudio('mus');
 			$this->genAudio('snd');
 			$this->selectCurrentEvent($this->dayToday, $this->monthToday);
@@ -234,14 +237,13 @@ if (!defined('FOXXEY')) {
 		}
 		
 		private function genAudio($genType){
-			global $config;
 			switch($genType){
 				case 'mus':
 				$minRange = 1;
 				$unExistingFolder = '';
-					if($config['enableMusic'] === true) {
+					if($this->config['enableMusic']) {
 						for($i = 0; $i < $this->musToGen; $i++) {
-							$this->easter($config['easterMusRarity'], $this->debug, 'music');
+							$this->easter($this->config['easterMusRarity'], $this->debug, 'music');
 							if($this->musPerEvent === true) {
 								$currentMusFolder = $this->AbsolutePath.'/'.$this->eventNow.'/'.$this->musMountPoint.$this->easter;
 							} else {
@@ -295,9 +297,9 @@ if (!defined('FOXXEY')) {
 				case 'snd':
 				$minRange = 1;
 				$unExistingFolder = '';
-					if($config['enableVoice'] === true) {
+					if($this->config['enableVoice']) {
 						for($i = 0; $i < $this->sndToGen; $i++) {
-							$this->easter($config['easterSndRarity'], $this->debug, 'sound');
+							$this->easter($this->config['easterSndRarity'], $this->debug, 'sound');
 							$currentSoundFolder = $this->AbsolutePath.'/'.$this->eventNow.'/'.$this->sndMountPoint.$this->seasonNow.$this->dayTimeNow.$this->easter;
 							if(is_dir($currentSoundFolder)) {
 								$this->sndFilesNum = count(filesInDir::filesInDirArray($currentSoundFolder, '.mp3'));
@@ -414,17 +416,16 @@ if (!defined('FOXXEY')) {
 		}
 		
 		private function easter($chance, $debug = false, $of) {
-			global $config;
 			$minRange = 1;
 			$maxRange = 1000;
 			$easterChance = mt_rand($minRange, $maxRange);
 			switch($of){
 				case 'sound':
-					$confRarity = $config['easterSndRarity'];
+					$confRarity = $this->config['easterSndRarity'];
 				break;
 				
 				case 'music':
-					$confRarity = $config['easterMusRarity'];
+					$confRarity = $this->config['easterMusRarity'];
 				break;
 			}
 				if ($easterChance <= $chance){
@@ -533,15 +534,6 @@ if (!defined('FOXXEY')) {
 			}
 				$RandSoundFile = $type.rand($minRange,$maxRange).'.mp3';
 				return $RandSoundFile;
-		}
-		
-		private function IncludestartUpSoundModules(){
-			global $config;
-			$modulesDir = INCDIR.'startupsound';
-			if(!is_dir($modulesDir)){
-				mkdir($modulesDir);
-			}
-			functions::includeModules($modulesDir, $config['modulesDebug']);
 		}
 		
 		/* FilesWork */

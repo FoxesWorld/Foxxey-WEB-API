@@ -61,6 +61,17 @@ if(!defined('FOXXEY')) {
 				return self::$allFilesArray;
 			}
 		}
+		
+		public static function getIncludes($dir){
+			$filePath = INCDIR.$dir.'/';
+			$filesAray = self::filesInDirArray($filePath,'*');
+			$count = count($filesAray);
+			for($i = 0; $i < $count; $i++){
+				if(is_file($filePath.$filesAray[$i])) {
+					require ($filePath.$filesAray[$i]);
+				}
+			}
+		}
 
 		private static function getIgnoreFile($debug = false){
 			if(file_exists(self::$ignoreFilePath)) {
