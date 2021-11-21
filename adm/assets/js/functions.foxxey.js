@@ -156,7 +156,7 @@
 						let message = data['message'];
 						button.notify(message, type);
 							setTimeout(function(){
-								parseJSONapi('/launcher.php?startUpSound', 'startUpSoundAPI');
+								parseJSONapi('/startUpSound', 'startUpSoundAPI');
 							}, 1500);
 						
 					});

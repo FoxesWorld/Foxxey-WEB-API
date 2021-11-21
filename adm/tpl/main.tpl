@@ -324,7 +324,7 @@
 								</table>
 							</div>
 						</div>
-						<button  class="btn btn-green w-25 p-3"  onclick="parseJSONMulti('/foxxey/api.php', 'wrongAuth', false); $(this).notify('testDeprecated!', 'warn');">Test</button>
+						<button  class="btn btn-green w-25 p-3"  onclick="parseJSONMulti('/api/', 'wrongAuth', false); $(this).notify('testDeprecated!', 'warn');">Test</button>
 					</div>
 					
 					<div class="card card-min col-md-4">
@@ -351,7 +351,7 @@
 								</table>
 							</div>
 						</div>
-						<button  class="btn btn-green w-25 p-3"  onclick="parseJSONMulti('/foxxey/api.php', 'succesfulAuth', false); $(this).notify('testDeprecated!', 'warn');">Test</button>
+						<button  class="btn btn-green w-25 p-3"  onclick="parseJSONMulti('/api/', 'succesfulAuth', false); $(this).notify('testDeprecated!', 'warn');">Test</button>
 					</div>
 
 				</div>

@@ -123,8 +123,8 @@
 
 <script>
 readNotes();
-parseJSONapi('/foxxey/api.php', 'cities');
-parseJSONapi('/foxxey/api.php', 'systemInfo');
-parseJSONMulti('/foxxey/api.php', 'modules');
+parseJSONapi('/api/', 'cities');
+parseJSONapi('/api/', 'systemInfo');
+parseJSONMulti('/api/', 'modules');
 </script>
 				
