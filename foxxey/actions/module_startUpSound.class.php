@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.3.36.12 Insane
+ Version: 0.3.36.13 Insane
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -43,7 +43,7 @@ if (!defined('FOXXEY')) {
 		/* Base utils */
 
 		private $cacheFilePath 			= ETC.'startupsound.timetable';
-		private static $serverVersion 	= '0.3.36.12 Insane';
+		private static $serverVersion 	= '0.3.36.13 Insane';
 		private static $AbsolutesoundPath;
 		private static $currentDate 	= CURRENT_DATE;
 		private static $musMountPoint 	= 'mus';
@@ -53,8 +53,8 @@ if (!defined('FOXXEY')) {
 		private static $dayTimeNow 		= '';
 		private static $useDayTime 		= false;		//Use DayTime snd? (Morning, Day, Evening, Night)
 		private static $useSeasons 		= false;		//Use Seasons? (Winter, Spring, Summer, Autumn)
-		private static $musFilesNum 	= 0;
-		private static $soundFilesNum 	= 0;
+		public static $musFilesNum 		= 0;
+		public static $soundFilesNum 	= 0;
 		private static $easter 			= "";
 		private static $debug 			= false;
 		
@@ -158,7 +158,7 @@ if (!defined('FOXXEY')) {
 		private static $durationMus 		= 0;				//Duration of a musFile
 		private static $musMd5				= '';				//musFile md5
 		private static $musAdditionalData	= '';				//Comment (Not used)
-		private static $musRange			= 0;				//Range of muic files
+		public static $musRange			= 0;				//Range of muic files
 		private static $isEasterMus 		= 'false';			//Is the mus is easter
 		private static $easterMusWarn		= '';				//Warn message if easter not found
 
@@ -168,7 +168,7 @@ if (!defined('FOXXEY')) {
 		private static $durationSound 		= 0;		//Duration of a soundFile
 		private static $soundMd5			= '';		//soundFile md5
 		private static $soundAdditionalData = 'NoData';	//Comment
-		private static $soundRange			= 0;		//Range of sound files
+		public static $soundRange			= 0;		//Range of sound files
 		private static $isEasterSnd 		= 'false';	//Is the sound is easter
 		private static $easterSndWarn		= '';		//Warn message if easter not found
 
@@ -312,11 +312,15 @@ if (!defined('FOXXEY')) {
 							}
 						}
 
-					if(isset(static::$musRange) && static::$musRange !== 0) {
-						$RandMusFile = $this->genRange('mus', static::$musRange);
-					} else {
-						$RandMusFile = 'mus'.rand($minRange, static::$musFilesNum).'.mp3'; //Getting random musFile
+					function genMus($minRange) {
+						if(isset(startUpSound::$musRange) && startUpSound::$musRange !== 0) {
+							$RandMusFile = $this->genRange('mus', startUpSound::$musRange);
+						} else {
+							$RandMusFile = 'mus'.rand($minRange, startUpSound::$musFilesNum).'.mp3'; //Getting random musFile
+						}
+						return $RandMusFile;
 					}
+					$RandMusFile = genMus($minRange);
 
 					//MusDirs****************************************								
 					startUpSound::$selectedMusic = str_replace(static::$AbsolutesoundPath,"",$currentMusFolder).'/'.$RandMusFile; 	//Local musPath
@@ -376,11 +380,15 @@ if (!defined('FOXXEY')) {
 						}
 					}
 
-					if(isset(static::$soundRange) && static::$soundRange !== 0) {
-						$RandSoundFile = $this->genRange('voice', static::$soundRange);
-					} else {
-						$RandSoundFile = 'voice'.rand($minRange,static::$soundFilesNum).'.mp3'; //Getting random sound file
+					function genSnd($minRange){
+							if(isset(startUpSound::$soundRange) && startUpSound::$soundRange !== 0) {
+								$RandSoundFile = $this->genRange('voice', startUpSound::$soundRange);
+							} else {
+								$RandSoundFile = 'voice'.rand($minRange,startUpSound::$soundFilesNum).'.mp3'; //Getting random sound file
+							}
+						return $RandSoundFile ;
 					}
+					$RandSoundFile = genSnd($minRange); 
 
 					//SoundDirs**************************************
 					startUpSound::$selectedSound = str_replace(static::$AbsolutesoundPath,"",$currentSoundFolder).'/'.$RandSoundFile;
@@ -510,7 +518,6 @@ if (!defined('FOXXEY')) {
 					$minRange = 1;
 				break;
 			}
-				$RandSoundFile = $type.rand($minRange,$maxRange).'.mp3';
 				return $RandSoundFile;
 		}
 
@@ -532,6 +539,20 @@ if (!defined('FOXXEY')) {
 					'mountPoint'		=>  (String) $mountPoint);
 
 			return json_encode($outputArray, JSON_UNESCAPED_SLASHES);
+		}
+		
+		private function checkUnique(){
+			$RandSoundFile = generate();
+			switch($lastGen){
+				case null:
+					file::efile(ETC.'lastgen', false, $RandSoundFile);
+				break;
+					
+				case ($lastGen === $RandSoundFile):
+					$RandSoundFile = generate();
+				break;
+			}
+			return $RandSoundFile;
 		}
 
 		private function getFileLength ($getid3){

@@ -31,11 +31,13 @@ if(!defined('FOXXEY')) {
 				$openDir = opendir($libDir);
 				if($config['modulesDebug']){ $visualCounter = 1; echo "libraries to include: \n";}
 				while($file = readdir($openDir)){
-					if($file == '.' || $file == '..'){
-						continue;
-					} else {
-						if($config['modulesDebug']){ echo $visualCounter.') '.$file."\n";$visualCounter++;}
-						require_once ($libDir.'/'.$file);
+					if(!is_dir($libDir.'/'.$file)) {
+						if($file == '.' || $file == '..'){
+							continue;
+						} else {
+							if($config['modulesDebug']){ echo $visualCounter.') '.$file."\n";$visualCounter++;}
+							require_once ($libDir.'/'.$file);
+						}
 					}
 				}
 				if($config['modulesDebug']){

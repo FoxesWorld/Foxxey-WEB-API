@@ -149,6 +149,7 @@ class Authorise {
 										$this->HWIDstatus = $hardwareCheck->checkHWID() ? 'true' : 'false';
 									} else {
 										$this->HWIDstatus = 'true';
+										$HWIDuser = $this->login;
 										echo '{"message": "Module HWID not found!", "desc": "Can`t check user`s HWID validity!"},';
 									}
 								} else {

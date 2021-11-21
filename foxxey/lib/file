@@ -81,7 +81,7 @@
 		
 		private static function flread($file){
 			ob_start();
-			readfile($file);	//ob_get_level()
+			readfile($file);//ob_get_level()
 			$fileContents = ob_get_clean();
 			
 			switch(self::$serialize){
@@ -122,10 +122,6 @@
 								$message = 'Not enough rights for that file';
 							break;
 						}
-
-					/*	
-
-						 */
 					break;
 
 					case false:

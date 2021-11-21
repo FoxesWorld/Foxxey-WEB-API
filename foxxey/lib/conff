@@ -44,14 +44,14 @@ class conff {
 							}
 					break;
 				}
-				 
+
 		} else {
 			return 'No file name was entered!';
 		}
     }
 	
-	public static function confGen($opdl, $confArray = null){
-		$ini = new conff(ETC.$opdl.'.ini', $confArray);
+	public static function confGen($mdlName, $confArray = null){
+		$ini = new conff(ETC.$mdlName.'.ini', $confArray);
 
 		return $ini;
 	}
@@ -75,6 +75,7 @@ class conff {
 				$iniConf[$header][$key]=$value;
 			}
 		}
+
 		return $iniConf[$header];
     }
 	
