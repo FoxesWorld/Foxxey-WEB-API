@@ -2,10 +2,6 @@
 -- version 01.0.0
 -- https://api.foxesworld.ru/
 --
--- Хост: localhost
--- Время создания: Авг 02 2021 г., 17:01
--- Версия сервера: 10.3.29-MariaDB-1:10.3.29+maria~buster-log
--- Версия PHP: 7.3.29-1~deb10u1
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -17,15 +13,6 @@ SET time_zone = "+00:00";
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8mb4 */;
 
---
--- База данных: `fox_launcher`
---
-
--- --------------------------------------------------------
-
---
--- Структура таблицы `antiBrute`
---
 
 CREATE TABLE IF NOT EXISTS `antiBrute` (
   `id` int(11) NOT NULL,
@@ -37,9 +24,6 @@ CREATE TABLE IF NOT EXISTS `antiBrute` (
 
 -- --------------------------------------------------------
 
---
--- Структура таблицы `fullBlock`
---
 
 CREATE TABLE IF NOT EXISTS `fullBlock` (
   `id` int(8) NOT NULL,
@@ -49,9 +33,6 @@ CREATE TABLE IF NOT EXISTS `fullBlock` (
 
 -- --------------------------------------------------------
 
---
--- Структура таблицы `HWIDrenew`
---
 
 CREATE TABLE IF NOT EXISTS `HWIDrenew` (
   `id` int(8) NOT NULL,
@@ -63,9 +44,6 @@ CREATE TABLE IF NOT EXISTS `HWIDrenew` (
 
 -- --------------------------------------------------------
 
---
--- Структура таблицы `ipCity`
---
 
 CREATE TABLE IF NOT EXISTS `ipCity` (
   `id` int(8) NOT NULL,
@@ -75,9 +53,6 @@ CREATE TABLE IF NOT EXISTS `ipCity` (
 
 -- --------------------------------------------------------
 
---
--- Структура таблицы `ipDatabase`
---
 
 CREATE TABLE IF NOT EXISTS `ipDatabase` (
   `id` int(8) NOT NULL,
@@ -88,9 +63,6 @@ CREATE TABLE IF NOT EXISTS `ipDatabase` (
 
 -- --------------------------------------------------------
 
---
--- Структура таблицы `randPhrases`
---
 
 CREATE TABLE IF NOT EXISTS `randPhrases` (
   `id` int(10) NOT NULL,
@@ -98,9 +70,6 @@ CREATE TABLE IF NOT EXISTS `randPhrases` (
   `rarity` int(10) NOT NULL DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Структура таблицы `servers`
---
 
 CREATE TABLE IF NOT EXISTS `servers` (
   `id` int(100) NOT NULL,
@@ -117,9 +86,6 @@ CREATE TABLE IF NOT EXISTS `servers` (
   `jvmArgs` varchar(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Структура таблицы `usersHWID`
---
 
 CREATE TABLE IF NOT EXISTS `usersHWID` (
   `id` int(255) NOT NULL,
@@ -127,9 +93,6 @@ CREATE TABLE IF NOT EXISTS `usersHWID` (
   `hwid` varchar(512) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Структура таблицы `wrongPass`
---
 
 CREATE TABLE `wrongPass` (
   `id` int(2) NOT NULL,
@@ -138,9 +101,6 @@ CREATE TABLE `wrongPass` (
   `timestamp` timestamp(6) NOT NULL DEFAULT current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Структура таблицы `successfulAuth`
---
 
 CREATE TABLE `successfulAuth` (
   `id` int(2) NOT NULL,
@@ -148,141 +108,73 @@ CREATE TABLE `successfulAuth` (
   `timestamp` timestamp(6) NOT NULL DEFAULT current_timestamp(6)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
---
--- Индексы сохранённых таблиц
---
-
---
--- Индексы таблицы `antiBrute`
---
 ALTER TABLE `antiBrute`
   ADD PRIMARY KEY (`id`) USING BTREE,
   ADD UNIQUE KEY `ip` (`ip`);
 
---
--- Индексы таблицы `fullBlock`
---
 ALTER TABLE `fullBlock`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `ip` (`ip`);
 
---
--- Индексы таблицы `HWIDrenew`
---
 ALTER TABLE `HWIDrenew`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `login` (`login`),
   ADD UNIQUE KEY `newHWID` (`newHWID`),
   ADD UNIQUE KEY `hash` (`hash`);
 
---
--- Индексы таблицы `ipCity`
---
 ALTER TABLE `ipCity`
   ADD PRIMARY KEY (`id`);
 
---
--- Индексы таблицы `ipDatabase`
---
 ALTER TABLE `ipDatabase`
   ADD PRIMARY KEY (`id`);
 
---
--- Индексы таблицы `randPhrases`
---
 ALTER TABLE `randPhrases`
   ADD PRIMARY KEY (`id`);
 
---
--- Индексы таблицы `servers`
---
 ALTER TABLE `servers`
   ADD PRIMARY KEY (`id`);
 
---
--- Индексы таблицы `usersHWID`
---
 ALTER TABLE `usersHWID`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `login` (`login`),
   ADD UNIQUE KEY `hwid` (`hwid`);
   
---
--- Индексы таблицы `wrongPass`
---
 ALTER TABLE `wrongPass`
   ADD PRIMARY KEY (`id`);
   
---
--- Индексы таблицы `successfulAuth`
---
 ALTER TABLE `successfulAuth`
   ADD PRIMARY KEY (`id`);
 
 
---
--- AUTO_INCREMENT для сохранённых таблиц
---
-
---
--- AUTO_INCREMENT для таблицы `antiBrute`
---
 ALTER TABLE `antiBrute`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
---
--- AUTO_INCREMENT для таблицы `fullBlock`
---
 ALTER TABLE `fullBlock`
   MODIFY `id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
---
--- AUTO_INCREMENT для таблицы `HWIDrenew`
---
 ALTER TABLE `HWIDrenew`
   MODIFY `id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
---
--- AUTO_INCREMENT для таблицы `ipCity`
---
 ALTER TABLE `ipCity`
   MODIFY `id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
---
--- AUTO_INCREMENT для таблицы `ipDatabase`
---
 ALTER TABLE `ipDatabase`
   MODIFY `id` int(8) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
---
--- AUTO_INCREMENT для таблицы `randPhrases`
---
 ALTER TABLE `randPhrases`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
---
--- AUTO_INCREMENT для таблицы `servers`
---
 ALTER TABLE `servers`
   MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
---
--- AUTO_INCREMENT для таблицы `usersHWID`
---
 ALTER TABLE `usersHWID`
   MODIFY `id` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 COMMIT;
 
---
--- AUTO_INCREMENT для таблицы `wrongPass`
---
 ALTER TABLE `wrongPass`
   MODIFY `id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 COMMIT;
 
---
--- AUTO_INCREMENT для таблицы `successfulAuth`
---
 ALTER TABLE `successfulAuth`
   MODIFY `id` int(2) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;

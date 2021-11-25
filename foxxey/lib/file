@@ -76,7 +76,6 @@
 				self::$fileResourceLink = fopen($file, "a+");
 				self::fileMode($file, $str);		
 				self::fileop($file, $str);
-				
 		}
 		
 		private static function flread($file){
@@ -140,9 +139,13 @@
 					break;
 				}
 			}
-			self::$message = $message;
-			self::$writeNode = $writeNode;
-			self::$fileResourceLink = fopen($file,self::$writeNode);
+			if(file_exists($file)) {
+				self::$message = $message;
+				self::$writeNode = $writeNode;
+				self::$fileResourceLink = fopen($file,self::$writeNode);
+			} else {
+				return 'Not found a file- '.$file;
+			}
 		}
 		
 		private static function fileop($file, $str){

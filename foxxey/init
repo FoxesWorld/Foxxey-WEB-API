@@ -16,7 +16,7 @@
  Usage: Initialising&Including modules
 =====================================================
 */
-	header('Content-Type: text/html; charset=utf-8');
+	header("Content-Type: application/json; charset=UTF-8");
 	if(!defined('FOXXEY')) {
 		die ('{"message": "Not in FOXXEY thread"}');
 	} else {
@@ -44,19 +44,22 @@
 
 			$this->longTermBan = new longTermBan($ip, $launcherDB);
 			if($this->longTermBan->checkBan() === false) {
-				
 
 				switch($initType){
 					case 'launcher':	
 						$dbPrepare = new dbPrepare;
 						$dbPrepare->dbPrepare();
-						require(SITE_ROOT.'/actionScript.lib');
+						require(SITE_ROOT.'/actionScript');
 						$action = new actionScript($launcherDB, $userDataDB, $ip);
 					break;
 					
 					case 'API':
 						require (SITE_ROOT.'/api/init.php');
 						$apiInit = new apiInit($ip, $userDataDB, $launcherDB, $_REQUEST);
+					break;
+					
+					case 'ADM':
+					
 					break;
 					
 					case 'updater':

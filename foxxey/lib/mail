@@ -33,8 +33,8 @@ class foxMail {
 	public $bcc = array ();
 	public $keepalive = false;
 	/* CONFIG */
-	private $mdlName = 'mail';
-	private $defaultConfig = array('startupsound' => 
+	private $mdlName = null;
+	private $defaultConfig = array('mail' => 
 		array(
 			'encoding' 			=> 'UTF-8',
 			'admin_mail' 		=> 'lisssicin@yandex.ru',
@@ -50,7 +50,7 @@ class foxMail {
 	private $config;
 	
 	function __construct($is_html = false) {
-		
+		$this->mdlName = basename(__FILE__);
 		$conf = conff::confGen($this->mdlName, $this->defaultConfig);
 		$this->config = $conf->readInIarray();
 		filesInDir::getIncludes($this->mdlName);

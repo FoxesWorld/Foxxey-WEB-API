@@ -1,7 +1,7 @@
 <?php
 /*
 =====================================================
- Hey, I've got a lot of things for you! | functions class
+ Hey, I've got some functions to help you initialising!
 -----------------------------------------------------
  https://FoxesWorld.ru/
 -----------------------------------------------------
@@ -15,7 +15,7 @@
 -----------------------------------------------------
  Usage: A bunch of functions
 =====================================================
-Note: All functions will be rebuilt as shared libraries
+Note: Init functions
 */
 if(!defined('FOXXEY')) {
 	die ('{"message": "Not in FOXXEY thread"}');
@@ -23,70 +23,25 @@ if(!defined('FOXXEY')) {
 
 	class functions {
 
-			//Mainframe
-			public static function libFilesInclude(){
-				global $config;
-				$visualCounter = 1;
-				$libDir = SITE_ROOT.'/lib';
-				$openDir = opendir($libDir);
-				if($config['modulesDebug']){ $visualCounter = 1; echo "libraries to include: \n";}
-				while($file = readdir($openDir)){
-					if(!is_dir($libDir.'/'.$file)) {
-						if($file == '.' || $file == '..'){
-							continue;
-						} else {
-							if($config['modulesDebug']){ echo $visualCounter.') '.$file."\n";$visualCounter++;}
-							require_once ($libDir.'/'.$file);
-						}
-					}
-				}
-				if($config['modulesDebug']){
-					echo "\n";
-				}
-			}
-			
-			//Murge to servers library
-			public static function getServersList($db, $server = null, $data = null){
-				$ans;
-				if($server == null){
-					$query = "SELECT * FROM `servers`";
-					$servers = $db::getRows($query);
-					foreach($servers as $key) {
-						$ans[] = $key['Server_name'];
-					}
-				} else {
-					if($data) {
-						$query = "SELECT * FROM `servers` WHERE Server_name = '".$server."'";
-						$servers = $db::getRow($query);
-						$ans = $servers[$data];
+		public static function libFilesInclude(){
+			global $config;
+			$visualCounter = 1;
+			$libDir = SITE_ROOT.'/lib';
+			$openDir = opendir($libDir);
+			if($config['modulesDebug']){ $visualCounter = 1; echo "libraries to include: \n";}
+			while($file = readdir($openDir)){
+				if(!is_dir($libDir.'/'.$file)) {
+					if($file == '.' || $file == '..'){
+						continue;
 					} else {
-						die('{"message": "No data!"}');
+						if($config['modulesDebug']){ echo $visualCounter.') '.$file."\n";$visualCounter++;}
+						require_once ($libDir.'/'.$file);
 					}
 				}
+			}
+			if($config['modulesDebug']){
+				echo "\n";
+			}
+		}
 
-				return $ans;
-			}
-			
-			//Will be murged to file library
-			public static function checkDir($modpack, $db){
-				$thisVersion = functions::getServersList($db, $modpack, 'version');
-				$scanArray = array(FILES_DIR.'clients/modpacks/'.$modpack, FILES_DIR.'clients/versions/'.$thisVersion);
-				foreach($scanArray as $key){
-				$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($key), RecursiveIteratorIterator::SELF_FIRST);
-					foreach($objects as $name => $object) {
-					$basename = basename($name);
-						$isdir = is_dir($name);
-						if ($basename!="." and $basename!=".." and !is_dir($name)){
-							$str = str_replace(ROOT_DIR, "", str_replace($basename, "", $name));
-								$fileOBJ[] = 
-								[
-									'filename' => $str.$basename,
-									'hash'     => md5($name),
-									'size'     => strval(filesize($name))
-								];
-						}
-					}
-				}
-				return json_encode($fileOBJ, JSON_UNESCAPED_SLASHES);
-			}
 	}

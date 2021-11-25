@@ -18,11 +18,14 @@ class conff {
     public function __construct($file = null, $toRecord = null, $debug = false){
 		$this->debug = $debug;
         if ($file) {
+			
 			$this->filename = $file;
-				file::efile($this->filename);
-				$this->arr = parse_ini_file($this->filename, true);
-				$this->readStatus = $this->readStatus($this->filename);
-				$this->fileSize = filesize($this->filename);
+				//$dir = $this->prepareDir($this->filename);
+				$fullPath = ETC.$this->filename;
+				file::efile($fullPath);
+				$this->arr = parse_ini_file($fullPath, true);
+				$this->readStatus = $this->readStatus($fullPath);
+				$this->fileSize = filesize($fullPath);
 				if($debug){echo "Array to record was passed \n";}
 				switch($toRecord){
 					case null:
@@ -51,9 +54,17 @@ class conff {
     }
 	
 	public static function confGen($mdlName, $confArray = null){
-		$ini = new conff(ETC.$mdlName.'.ini', $confArray);
+		$ini = new conff($mdlName.'.ini', $confArray);
 
 		return $ini;
+	}
+	
+	private function prepareDir($file){
+		$dir = explode('.', $file)[0];
+		if(!is_dir($dir)){
+			mkdir($dir);
+		}
+		return $dir;
 	}
 
     private function readStatus($file){

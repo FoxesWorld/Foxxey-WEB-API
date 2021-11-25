@@ -26,8 +26,18 @@ if (!defined('FOXXEY')) {
 		private $debug;
 		
 		/* INTERNAL */
+		
 		private $textsDir;
 		private $textArr;
+		
+		/* CONFIG */
+		private $mdlName;
+		private $config = array();
+		private $defaultConfig = array('randTexts' => 
+		array(
+			'textsDir' 			=> ETC.'messages/randTexts/',
+			'debug'				=> false
+		));
 		
 		/**
 		 * randTexts constructor.
@@ -35,11 +45,16 @@ if (!defined('FOXXEY')) {
 		 * @param bool $debug
 		 */
 		function __construct($textType, $debug = false){
-			$this->textsDir = ETC.'messages/randTexts/';
-			$this->debug = $debug;
-			$this->textToSend = $textType;
+			/*ConfInit*/
+				$this->mdlName = basename(__FILE__);
+				$conf = conff::confGen($this->mdlName, $this->defaultConfig);
+				$this->config = $conf->readInIarray();
+			
+			$this->textsDir 	= $this->config['textsDir'];
+			$this->debug 		= $this->config['debug'];
+			$this->textToSend 	= $textType;
 
-			if($this->debug === true){
+			if($this->debug){
 				echo 'TextType - '.$this->textToSend;
 			}
 		}

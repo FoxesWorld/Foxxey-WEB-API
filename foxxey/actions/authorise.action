@@ -55,7 +55,7 @@ class Authorise {
 		private $regDate;
 		
 		/* CONFIG */
-		private $mdlName					= 'authorise';
+		private $mdlName					= null;
 		private $authModules			= array();
 		private $defaultConfig = array('authorise' => 
 		array(
@@ -73,6 +73,7 @@ class Authorise {
 		 * @param $HWID
 		 */
 		function __construct($login, $pass, $HWID, $launcherDB, $userDataDB, $ip){
+			$this->mdlName = basename(__FILE__, '.action');
 			$conf = conff::confGen($this->mdlName, $this->defaultConfig);
 			$this->authModules = $conf->readInIarray();
 			

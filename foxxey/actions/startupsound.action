@@ -59,7 +59,7 @@ if (!defined('FOXXEY')) {
 		private static $debug 			= false;
 		
 		/*CONFIG*/
-		private $mdlName					= 'startupsound';
+		private $mdlName					= null;
 		private $config					= array();
 		private $defaultConfig = array('startupsound' => 
 		array(
@@ -178,7 +178,7 @@ if (!defined('FOXXEY')) {
 
 		//Initialisation
 		function __construct() {
-
+			$this->mdlName = basename(__FILE__, '.action');
 			$conf = conff::confGen($this->mdlName, $this->defaultConfig);
 			$this->config = $conf->readInIarray();
 

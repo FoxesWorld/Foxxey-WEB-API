@@ -11,9 +11,9 @@
 -----------------------------------------------------
  File: actionScript.php
 -----------------------------------------------------
- Version: 0.2.6.2 Experimental
+ Version: 0.2.6.3 Experimental
 -----------------------------------------------------
- Usage: Global ACTIONS module hooking
+ Usage: Global ACTIONS hooking
 =====================================================
 */
 if($config['debugStartUpSound'] === false) {
@@ -25,6 +25,7 @@ if($config['debugStartUpSound'] === false) {
 
 	class actionScript {
 		
+		protected $foundActions;
 		protected $launcherDB;
 		protected $userDataDB;
 		protected $ip;
@@ -37,6 +38,7 @@ if($config['debugStartUpSound'] === false) {
 		}
 		
 		private function listActions($request){
+			$this->foundActions = filesInDir::filesInDirArray(SITE_ROOT.'/actions', 'action');
 			global $config;
 				foreach ($request as $key => $value) {
 				$requestTitle = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($key))));
@@ -47,7 +49,7 @@ if($config['debugStartUpSound'] === false) {
 					  
 					//Authorising
 				   case 'auth':
-					   require (SITE_ROOT.'/actions/module_authorise.class.php');
+					   require (SITE_ROOT.'/actions/authorise.action');
 					   if(class_exists('Authorise')) {
 							$login		 = $_GET['login'] 		?? null;
 							$password 	 = $_GET['password'] 	?? null;
@@ -60,8 +62,8 @@ if($config['debugStartUpSound'] === false) {
 				   break;
 				   
 				   case 'modPackFiles':
-						if(in_array($requestValue, functions::getServersList($this->launcherDB))) {
-							die(functions::checkDir($requestValue, $this->launcherDB));
+						if(in_array($requestValue, servers::getServersList($this->launcherDB))) {
+							die(filesInDir::checkDir($requestValue, $this->launcherDB));
 						} else {
 							die('{"message": "Not found a '.$requestValue.' client!"}');
 						}
@@ -69,7 +71,7 @@ if($config['debugStartUpSound'] === false) {
 				   
 				   //startUpSound using
 				   case 'startUpSound':
-					   require (SITE_ROOT.'/actions/module_startUpSound.class.php');
+					   require (SITE_ROOT.'/actions/startupsound.action');
 					   if(class_exists('startUpSound')) {
 							$startSound = new startUpSound($config['debugStartUpSound']);
 							die($startSound->generateAudio());
@@ -80,7 +82,7 @@ if($config['debugStartUpSound'] === false) {
 				   
 				   //Getting user Skin&Cloak
 				   case 'show':
-					   require (SITE_ROOT.'/actions/module_SkinViewer2D.class.php');
+					   require (SITE_ROOT.'/actions/SkinViewer2D.action');
 					   if(class_exists('skinViewer2D')) {
 						header("Content-type: image/png");
 						$show = $_GET['show'] ?? null;
@@ -106,7 +108,7 @@ if($config['debugStartUpSound'] === false) {
 				   break;
 				   
 				   case 'startUpSoundExp':
-					require (SITE_ROOT.'/actions/module_startUpSound.classExp.php');
+					require (SITE_ROOT.'/actions/startupsoundExp.action');
 					$startSound = new startUpSound($config['debugStartUpSound']);
 					die($startSound->generateAudio());
 				   break;

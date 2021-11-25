@@ -1,4 +1,7 @@
 <?php
+if(!defined('FOXXEY')) {
+	die ('{"message": "Not in FOXXEY thread"}');
+}
 
 	class servers {
 		
@@ -23,5 +26,5 @@
 
 			return $ans;
 		}
-		
+
 	}
