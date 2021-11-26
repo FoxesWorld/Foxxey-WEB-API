@@ -224,6 +224,7 @@ if (!defined('FOXXEY')) {
 		}
 		
 		private function outputJson() {
+			$mountPoint = str_replace(SITE_ROOT, '', $this->AbsolutePath);
 			$outputArray = array(
 					"maxDuration" 		=> (Integer) $this->sleepTime,
 					"selectedMusic" 	=> (Array)   $this->musGen,
@@ -231,6 +232,7 @@ if (!defined('FOXXEY')) {
 					"eventInfo"			=> (String)  $this->additionalInfo,
 					"eventName" 		=> (String)  $this->eventNow,
 					"additionalInfo"	=> (String)	 $this->additionalInfo,
+					'mountPoint'		=> (String)  $mountPoint,
 					"serverVersion"		=> (String)  $this->serverVersion);
 
 			return json_encode($outputArray, JSON_UNESCAPED_SLASHES);

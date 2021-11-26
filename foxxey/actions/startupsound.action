@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.3.36.13 Insane
+ Version: 0.3.37.13 Post Insane
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -43,7 +43,7 @@ if (!defined('FOXXEY')) {
 		/* Base utils */
 
 		private $cacheFilePath 			= ETC.'startupsound.timetable';
-		private static $serverVersion 	= '0.3.36.13 Insane';
+		private static $serverVersion 	= '0.3.37.13 Post Insane';
 		private static $AbsolutesoundPath;
 		private static $currentDate 	= CURRENT_DATE;
 		private static $musMountPoint 	= 'mus';
@@ -202,8 +202,9 @@ if (!defined('FOXXEY')) {
 				echo '<h1>startUpSound <i>'.static::$serverVersion.'</i></h1>
 				<div style="border: 1px dashed black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">';
 			}
-			$this->generateMusic(static::$debug);
 			$this->generateSound(static::$debug);
+			$this->generateMusic(static::$debug);
+
 			$this->maxDuration(static::$debug);
 			if(isset($_REQUEST['startUpSoundAPI'])) {
 				$easterMusNum = count(filesInDir::filesInDirArray(static::$AbsolutesoundPath.'/'.static::$eventNow.'/'.static::$musMountPoint.'/easter', '.mp3'));
@@ -529,6 +530,8 @@ if (!defined('FOXXEY')) {
 			$mountPoint = str_replace(SITE_ROOT, '', static::$AbsolutesoundPath);
 			$outputArray = array(
 					"maxDuration" 		=> (Integer)static::$maxDuration,
+					"sndLevel" 			=> (Integer)-15,
+					"musLevel" 			=> (Integer)-20,
 					"selectedMusic" 	=> (String) static::$selectedMusic,
 					"selectedSound" 	=> (String) static::$selectedSound,
 					"soundMd5" 			=> (String) static::$soundMd5,
@@ -536,7 +539,7 @@ if (!defined('FOXXEY')) {
 					"eventInfo"			=> (String) static::$soundAdditionalData,
 					"eventName" 		=> (String) static::$eventNow,
 					'serverVersion'		=> (String) static::$serverVersion,
-					'mountPoint'		=>  (String) $mountPoint);
+					'mountPoint'		=> (String) $mountPoint);
 
 			return json_encode($outputArray, JSON_UNESCAPED_SLASHES);
 		}
