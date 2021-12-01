@@ -61,7 +61,7 @@ if(!defined('startUpSound')) {
 			if(static::$durationMus > static::$durationSnd) {
 				$duration = static::$durationMus;
 			} else {
-				$duration= static::$durationSnd;
+				$duration = static::$durationSnd;
 			}
 				startUpSound::$maxDuration = $duration;
 			if($debug === true) {
