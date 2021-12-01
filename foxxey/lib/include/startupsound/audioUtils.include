@@ -1,0 +1,119 @@
+<?php
+if(!defined('startUpSound')) {
+	die('{"message": "Not in startUpSound thread"}');
+}
+	class audioUtils extends startUpSound {
+
+		protected  static function getFileLength ($getid3){
+			$duration = $getid3->info['playtime_string'];
+			$time = str_replace(0, "",explode(':', $duration)[1]);
+			
+			return $time;
+		}
+
+		protected static function getAdditionalInfo($getid3){
+			if(is_array(@$getid3->info['tags']['id3v1']['comment'])) {
+				@$soundAdditionalData = $getid3->info['tags']['id3v1']['comment'][0];
+				return $soundAdditionalData;
+			} else {
+				return "undefined";
+			}
+		}
+
+		/**
+		* @param String type {voice||mus}, Integer range
+		* @return random {voice||mus}
+		*/
+		public static function genRange($type, $range){
+			switch($range) {
+				case (is_array($range)):
+					$minRange = $range[0];
+					$maxRange = $range[1];
+					startUpSound::$soundRangeDebug = '<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15 0px;">'.
+					'<h1 style="font-size: large;margin: 0;">'.$type.'Range</h1>'.
+					 "<b>minRange:</b>".$minRange.'<br>'.
+					 "<b>maxRange:</b>".$maxRange.'</div>';
+				break;
+
+				case (!is_array($range)):
+					$minRange = $range;
+					$maxRange = $range;
+					startUpSound::$soundRangeDebug = '<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15 0px;">'.
+					'<h1 style="font-size: large;margin: 0;">'.$type.'Range</h1>'.
+					 "<b>".$type."ToPlay:</b>".$minRange.'</div>';
+				break;
+
+				default:
+					$minRange = 1;
+				break;
+			}
+			$RandSoundFile = $type.rand($minRange,$maxRange).'.mp3';
+			
+			return $RandSoundFile;
+		}
+
+		/*
+		 * @param boolean $debug
+		 * @return Integer maxDuration
+		 */
+		protected static function maxDuration($debug = false) {
+			$duration = 0;
+			if(static::$durationMus > static::$durationSnd) {
+				$duration = static::$durationMus;
+			} else {
+				$duration= static::$durationSnd;
+			}
+				startUpSound::$maxDuration = $duration;
+			if($debug === true) {
+				echo '
+				<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">
+				<h1 style="font-size: large; margin: 0;">Music duration</h1>
+							<b>Sound duration:</b>'.	static::$durationSnd.'
+							<br><b>Mus duration:</b> '. static::$durationMus.'
+							<br> <b>Max duration:</b>'.	static::$maxDuration.'
+				</div>';
+			}
+		}
+
+		/*
+		 * @param boolean $debug, Integer chance, of - sound|music
+		 * @return String easter
+		 */
+		protected static function easter($chance, $debug = false, $of) {
+			$minRange = 1;
+			$maxRange = 1000;
+			$easterChance = mt_rand($minRange, $maxRange);
+			switch($of){
+				case 'sound':
+					$confRarity = startUpSound::$config['easterSndRarity'];
+				break;
+				
+				case 'music':
+					$confRarity = startUpSound::$config['easterMusRarity'];
+				break;
+			}
+				if ($easterChance <= $chance){
+					startUpSound::$easter = "/easter";
+					switch($of){
+						case 'sound':
+							startUpSound::$isEasterSnd = 'true';
+						break;
+						
+						case 'music':
+							startUpSound::$isEasterMus = 'true';
+						break;
+					}
+					$easterStatus = true;
+				} else {
+					$easterStatus = true;
+					startUpSound::$easter = "";
+				}
+			if($debug === true) {
+					echo 	'<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">'.
+							'<h1 style="font-size: large;margin: 0;">Easter '.$of.'</h1>
+							<b>This rand: </b>'.		$easterChance.' <= '.$confRarity.'<br>'.
+							'';
+			}
+			return $easterStatus;
+		}
+	}

@@ -68,7 +68,7 @@ if (!defined('FOXXEY')) {
 			'mountDir' 			=> SITE_ROOT."/etc/startUpSoundRepo",
 			'enableVoice' 		=> true,
 			'enableMusic' 		=> true,
-			'easterMusRarity'   => 1000,
+			'easterMusRarity'   => 10,
 			'easterSndRarity'	=> 1
 		));
 
@@ -136,13 +136,13 @@ if (!defined('FOXXEY')) {
 			
 			'11' => array(
 				'29-31' => array(
-					'soundRange'=>  '199/328'
+					'soundRange'=>  '100/328'
 				),
 			
 			),
 
 			'12' => array(
-			
+
 			)
 		);
 
@@ -157,19 +157,19 @@ if (!defined('FOXXEY')) {
 		private static $easterMusWarn		= '';				//Warn message if easter not found
 
 		/* Sound */
-		private static $selectedSound		= ''; 		//Selected sound File
-		private static $SNDMOOD				= '';
-		private static $soundFileAbsolute	= '';		//Absolute soundFilePath
+		protected static $selectedSound		= ''; 		//Selected sound File
+		protected static $SNDMOOD			= '';
+		protected static $soundFileAbsolute	= '';		//Absolute soundFilePath
 		protected static $durationSnd 		= 0;		//Duration of a soundFile
-		private static $soundMd5			= '';		//soundFile md5
-		private static $soundAdditionalData = 'NoData';	//Comment
+		protected static $soundMd5			= '';		//soundFile md5
+		protected static $soundAdditionalData = 'NoData';	//Comment
 		public static $soundRange			= 0;		//Range of sound files
 		protected static $isEasterSnd 		= 'false';	//Is the sound is easter
-		private static $easterSndWarn		= '';		//Warn message if easter not found
+		protected static $easterSndWarn		= '';		//Warn message if easter not found
 
 		/* Both */
 		protected static $maxDuration 		= 0;		//Maximum duration
-		protected static $soundRangeDebug		= '';		//Debug info of the range
+		protected static $soundRangeDebug	= '';		//Debug info of the range
 
 		//Initialisation
 		function __construct() {
@@ -269,9 +269,6 @@ if (!defined('FOXXEY')) {
 							$musOut 					= $key['sndName'];
 						}
 					}
-
-
-		
 			} else {
 				startUpSound::$selectedMusic = "musicOff";
 			}
@@ -322,7 +319,7 @@ if (!defined('FOXXEY')) {
 							if(isset(startUpSound::$soundRange) && startUpSound::$soundRange !== 0) {
 								$RandSoundFile = audioUtils::genRange('voice', startUpSound::$soundRange);
 							} else {
-								$RandSoundFile = 'voice'.rand($minRange,startUpSound::$soundFilesNum).'.mp3'; //Getting random sound file
+								$RandSoundFile = 'voice'.rand($minRange,startUpSound::$soundFilesNum).'.mp3';
 							}
 						return $RandSoundFile ;
 					}
@@ -392,234 +389,6 @@ if (!defined('FOXXEY')) {
 		}
 	}
 
-	class audioUtils extends startUpSound {
-
-		protected  static function getFileLength ($getid3){
-			$duration = $getid3->info['playtime_string'];
-			$time = str_replace(0, "",explode(':', $duration)[1]);
-			
-			return $time;
-		}
-
-		protected static function getAdditionalInfo($getid3){
-			if(is_array(@$getid3->info['tags']['id3v1']['comment'])) {
-				@$soundAdditionalData = $getid3->info['tags']['id3v1']['comment'][0];
-				return $soundAdditionalData;
-			} else {
-				return "undefined";
-			}
-		}
-
-		/**
-		* @param String type {voice||mus}, Integer range
-		* @return random {voice||mus}
-		*/
-		public static function genRange($type, $range){
-			switch($range) {
-				case (is_array($range)):
-					$minRange = $range[0];
-					$maxRange = $range[1];
-					startUpSound::$soundRangeDebug = '<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15 0px;">'.
-					'<h1 style="font-size: large;margin: 0;">'.$type.'Range</h1>'.
-					 "<b>minRange:</b>".$minRange.'<br>'.
-					 "<b>maxRange:</b>".$maxRange.'</div>';
-				break;
-
-				case (!is_array($range)):
-					$minRange = $range;
-					$maxRange = $range;
-					startUpSound::$soundRangeDebug = '<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15 0px;">'.
-					'<h1 style="font-size: large;margin: 0;">'.$type.'Range</h1>'.
-					 "<b>".$type."ToPlay:</b>".$minRange.'</div>';
-				break;
-
-				default:
-					$minRange = 1;
-				break;
-			}
-			$RandSoundFile = $type.rand($minRange,$maxRange).'.mp3';
-			
-			return $RandSoundFile;
-		}
-
-		/*
-		 * @param boolean $debug
-		 * @return Integer maxDuration
-		 */
-		protected static function maxDuration($debug = false) {
-			$duration = 0;
-			if(static::$durationMus > static::$durationSnd) {
-				$duration = static::$durationMus;
-			} else {
-				$duration= static::$durationSnd;
-			}
-				startUpSound::$maxDuration = $duration;
-			if($debug === true) {
-				echo '
-				<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">
-				<h1 style="font-size: large; margin: 0;">Music duration</h1>
-							<b>Sound duration:</b>'.	static::$durationSnd.'
-							<br><b>Mus duration:</b> '. static::$durationMus.'
-							<br> <b>Max duration:</b>'.	static::$maxDuration.'
-				</div>';
-			}
-		}
-
-		/*
-		 * @param boolean $debug, Integer chance, of - sound|music
-		 * @return String easter
-		 */
-		protected static function easter($chance, $debug = false, $of) {
-			$minRange = 1;
-			$maxRange = 1000;
-			$easterChance = mt_rand($minRange, $maxRange);
-			switch($of){
-				case 'sound':
-					$confRarity = startUpSound::$config['easterSndRarity'];
-				break;
-				
-				case 'music':
-					$confRarity = startUpSound::$config['easterMusRarity'];
-				break;
-			}
-				if ($easterChance <= $chance){
-					startUpSound::$easter = "/easter";
-					switch($of){
-						case 'sound':
-							startUpSound::$isEasterSnd = 'true';
-						break;
-						
-						case 'music':
-							startUpSound::$isEasterMus = 'true';
-						break;
-					}
-					$easterStatus = true;
-				} else {
-					$easterStatus = true;
-					startUpSound::$easter = "";
-				}
-			if($debug === true) {
-					echo 	'<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">'.
-							'<h1 style="font-size: large;margin: 0;">Easter '.$of.'</h1>
-							<b>This rand: </b>'.		$easterChance.' <= '.$confRarity.'<br>'.
-							'';
-			}
-			return $easterStatus;
-		}
-	}
-
 	class audioGen extends startUpSound {
 		//WIP
-	}
-
-	class eventScanning extends startUpSound {
-		
-		protected $monthNowArray;
-		protected $todaysEventArray;
-		
-		protected function __construct($dayToday, $monthToday){
-			$eventName = 'common';
-			function checkPeriod($key, $value, $dayToday){
-				if(strpos($key,'-')){
-					$datePeriod = explode('-',$key);
-					$dayFrom = $datePeriod[0];
-					$dayTill = $datePeriod[1];
-					if($dayToday >= $dayFrom && $dayToday <= $dayTill){
-						return $value;
-					}
-				} else {
-					if($dayToday == $key){
-						return $value;
-					}
-				}		
-			}
-
-			foreach (startUpSound::$eventsArray as $key => $value) {
-					if($monthToday == $key){
-					$this->monthNowArray = $value;
-						foreach ($this->monthNowArray as $key => $value){
-							$this->todaysEventArray = checkPeriod($key, $value, $dayToday);
-							if(is_array($this->todaysEventArray)) {
-								$eventName = $this->todaysEventArray['eventName'] ?? 'common';
-								$soundRange = $this->todaysEventArray['soundRange'] ?? 0;
-							} else {
-								$eventName = 'common';
-							}
-						}
-						$eventArray['eventNow']   = $eventName ?? 'common';
-						$eventArray['soundRange'] = $soundRange ?? 0;
-
-					foreach ($eventArray as $key => $value) {
-						switch($key){
-							case 'eventNow':
-								startUpSound::$eventNow = $eventName;
-							break;
-
-							case 'soundRange':
-							$soundRange = $eventArray['soundRange'];
-							if($soundRange !== 0) {
-								if(strpos($soundRange, '/')){
-									startUpSound::$soundRange = explode('/',$soundRange);
-								} else {
-									startUpSound::$soundRange = $soundRange;
-								}
-							}
-							break;
-						}
-					}
-				}
-			}
-		}
-		
-	}
-
-	class seasonOptions extends startUpSound {
-
-			protected static function dayTimeGetting() {
-				$timeNow = date('G:i', CURRENT_TIME);
-				$hourNow = explode(':', $timeNow)[0];
-
-					switch($hourNow){
-							case ($hourNow <= 6 || $hourNow >= 23):
-								$dayTimeNow = '/night';
-							break;
-
-							case ($hourNow <= 12):
-								$dayTimeNow = '/morning';
-							break;
-							
-							case ($hourNow <= 18):
-								$dayTimeNow = '/day';
-							break;
-							
-							case ($hourNow >= 19):
-								$dayTimeNow = '/evening';
-							break;
-					}
-				return $dayTimeNow;
-			}
-
-			protected static function seasonNow(){
-			$dateExploded = explode ('.',CURRENT_DATE);
-			$monthToday = $dateExploded[1];
-				switch($monthToday){
-					case ($monthToday <=3 || $monthToday == 12):
-						$seasonNow = '/winter';
-					break;
-					
-					case ($monthToday <= 6 && $monthToday > 3):
-						$seasonNow = '/spring';
-					break;
-					
-					case ($monthToday <= 9 && $monthToday > 6):
-						$seasonNow = '/summer';
-					break;
-					
-					case ($monthToday <= 11 && $monthToday > 9):
-						$seasonNow = '/autumn';
-					break;				
-				}
-				return $seasonNow;
-				
-		}
 	}
