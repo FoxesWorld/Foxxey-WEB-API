@@ -51,6 +51,58 @@ if(!defined('startUpSound')) {
 			
 			return $RandSoundFile;
 		}
+		
+		public static function sndPreFetch($sndFolder){
+			$dirContents = filesInDir::filesInDirArray($sndFolder, '.mp3');
+			$allFilesArray = array();
+			$moodListArray = array();
+			foreach ($dirContents as $key){
+				$fullPath = $sndFolder.'/'.$key;
+					$fileInfo = self::getAudioInfo($fullPath);
+					$allFilesArray[] = $fileInfo;
+						if(!in_array($fileInfo['SNDMOOD'], $moodListArray)){
+							$moodListArray[] = $fileInfo['SNDMOOD'];
+						}
+			}
+			$outputArray = array('allFiles' => $allFilesArray, 'moodList' => $moodListArray);
+			
+			return $outputArray;
+		}
+		
+		public static function getByMood($mood, $allFilesArray){
+			$moodToPlayArray = array();
+			foreach ($allFilesArray as $key){
+				if($key['SNDMOOD'] === $mood){
+					$moodToPlayArray[] = $key;
+				}
+			}
+
+			return $moodToPlayArray;
+		}
+		
+		protected static function getAudioInfo($audioPath){
+			$answer = array();
+			if(file_exists($audioPath)) {
+				$getid3 = new getID3();
+				$getid3->encoding = 'UTF-8';
+				$getid3->Analyze($audioPath);
+				$answer['SNDMOOD'] = @$getid3->info["id3v2"]["comments"]["text"]["SNDMOOD"];
+				$answer['durationSnd'] = audioUtils::getFileLength($getid3);
+				$answer['fileName'] = str_replace(startUpSound::$AbsolutesoundPath,"",$audioPath);
+				$answer['md5'] = md5_file($audioPath);
+				$answer['soundAdditionalData'] = audioUtils::getAdditionalInfo($getid3);
+			} else {
+				$answer = 'noFile';
+			}
+			
+			return $answer;
+		}
+		
+		protected static function getMood($file){
+			$mood = audioUtils::getAudioInfo($file)['SNDMOOD'];
+			
+			return $mood;
+		}
 
 		/*
 		 * @param boolean $debug

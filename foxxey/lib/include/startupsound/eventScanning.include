@@ -33,7 +33,22 @@ if(!defined('startUpSound')) {
 								$eventName = $this->todaysEventArray['eventName'] ?? 'common';
 								$soundRange = $this->todaysEventArray['soundRange'] ?? 0;
 							} else {
-								$eventName = 'common';
+								if($key !== null){
+									switch($key){
+										case 'eventName':
+											$eventName = $value;
+										break;
+										
+										case 'soundRange':
+											$soundRange = $value;
+										break;
+										
+										default:
+											$eventName = 'common';
+										break;
+									}
+								}
+								
 							}
 						}
 						$eventArray['eventNow']   = $eventName ?? 'common';

@@ -1,5 +1,8 @@
 <?php 
-
+if(!defined('startUpSound')) {
+	die('{"message": "Not in startUpSound thread"}');
+}
+//TO REWORK this Class
 	class startUpSoundAPI {
 		
 			private $serverVersion;

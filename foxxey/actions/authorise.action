@@ -55,8 +55,8 @@ class Authorise {
 		private $regDate;
 		
 		/* CONFIG */
-		private $mdlName					= null;
-		private $authModules			= array();
+		private $mdlName		= null;
+		private $authModules	= array();
 		private $defaultConfig = array('authorise' => 
 		array(
 			'checkHWID'    => true,
@@ -107,7 +107,7 @@ class Authorise {
 			//Getting AUTH USERDATA
 			$this->realName  = json_decode(mainSite::getUserData($this->login, 'name'))		-> name		  ?? null;
 			$this->realPass  = json_decode(mainSite::getUserData($this->login, 'password'))	-> password	  ?? null;
-			$this->realMail  = json_decode(mainSite::getUserData($this->login, 'email'))		-> email	  ?? null;
+			$this->realMail  = json_decode(mainSite::getUserData($this->login, 'email'))		-> email  ?? null;
 			
 			if($this->login == '' || $this->pass == '') {
 				exit('{"message": "'.$message['dataNotIsset'].'"}');
@@ -175,9 +175,9 @@ class Authorise {
 								authorize::passwordReHash($this->pass, $this->realPass, $this->realName);
 								
 								//GETTING PERSONAL DATA
-								$this->fullname  = json_decode(mainSite::getUserData($this->login, 'fullname'))	-> fullname   ?? randTexts::getUserName();
+								$this->fullname  = json_decode(mainSite::getUserData($this->login, 'fullname'))		-> fullname   ?? randTexts::getUserName();
 								$this->userGroup = json_decode(mainSite::getUserData($this->login, 'user_group'))	-> user_group ?? 4;
-								$this->regDate 	 = json_decode(mainSite::getUserData($this->login, 'reg_date'))	-> reg_date	  ?? null;
+								$this->regDate 	 = json_decode(mainSite::getUserData($this->login, 'reg_date'))		-> reg_date	  ?? null;
 
 							// Getting Balance
 							if($this->authModules['getBalance']) {

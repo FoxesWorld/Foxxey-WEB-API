@@ -49,7 +49,7 @@ if(!defined('Authorisation')) {
 			$this->db = new db($config['db_user'],$config['db_pass'],$config['db_name_userdata'], $config['db_host']);
 		}
 
-		function getUserBalance(){
+		protected function getUserBalance(){
 			$query = "SELECT * FROM balance WHERE username = '".$this->login."'";
 			$answer = $this->db->getRow($query);
 			$this->balance   = $answer['balance'];
@@ -88,7 +88,7 @@ if(!defined('Authorisation')) {
 			}
 		}
 		
-		public function addUnitsPrize($login){
+		protected function addUnitsPrize($login){
 			global $config;
 			$query = "UPDATE `balance` SET `realmoney`= realmoney+".$config['rewardAmmount']." WHERE username = '".$login."'";
 			$this->db->run($query);

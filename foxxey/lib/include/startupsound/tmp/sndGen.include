@@ -1,0 +1,97 @@
+<?php
+
+	class sndGen extends audioUtils {
+		
+		private $cnf;
+		
+		/*STORING WORK STATS*/
+		public static $soundFilesNum;
+		
+		function __construct($cnf, $debug = false) {
+
+			$this->cnf = $cnf;
+
+		}
+		
+		
+		
+		private function genSnd() {
+			$minRange = 1; 			//Min genRange
+			$unExistingFolder = ''; //Exception message
+
+			if($this->cnf['conf']['enableVoice']) {
+				audioUtils::easter($this->cnf['conf']['easterSndRarity'], false, 'sound');
+				$currentSoundFolder = $this->cnf['conf']['mountDir'].'/'.$this->cnf['eventNow'].'/'.$this->cnf['sndMnt'].$this->$cnf['seasonNow'].$this->cnf['dayTimeNow'].static::$easter;
+				if(is_dir($currentSoundFolder)) {
+					$dirContents = filesInDir::filesInDirArray($currentSoundFolder, '.mp3');
+					self::$soundFilesNum = count($dirContents);
+					if(static::$isEasterSnd === 'true'){	
+						if(self::$soundFilesNum < 1){
+							$currentSoundFolder = str_replace('/easter', "", $currentSoundFolder);
+							startUpSound::$easterSndWarn = '<b style="color: red;">Esater Snd not found, using common</b><br>';
+						}
+					}
+					
+					if(startUpSound::$moodToPlay !== null) {
+						foreach ($dirContents as $key){
+							$currentSnd = audioUtils::getAudioInfo($currentSoundFolder.'/'.$key);
+							if($currentSnd['SNDMOOD'] === startUpSound::$moodToPlay){
+								$moodToPlayArray[] = $key;
+							}
+						}
+						$RandSoundFile = $moodToPlayArray[rand(0,count($moodToPlayArray)-1)];
+
+					} else {
+						function genSnd($minRange){
+								if(isset(startUpSound::$soundRange) && startUpSound::$soundRange !== 0) {
+									$RandSoundFile = audioUtils::genRange('voice', startUpSound::$soundRange);
+								} else {
+									$RandSoundFile = 'voice'.rand($minRange,self::$soundFilesNum).'.mp3';
+								}
+							return $RandSoundFile ;
+						}
+						$RandSoundFile = genSnd($minRange);
+					}
+
+					//SoundDirs**************************************
+					startUpSound::$selectedSound = str_replace($this->cnf['conf']['mountDir'],"",$currentSoundFolder).'/'.$RandSoundFile;
+					startUpSound::$soundFileAbsolute = $this->cnf['conf']['mountDir'].static::$selectedSound;
+					startUpSound::$soundMd5 = md5_file($this->cnf['conf']['mountDir'].startUpSound::$selectedSound);
+					//***********************************************
+
+					//Collecting more snd info
+					$audioInfo = audioUtils::getAudioInfo(static::$soundFileAbsolute);
+						if($audioInfo !== 'noFile') {
+							startUpSound::$SNDMOOD = $audioInfo['SNDMOOD'];
+							startUpSound::$durationSnd = $audioInfo['durationSnd'];
+							startUpSound::$soundAdditionalData = $audioInfo['soundAdditionalData'];
+						} else {
+							startUpSound::$selectedSound = 'soundOff';
+						}
+
+
+				} else {
+					$unExistingFolder = '<br><b>Warning! Folder not found:</b><span style="color: red;">'.$currentSoundFolder.'</span>';
+					startUpSound::$selectedSound = 'soundOff';
+				}
+			}
+			if($debug == true) {
+				$output =
+				'<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">'.
+					'<h1 style="font-size: large;margin: 0;">Sound Gen</h1>'.
+					"<b>selectedFile:</b>".			static::$selectedSound.'<br>'.
+					"<b>isEaster:</b>".				static::$isEasterSnd.'<br>'.
+													static::$easterSndWarn.
+					"<b>soundFileAbsolutePath:</b>".static::$soundFileAbsolute.'<br>'.
+					"<b>soundFileDuration:</b>".	static::$durationSnd.'<br>'.
+					"<b>soundsInDir:</b>".			static::$soundFilesNum.'<br>'.
+					"<b>selectedSoundFileHash:</b>".static::$soundMd5.'<br>'.
+					"<b>sndMood:</b>"			   .static::$SNDMOOD.'<br>'.
+					"<b>Additional Info:</b>".		static::$soundAdditionalData.'<br>'.
+					"<b>eventName:</b>".			static::$eventNow.static::$soundRangeDebug.$unExistingFolder.'
+				</div></div>';
+				echo $output;
+			}
+		}
+		
+	}

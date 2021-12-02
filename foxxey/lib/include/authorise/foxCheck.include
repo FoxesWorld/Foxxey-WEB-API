@@ -41,7 +41,7 @@ if(!defined('Authorisation')) {
 			$this->Logger = $Logger;
 		}
 		
-		function checkFox(){
+		protected function checkFox(){
 			global $config;
 			foreach($config['FoxArray'] as $key) {
 				if($this->debug === true) {

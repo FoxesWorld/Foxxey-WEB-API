@@ -2,7 +2,7 @@
 /**
  * Script to get list of files with !ignoreFiles option
  *
- * @version	2021.11.11
+ * @version	2021.12.01
  * @author  Aiden Fox
  * @link    https://github.com/AidenF0X
  * @license	GNU/GPL http://www.gnu.org/licenses/gpl.html
@@ -21,6 +21,29 @@ if(!defined('FOXXEY')) {
 	die ('{"message": "Not in FOXXEY thread"}');
 }
 	class date {
+		
+		public static function getCurrentDate($dateType){			
+			$dateExploded = explode ('.',CURRENT_DATE);
+			$day = $dateExploded[0];
+			$month = $dateExploded[1];
+			$year = $dateExploded[2];
+
+			switch($dateType){
+				case 'day':
+					$strOut =  $day;
+				break;
+				
+				case 'month':
+					$strOut = $month;
+				break;
+				
+				case 'year':
+					$strOut = $year;
+				break;
+			}
+
+			return $strOut;
+		}
 		
 		public static function shortDateToUnix($tempTime){
 			$timeToBan = intval($tempTime);
@@ -57,20 +80,20 @@ if(!defined('FOXXEY')) {
 				return $totalTime;
 			}
 			
-			public static function checkTime ($timestamp) {
-				if($timestamp) {
-					switch ($timestamp){
-						case ($timestamp > CURRENT_TIME):
-							return false;
-						break;
+		public static function checkTime ($timestamp) {
+			if($timestamp) {
+				switch ($timestamp){
+					case ($timestamp > CURRENT_TIME):
+						return false;
+					break;
 						
-						case ($timestamp < CURRENT_TIME):
-							return true;
-						break;
-					}
-				} else {
-					return null;
+					case ($timestamp < CURRENT_TIME):
+						return true;
+					break;
 				}
+			} else {
+				return null;
 			}
+		}
 		
 	}
