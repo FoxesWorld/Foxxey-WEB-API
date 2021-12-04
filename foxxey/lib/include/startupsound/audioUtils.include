@@ -54,8 +54,11 @@ if(!defined('startUpSound')) {
 		
 		public static function sndPreFetch($sndFolder){
 			$dirContents = filesInDir::filesInDirArray($sndFolder, '.mp3');
+			sort($dirContents, SORT_STRING | SORT_NATURAL);
 			$allFilesArray = array();
 			$moodListArray = array();
+			$charactersArray = array();
+
 			foreach ($dirContents as $key){
 				$fullPath = $sndFolder.'/'.$key;
 					$fileInfo = self::getAudioInfo($fullPath);
@@ -63,21 +66,37 @@ if(!defined('startUpSound')) {
 						if(!in_array($fileInfo['SNDMOOD'], $moodListArray)){
 							$moodListArray[] = $fileInfo['SNDMOOD'];
 						}
+						
+						if(!in_array($fileInfo['CHARACTER'], $charactersArray)){
+							$charactersArray[] = $fileInfo['CHARACTER'];
+						}
 			}
-			$outputArray = array('allFiles' => $allFilesArray, 'moodList' => $moodListArray);
+			$allFilesArray	 = array_filter($allFilesArray);
+			$moodListArray	 = array_filter($moodListArray);
+			$charactersArray = array_filter($charactersArray);
+
+				$outputArray = array(	
+					'allFiles' => $allFilesArray, 
+					'moodList' => $moodListArray,
+					'charactersArray' => $charactersArray
+				);
 			
 			return $outputArray;
 		}
 		
-		public static function getByMood($mood, $allFilesArray){
-			$moodToPlayArray = array();
+		/*
+				An essential method used for getting 
+				allAudioInfo by a specifyed ID3 tag and it's value
+		*/
+		public static function getByTag($tag, $value, $allFilesArray){
+			$allFileInfo = array();
 			foreach ($allFilesArray as $key){
-				if($key['SNDMOOD'] === $mood){
-					$moodToPlayArray[] = $key;
+				if($key[$tag] === $value){
+					$allFileInfo[] = $key;
 				}
 			}
 
-			return $moodToPlayArray;
+			return $allFileInfo;
 		}
 		
 		protected static function getAudioInfo($audioPath){
@@ -87,6 +106,7 @@ if(!defined('startUpSound')) {
 				$getid3->encoding = 'UTF-8';
 				$getid3->Analyze($audioPath);
 				$answer['SNDMOOD'] = @$getid3->info["id3v2"]["comments"]["text"]["SNDMOOD"];
+				$answer['CHARACTER'] = @$getid3->info["id3v2"]["comments"]["text"]["CHARACTER"];
 				$answer['durationSnd'] = audioUtils::getFileLength($getid3);
 				$answer['fileName'] = str_replace(startUpSound::$AbsolutesoundPath,"",$audioPath);
 				$answer['md5'] = md5_file($audioPath);
@@ -131,7 +151,7 @@ if(!defined('startUpSound')) {
 		 * @param boolean $debug, Integer chance, of - sound|music
 		 * @return String easter
 		 */
-		protected static function easter($chance, $debug = false, $of) {
+		protected static function easter($chance, $of) {
 			$minRange = 1;
 			$maxRange = 1000;
 			$easterChance = mt_rand($minRange, $maxRange);
@@ -160,12 +180,6 @@ if(!defined('startUpSound')) {
 					$easterStatus = true;
 					startUpSound::$easter = "";
 				}
-			if($debug === true) {
-					echo 	'<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">'.
-							'<h1 style="font-size: large;margin: 0;">Easter '.$of.'</h1>
-							<b>This rand: </b>'.		$easterChance.' <= '.$confRarity.'<br>'.
-							'';
-			}
 			return $easterStatus;
 		}
 	}
