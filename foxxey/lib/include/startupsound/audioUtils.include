@@ -108,7 +108,7 @@ if(!defined('startUpSound')) {
 				$answer['SNDMOOD'] = @$getid3->info["id3v2"]["comments"]["text"]["SNDMOOD"];
 				$answer['CHARACTER'] = @$getid3->info["id3v2"]["comments"]["text"]["CHARACTER"];
 				$answer['durationSnd'] = audioUtils::getFileLength($getid3);
-				$answer['fileName'] = str_replace(startUpSound::$AbsolutesoundPath,"",$audioPath);
+				$answer['fileName'] = str_replace(startUpSound::$absMnt,"",$audioPath);
 				$answer['md5'] = md5_file($audioPath);
 				$answer['soundAdditionalData'] = audioUtils::getAdditionalInfo($getid3);
 			} else {
@@ -128,23 +128,14 @@ if(!defined('startUpSound')) {
 		 * @param boolean $debug
 		 * @return Integer maxDuration
 		 */
-		protected static function maxDuration($debug = false) {
+		protected static function maxDuration($mus, $snd) {
 			$duration = 0;
-			if(static::$durationMus > static::$durationSnd) {
-				$duration = static::$durationMus;
+			if($mus > $snd) {
+				$duration = $mus;
 			} else {
-				$duration = static::$durationSnd;
+				$duration = $snd;
 			}
-				startUpSound::$maxDuration = $duration;
-			if($debug === true) {
-				echo '
-				<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15px;">
-				<h1 style="font-size: large; margin: 0;">Music duration</h1>
-							<b>Sound duration:</b>'.	static::$durationSnd.'
-							<br><b>Mus duration:</b> '. static::$durationMus.'
-							<br> <b>Max duration:</b>'.	static::$maxDuration.'
-				</div>';
-			}
+				startUpSound::$maxDuration = $duration - 1;
 		}
 
 		/*

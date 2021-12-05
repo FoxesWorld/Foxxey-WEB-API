@@ -25,55 +25,34 @@ if(!defined('startUpSound')) {
 			}
 
 			foreach (startUpSound::$eventsArray as $key => $value) {
-					if($monthToday == $key){
+				if($monthToday == $key){
 					$this->monthNowArray = $value;
-						foreach ($this->monthNowArray as $key => $value){
-							$this->todaysEventArray = checkPeriod($key, $value, $dayToday);
-							if(is_array($this->todaysEventArray)) {
-								$eventName = $this->todaysEventArray['eventName'] ?? 'common';
-								$soundRange = $this->todaysEventArray['soundRange'] ?? 0;
-							} else {
-								if($key !== null){
-									switch($key){
-										case 'eventName':
-											$eventName = $value;
-										break;
+					foreach ($this->monthNowArray as $key => $value){
+						$this->todaysEventArray = checkPeriod($key, $value, $dayToday);
+						if(is_array($this->todaysEventArray)) {
+							$eventName = $this->todaysEventArray['eventName'] ?? 'common';
+						} else {
+							if($key !== null){
+								switch($key){
+									case 'eventName':
+										startUpSound::$eventNow 	= $value;
+									break;
+									
+									case 'NotAllow':
+										if(is_array($value)){
+											startUpSound::$notAllow = $value;
+										}
 										
-										case 'soundRange':
-											$soundRange = $value;
-										break;
-										
-										default:
-											$eventName = 'common';
-										break;
-									}
-								}
-								
-							}
-						}
-						$eventArray['eventNow']   = $eventName ?? 'common';
-						$eventArray['soundRange'] = $soundRange ?? 0;
+									break;
 
-					foreach ($eventArray as $key => $value) {
-						switch($key){
-							case 'eventNow':
-								startUpSound::$eventNow = $eventName;
-							break;
-
-							case 'soundRange':
-							$soundRange = $eventArray['soundRange'];
-							if($soundRange !== 0) {
-								if(strpos($soundRange, '/')){
-									startUpSound::$soundRange = explode('/',$soundRange);
-								} else {
-									startUpSound::$soundRange = $soundRange;
+									default:
+										$eventName = 'common';
+									break;
 								}
-							}
-							break;
+							}					
 						}
 					}
 				}
 			}
-		}
-		
+		}	
 	}
