@@ -73,7 +73,7 @@ if($config['debugStartUpSound'] === false) {
 				   case 'startUpSound':
 					   require (SITE_ROOT.'/actions/startupsound.action');
 					   if(class_exists('startUpSound')) {
-							$startSound = new startUpSound($config['debugStartUpSound']);
+							@$startSound = new startUpSound();
 							die($startSound->generateAudio());
 					   } else {
 						   die('{"message": "Module startUpSound not found!", "desc": "Can`t greet user with awesome startUP sound =("}');

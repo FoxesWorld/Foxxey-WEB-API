@@ -1,0 +1,27 @@
+<?php
+
+	class actionsSUPS extends startUpSound {
+		
+		function __construct(){
+			$this->listActions($_GET);
+		}
+
+		private function listActions($request){
+			global $config;
+			foreach ($request as $key => $value) {
+				$requestTitle = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($key))));
+				$requestValue = trim(str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($value))));
+				
+				switch ($requestTitle) {
+					case 'MOOD':
+						startUpSound::$moodToPlay = $requestValue;
+					break;
+					
+					case 'CHAR':
+						startUpSound::$characterToPlay  = $requestValue;
+					break;
+				}
+			}
+		}
+		
+	}

@@ -4,13 +4,6 @@ if(!defined('startUpSound')) {
 }
 	class audioUtils extends startUpSound {
 
-		protected  static function getFileLength ($getid3){
-			$duration = $getid3->info['playtime_string'];
-			$time = str_replace(0, "",explode(':', $duration)[1]);
-			
-			return $time;
-		}
-
 		protected static function getAdditionalInfo($getid3){
 			if(is_array(@$getid3->info['tags']['id3v1']['comment'])) {
 				@$soundAdditionalData = $getid3->info['tags']['id3v1']['comment'][0];
@@ -18,38 +11,6 @@ if(!defined('startUpSound')) {
 			} else {
 				return "undefined";
 			}
-		}
-
-		/**
-		* @param String type {voice||mus}, Integer range
-		* @return random {voice||mus}
-		*/
-		public static function genRange($type, $range){
-			switch($range) {
-				case (is_array($range)):
-					$minRange = $range[0];
-					$maxRange = $range[1];
-					startUpSound::$soundRangeDebug = '<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15 0px;">'.
-					'<h1 style="font-size: large;margin: 0;">'.$type.'Range</h1>'.
-					 "<b>minRange:</b>".$minRange.'<br>'.
-					 "<b>maxRange:</b>".$maxRange.'</div>';
-				break;
-
-				case (!is_array($range)):
-					$minRange = $range;
-					$maxRange = $range;
-					startUpSound::$soundRangeDebug = '<div style="border: 1px solid black; padding: 5px; border-radius: 10px; width: fit-content; margin: 15 0px;">'.
-					'<h1 style="font-size: large;margin: 0;">'.$type.'Range</h1>'.
-					 "<b>".$type."ToPlay:</b>".$minRange.'</div>';
-				break;
-
-				default:
-					$minRange = 1;
-				break;
-			}
-			$RandSoundFile = $type.rand($minRange,$maxRange).'.mp3';
-			
-			return $RandSoundFile;
 		}
 		
 		public static function sndPreFetch($sndFolder){
@@ -98,6 +59,50 @@ if(!defined('startUpSound')) {
 
 			return $allFileInfo;
 		}
+		/*
+		protected static function removeFromArray($fArray, $removeArray){
+			$processedArray = array();
+			if(is_array($removeArray)) {
+				
+				function dataToRemove($removeArray){
+					foreach($removeArray as $key => $val){
+						$tagsToRemove[] = $key;
+						foreach($val as $data){
+							$dataToRemove[] = $data;
+						}
+					}
+					$finalArray = array('tags' => $tagsToRemove, 'data' => $dataToRemove);
+					return $finalArray;
+				}
+
+				function dataRemoving($tags, $data, $array){
+					foreach($array as $file){
+						foreach($data as $cont){
+							if(!in_array($cont, $file)){
+								$processedArray[] = $file;
+							}
+						}
+					}
+
+					return $processedArray;
+				}
+
+					$dataRemoving = dataRemoving(dataToRemove($removeArray)['tags'], dataToRemove($removeArray)['data'], $fArray);
+					die(var_dump($dataRemoving));
+				
+			} else {
+				return $fArray;
+			}
+			
+			return $processedArray;
+		} */
+		
+		private static function getFileLength ($getid3){
+			$duration = $getid3->info['playtime_string'];
+			$time = str_replace(0, "",explode(':', $duration)[1]);
+			
+			return $time;
+		}
 		
 		protected static function getAudioInfo($audioPath){
 			$answer = array();
@@ -117,12 +122,6 @@ if(!defined('startUpSound')) {
 			
 			return $answer;
 		}
-		
-		protected static function getMood($file){
-			$mood = audioUtils::getAudioInfo($file)['SNDMOOD'];
-			
-			return $mood;
-		}
 
 		/*
 		 * @param boolean $debug
@@ -135,13 +134,13 @@ if(!defined('startUpSound')) {
 			} else {
 				$duration = $snd;
 			}
-				startUpSound::$maxDuration = $duration - 1;
+				startUpSound::$maxDuration = $duration;
 		}
 
 		/*
 		 * @param boolean $debug, Integer chance, of - sound|music
 		 * @return String easter
-		 */
+		 *//*
 		protected static function easter($chance, $of) {
 			$minRange = 1;
 			$maxRange = 1000;
@@ -172,5 +171,17 @@ if(!defined('startUpSound')) {
 					startUpSound::$easter = "";
 				}
 			return $easterStatus;
+		} */
+		
+		protected static function easter($chance) {
+			$minRange = 1;
+			$maxRange = 1000;
+			$easterChance = mt_rand($minRange, $maxRange);
+
+				if ($easterChance <= $chance){
+					$easter = "/easter";
+				}
+
+			return $easter;
 		}
 	}
