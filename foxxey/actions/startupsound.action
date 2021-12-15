@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: startUpSound.class.php
 -----------------------------------------------------
- Version: 0.4.49.0 Unreal
+ Version: 0.4.50.2 Unreal
 -----------------------------------------------------
  Usage: Current Event Sound generation
 =====================================================
@@ -24,7 +24,6 @@ if (!defined('FOXXEY')) {
 }
 
 /* TODO
- * Maybe storing a Mus|Sound file shift in ID3 tags
  * Force easterMus, Force easterSnd
  * Config utils
  */
@@ -33,14 +32,14 @@ if (!defined('FOXXEY')) {
 
 		/*INTERNAL SETTINGS*/
 		private static $sndLevel 		= -15;
-		private static $musLevel 		= -16;
+		private static $musLevel 		= -17;
 		private 	   $cacheFilePath 	= ETC.'startupsound.timetable';
-		private static $serverVersion 	= '0.4.49.0 Unreal';
-		private static $currentDate 	= CURRENT_DATE;
+		private static $serverVersion 	= '0.4.50.2 Unreal';
 		public static  $musFilesNum 	= 0;
 		public static  $soundFilesNum 	= 0;
 
 		/*EVENT TAGS*/
+		protected static $forceEaster   = array();
 		private static $useSeasons 		= false;
 		private static $seasonNow 		= '';
 		private static $useDayTime 		= false;
@@ -68,7 +67,69 @@ if (!defined('FOXXEY')) {
 			'easterSndRarity'	=> 1
 		));
 
-		protected static $eventsArray 		= array();
+		protected static $eventsArray = array(
+			'01' => array(
+				"1-12" =>  array(
+					'eventName' => 'winterHolidays',
+				)
+			),
+
+			'02' => array(
+			
+			),
+			
+			'03' => array(
+			
+			),
+			
+			'04' => array(
+			
+			),
+			
+			'05' => array(
+
+			),
+
+			'06' => array(
+
+			),
+
+			'07' => array(
+
+			),
+
+			'08' => array(
+
+			),
+
+			'09' => array(
+
+				'1' => array(
+					'eventName' => '8bit')
+			),
+
+			'10' => array(
+
+			),
+
+			'11' => array(
+			
+			),
+
+			'12' => array(
+
+				"26-30" =>  array(
+					'eventName' => 'winterHolidays'
+				),
+				
+				"31"	=> array(
+					'eventName' => 'newYear'
+				),
+
+
+			)
+
+		);
 		protected static $musArray			= array();
 		protected static $sndArray			= array();
 
@@ -104,12 +165,6 @@ if (!defined('FOXXEY')) {
 			$this->genSnd(static::$notAllow);
 			$this->genMus();
 			audioUtils::maxDuration(startUpSound::$musArray['durMus'], startUpSound::$sndArray['durSnd']);
-			if(isset($_REQUEST['startUpSoundAPI'])) {
-				$easterMusNum = count(filesInDir::filesInDirArray(static::$absMnt.'/'.static::$eventNow.'/'.static::$musMnt.'/easter', '.mp3'));
-				$easterSndNum = count(filesInDir::filesInDirArray(static::$absMnt.'/'.static::$eventNow.'/'.static::$sndMnt.'/easter', '.mp3'));
-				$api = new startUpSoundAPI(static::$serverVersion, static::$musFilesNum, static::$soundFilesNum, $easterMusNum, $easterSndNum, static::$eventNow, $this->cacheFilePath, startUpSound::$eventsArray);
-				$api->apiOut();
-			}
 		}
 
 		public function generateAudio() {
@@ -119,17 +174,18 @@ if (!defined('FOXXEY')) {
 		private function genSnd($notAllow = null) {
 			if(self::$config['enableVoice']) {
 				$easter = audioUtils::easter(self::$config['easterSndRarity']);
+				
 				$sndPath = static::$absMnt.'/'.static::$eventNow.'/'.static::$sndMnt.static::$seasonNow.static::$dayTimeNow.$easter;
+
 				startUpSound::$sndArray['selSnd'] = 'soundOff';
 				if(is_dir($sndPath)) {
+					$dirScan = audioUtils::sndPreFetch($sndPath);
 					startUpSound::$soundFilesNum = count($dirScan['allFiles']);
 					if($easter){
 						if(startUpSound::$soundFilesNum < 1){
 							$sndPath = str_replace($easter, "", $sndPath);
 						}
 					}
-					$dirScan = audioUtils::sndPreFetch($sndPath);
-					
 
 					function genSndFromArray($array){
 						$arraySize = count($array)-1;
@@ -138,9 +194,9 @@ if (!defined('FOXXEY')) {
 						$outArray = array(
 							'fileName' => $array[$rndNum]['fileName'],
 							'md5' => $array[$rndNum]['md5'],
-							'durSnd'=> $array[$rndNum]['durationSnd'],
+							'durSnd'=> $array[$rndNum]['durSnd'],
 							'SNDMOOD'	  => $array[$rndNum]['SNDMOOD'],
-							'sndADT' => $array[$rndNum]['soundAdditionalData']
+							'sndADT' => $array[$rndNum]['sndADT']
 						);
 
 						return $outArray;
@@ -197,6 +253,11 @@ if (!defined('FOXXEY')) {
 					}
 
 					$generatedSND = filterArray($dirScan, restrictedTags($dirScan['allFiles'], $notAllow), startUpSound::$characterToPlay, startUpSound::$moodToPlay);
+					if($generatedSND['timeShift']){
+						startUpSound::$sndArray['timeShift'] = $generatedSND['timeShift'];
+					} else {
+						startUpSound::$sndArray['timeShift'] = 500;
+					}
 					startUpSound::$sndArray['selSnd'] 	   = $generatedSND['fileName'];
 					startUpSound::$sndArray['sndMd5']	   = $generatedSND['md5'];
 					startUpSound::$sndArray['SNDMOOD'] 	   = $generatedSND['SNDMOOD'];
@@ -212,7 +273,6 @@ if (!defined('FOXXEY')) {
 				$easter = audioUtils::easter(self::$config['easterMusRarity']);
 
 					$currentMusFolder = static::$absMnt.'/'.static::$eventNow.'/'.static::$musMnt;	
-					if(!startUpSound::$sndArray['SNDMOOD'] == null) {
 
 						function genMusFile($sndMood, $cmf, $easter = null){
 							if($easter){
@@ -222,24 +282,22 @@ if (!defined('FOXXEY')) {
 							$thisMoodArray = audioUtils::getByTag('SNDMOOD', $sndMood, $dirScan['allFiles']);
 							$arraySize = count($thisMoodArray);
 							$randMusFile = $thisMoodArray[rand(0, $arraySize-1)];
+							switch(count($randMusFile)){
+								case 0:
+									$randMusFile = $dirScan[rand(1, count($dirScan))];
+								break;
+								
+								default:
+								break;
+							}
 
 							return $randMusFile;
 						}
 
 						$randMusFile = genMusFile(startUpSound::$sndArray['SNDMOOD'], $currentMusFolder, $easter);
-						switch(count($randMusFile)){
-							case 0:
-							$randMusFile = genMusFile(startUpSound::$sndArray['SNDMOOD'], $currentMusFolder);
-							break;
-
-							default:
-							break;
-						}
-
-						startUpSound::$musArray['selMus'] 	= $randMusFile['fileName'];
+						startUpSound::$musArray['selMus'] 	= $randMusFile['fileName'] ?? 'musicOff';
 						startUpSound::$musArray['musMd5'] 	= $randMusFile['md5'];
-						startUpSound::$musArray['durMus'] 	= $randMusFile['durationSnd'];
-				}
+						startUpSound::$musArray['durMus'] 	= $randMusFile['durSnd'];
 			}
 		}
 
@@ -249,6 +307,7 @@ if (!defined('FOXXEY')) {
 					"maxDuration" 		=> (Integer) static::$maxDuration,
 					"sndLevel" 			=> (Integer) static::$sndLevel,
 					"musLevel" 			=> (Integer) static::$musLevel,
+					"timeShift"			=> (Integer) static::$sndArray['timeShift'],
 					"selectedMusic" 	=> (String)  static::$musArray['selMus'],
 					"selectedSound" 	=> (String)  static::$sndArray['selSnd'],
 					"soundMd5" 			=> (String)  static::$sndArray['sndMd5'],
