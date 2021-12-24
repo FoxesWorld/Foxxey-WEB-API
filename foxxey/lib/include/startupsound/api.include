@@ -2,8 +2,14 @@
 if(!defined('startUpSound')) {
 	die('{"message": "Not in startUpSound thread"}');
 }
-//TO REWORK this Class
-	class startUpSoundAPI {
+			
+	if(isset($_REQUEST['startUpSoundAPI'])) {
+		$easterMusNum = count(filesInDir::filesInDirArray(static::$absMnt.'/'.static::$eventNow.'/'.static::$musMnt.'/easter', '.mp3'));
+		$easterSndNum = count(filesInDir::filesInDirArray(static::$absMnt.'/'.static::$eventNow.'/'.static::$sndMnt.'/easter', '.mp3'));
+		$api = new startUpSoundAPI();
+		$api->apiOut();
+	}
+	class startUpSoundAPI extends startUpSound{
 		
 			private $serverVersion;
 			private $musFilesNum;
@@ -15,7 +21,7 @@ if(!defined('startUpSound')) {
 			private $cacheFile;
 			private $cacheStatus;
 		
-		function __construct($serverVersion, $musFilesNum, $sndFilesNum, $easterMusNum, $easterSndNum, $eventNow, $cacheFile, $eventList){
+		function __construct(){
 			$this->serverVersion = $serverVersion;
 			$this->musFilesNum = $musFilesNum;
 			$this->easterMusNum = $easterMusNum;

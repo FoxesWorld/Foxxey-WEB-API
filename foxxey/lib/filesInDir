@@ -83,31 +83,6 @@ if(!defined('FOXXEY')) {
 			}
 		}
 
-		public static function checkDir($modpack, $db){
-			$thisVersion = servers::getServersList($db, $modpack, 'version');
-				$scanArray = array(
-					FILES_DIR.'clients/modpacks/'.$modpack,
-					FILES_DIR.'clients/versions/'.$thisVersion
-				);
-			foreach($scanArray as $key){
-			$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($key), RecursiveIteratorIterator::SELF_FIRST);
-				foreach($objects as $name => $object) {
-				$basename = basename($name);
-					$isdir = is_dir($name);
-					if ($basename!="." and $basename!=".." and !is_dir($name)){
-						$str = str_replace(ROOT_DIR, "", str_replace($basename, "", $name));
-							$fileOBJ[] = 
-							[
-								'filename' => $str.$basename,
-								'hash'     => md5($name),
-								'size'     => strval(filesize($name))
-							];
-					}
-				}
-			}
-			return json_encode($fileOBJ, JSON_UNESCAPED_SLASHES);
-		}
-
 		private static function getIgnoreFile($debug = false){
 			if(file_exists(self::$ignoreFilePath)) {
 				if($debug) echo 'Ignore file was found! <br/>';

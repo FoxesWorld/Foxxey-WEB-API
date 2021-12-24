@@ -37,6 +37,20 @@ if(!defined('FOXXEY')) {
 
 				return $hash;
 			}
+			
+			public static function passVerify($input, $realPass) {
+				if(strlen($realPass) == 32 && ctype_xdigit($realPass)) {
+					if($realPass == md5(md5($input))) {
+						$status = true;
+					}
+				} else {
+					if(password_verify($input, $realPass)) {
+						$status = true;
+					}
+				}
+
+				return $status;
+			}
 
 			public static function passwordReHash($pass, $realPass, $realName){
 				global $config;

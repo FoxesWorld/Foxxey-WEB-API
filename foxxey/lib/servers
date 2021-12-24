@@ -26,5 +26,31 @@ if(!defined('FOXXEY')) {
 
 			return $ans;
 		}
+		
+		public static function getModpackFiles($modpack, $db){
+			$thisVersion = self::getServersList($db, $modpack, 'version');
+				$scanArray = array(
+					FILES_DIR.'clients/modpacks/'.$modpack,
+					FILES_DIR.'clients/assets',
+					FILES_DIR.'clients/versions/'.$thisVersion
+				);
+			foreach($scanArray as $key){
+			$objects = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($key), RecursiveIteratorIterator::SELF_FIRST);
+				foreach($objects as $name => $object) {
+				$basename = basename($name);
+					$isdir = is_dir($name);
+					if ($basename!="." and $basename!=".." and !is_dir($name)){
+						$str = str_replace(ROOT_DIR, "", str_replace($basename, "", $name));
+							$fileOBJ[] = 
+							[
+								'filename' => $str.$basename,
+								'hash'     => md5($name),
+								'size'     => strval(filesize($name))
+							];
+					}
+				}
+			}
+			return json_encode($fileOBJ, JSON_UNESCAPED_SLASHES);
+		}
 
 	}

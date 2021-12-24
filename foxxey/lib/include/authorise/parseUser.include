@@ -1,0 +1,31 @@
+<?php
+
+	class parseUser {
+		
+		private $isLogged;
+		private $user;
+		private $parsedInfo = array();
+		
+		/*internal*/
+		private $loginData = array('name', 'password', 'email');
+		
+		function __construct($user, $isLogged = false){
+			$this->user = $user;
+			switch($isLogged){
+				case true:
+				break;
+				
+				case false:
+					$this->parsedInfo = $this->parseLoginData();
+				break;
+			}
+		}
+		
+		private function parseLoginData(){
+			foreach($this->loginData as $key){
+				$data[] = json_decode(mainSite::getUserData($this->user,$key))->{$key}??null;
+			}
+			return $data;
+		}
+		
+	}

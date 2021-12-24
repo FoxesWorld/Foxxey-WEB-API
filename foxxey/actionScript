@@ -63,7 +63,7 @@ if($config['debugStartUpSound'] === false) {
 				   
 				   case 'modPackFiles':
 						if(in_array($requestValue, servers::getServersList($this->launcherDB))) {
-							die(filesInDir::checkDir($requestValue, $this->launcherDB));
+							die(servers::getModpackFiles($requestValue, $this->launcherDB));
 						} else {
 							die('{"message": "Not found a '.$requestValue.' client!"}');
 						}
@@ -81,12 +81,12 @@ if($config['debugStartUpSound'] === false) {
 				   break;
 				   
 				   //Getting user Skin&Cloak
-				   case 'show':
+				   case 'skin':
 					   require (SITE_ROOT.'/actions/SkinViewer2D.action');
 					   if(class_exists('skinViewer2D')) {
 						header("Content-type: image/png");
 						$show = $_GET['show'] ?? null;
-						$file_name = $_GET['filename'] ?? null;
+						$file_name = $_GET['skin'] ?? null;
 						$name =  empty($file_name) ? 'default' : $file_name;
 							$skin =  $config['skinsAbsolute'] . $name . '.png';
 							$cloak = $config['cloaksAbsolute'] . $name . '.png';

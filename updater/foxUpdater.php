@@ -5,7 +5,7 @@ header("Access-Control-Allow-Methods: GET");
 header("Access-Control-Allow-Credentials: true");
 define('FOXXEY', true);
 
-	require ('../foxxey/init.php');
+	require ('../foxxey/init');
 	$init = new init(REMOTE_IP, 'updater');
 	$list = list($path, $qs) = explode("?", $_SERVER["REQUEST_URI"], 2);
 	$inputText = base64_decode($qs);

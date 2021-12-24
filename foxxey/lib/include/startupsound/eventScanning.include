@@ -29,20 +29,22 @@ if(!defined('startUpSound')) {
 					$this->monthNowArray = $value;
 					foreach ($this->monthNowArray as $key => $value){
 						$this->todaysEventArray = checkPeriod($key, $value, $dayToday);
+
 						if(is_array($this->todaysEventArray)) {
-							$eventName = $this->todaysEventArray['eventName'] ?? 'common';
+							startUpSound::$eventNow = $this->todaysEventArray['eventName'] ?? 'common';
 						} else {
-							if($key !== null){
+							if($key){
 								switch($key){
 									case 'eventName':
+										die($value);
 										startUpSound::$eventNow 	= $value;
 									break;
 									
 									case 'NotAllow':
+										die(var_dump($value));
 										if(is_array($value)){
 											startUpSound::$notAllow = $value;
 										}
-										
 									break;
 
 									default:

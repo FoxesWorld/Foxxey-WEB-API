@@ -11,7 +11,7 @@
 -----------------------------------------------------
  File: authorise.class.php
 -----------------------------------------------------
- Verssion: 0.1.19.6 Post Exp
+ Verssion: 0.1.20.1 Release
 -----------------------------------------------------
  Usage: Authorising and using HWID
 =====================================================
@@ -44,6 +44,8 @@ class Authorise {
 		private $randTexts;
 		private $noName;
 		private $HWIDerrorMessage;
+		private $neededData   = array('login', 'pass', 'HWID', 'ip');
+		private $personalData = array('fullname', 'user_group', 'reg_date');
 		private static $LoggerAuth;
 
 		/* USERDATA */
@@ -51,8 +53,8 @@ class Authorise {
 		private $realPass;
 		private $realMail;
 		private $fullname;
-		private $userGroup;
-		private $regDate;
+		private $user_group;
+		private $reg_date;
 		
 		/* CONFIG */
 		private $mdlName		= null;
@@ -72,7 +74,7 @@ class Authorise {
 		 * @param $pass
 		 * @param $HWID
 		 */
-		function __construct($login, $pass, $HWID, $launcherDB, $userDataDB, $ip){
+		function __construct($login, $pass, $HWID, $launcherDB, $userDataDB){
 			$this->mdlName = basename(__FILE__, '.action');
 			$conf = conff::confGen($this->mdlName, $this->defaultConfig);
 			$this->authModules = $conf->readInIarray();
@@ -85,7 +87,7 @@ class Authorise {
 				
 			}
 			$this->launcherDB = $launcherDB;
-			$this->ip = $ip;
+			$this->ip = $_GET['UserIP'] ?? null;
 			$this->userDataDB = $userDataDB;
 			$this->login = $login;
 			$this->pass = $pass;
@@ -99,64 +101,34 @@ class Authorise {
 			Authorise::$LoggerAuth = new Logger('AuthLog');
 
 			//FILTRATING INPUT DATA
-				$this->login = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->login)));
-				$this->pass  = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->pass)));
-				$this->HWID  = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->HWID)));
-			//*********************
-			
-			//Getting AUTH USERDATA
-			$this->realName  = json_decode(mainSite::getUserData($this->login, 'name'))		-> name		  ?? null;
-			$this->realPass  = json_decode(mainSite::getUserData($this->login, 'password'))	-> password	  ?? null;
-			$this->realMail  = json_decode(mainSite::getUserData($this->login, 'email'))		-> email  ?? null;
-			
-			if($this->login == '' || $this->pass == '') {
-				exit('{"message": "'.$message['dataNotIsset'].'"}');
-			} else {
-				//Getting user login location
-				if($this->authModules['geoIPcheck']) {
-					if(class_exists('geoPlugin')) {
-						$geoplugin = new geoPlugin($this->ip);
-						if($geoplugin->countryCode !== null) {
-							static::$LoggerAuth->WriteLine($this->login.' attemping to log from ['.$geoplugin->countryCode.']'.$geoplugin->countryName .' '.$geoplugin->city.'...');
-						} else {
-							exit('{"message": "CountryCode was not identyfied! Aborting!"}');
-						}
+				foreach($this->neededData as $key){
+					if(!$this->{$key}) {
+						exit('{"message": "'.$message['dataNotIsset']." - ".$key.'"}');
 					} else {
-						echo '{"message": "Module geoPlugin not found!", "desc": "Can`t get user login location!"},';
+						$this->{$key} = str_replace($config['not_allowed_symbol'],'',strip_tags(stripslashes($this->{$key})));
 					}
 				}
+			//*********************
+
+			//Getting AUTH USERDATA TO Be Updated
+			$this->realName  = json_decode(mainSite::getUserData($this->login, 'name'))		-> name		  ?? null;
+			$this->realPass  = json_decode(mainSite::getUserData($this->login, 'password'))	-> password	  ?? null;
+			$this->realMail  = json_decode(mainSite::getUserData($this->login, 'email'))	-> email 	  ?? null;
+ 
+				$this->loginLocation();
 
 				//IF RealName is Null
 				if($this->realName == null) {
 					static::$LoggerAuth->WriteLine($this->login.' is an unreal user and does not exist!');
 					exit('{"message": "'.$message['userNotFound'].'"}');
 				} else {
-						if(strlen($this->realPass) == 32 && ctype_xdigit($this->realPass)) {
-							if($this->realPass == md5(md5($this->pass))) {
-								$this->correctLogin = true;
-							}
-						} else {
-							if(password_verify($this->pass, $this->realPass)) {
-								$this->correctLogin = true;
-							}
-						}
 
-						// Checking HWID
-								if($this->authModules['checkHWID']) {
-									if(class_exists('HWID')) {
-										$hardwareCheck = new HWID($this->login, $this->HWID, $this->launcherDB, $config['HWIDdebug']);
-										$HWIDuser = $hardwareCheck->getUserNameByHWID() ?? $this->HWID;
+						$this->correctLogin = authorize::passVerify($this->pass, $this->realPass);
 
-										$this->HWIDstatus = $hardwareCheck->checkHWID() ? 'true' : 'false';
-									} else {
-										$this->HWIDstatus = 'true';
-										$HWIDuser = $this->login;
-										echo '{"message": "Module HWID not found!", "desc": "Can`t check user`s HWID validity!"},';
-									}
-								} else {
-									$this->HWIDstatus = 'true';
-									$HWIDuser = $this->login;
-								}
+						// Checking HWID (We do that even if pass is correct to find out who is brutting!)
+							$HWIDresult = $this->checkingHWID();
+							$HWIDuser = $HWIDresult[1];
+							$hardwareCheck =$HWIDresult[0];
 						//==============
 
 						if(!$this->correctLogin) { //If Login is incorrect
@@ -175,20 +147,14 @@ class Authorise {
 								authorize::passwordReHash($this->pass, $this->realPass, $this->realName);
 								
 								//GETTING PERSONAL DATA
-								$this->fullname  = json_decode(mainSite::getUserData($this->login, 'fullname'))		-> fullname   ?? randTexts::getUserName();
-								$this->userGroup = json_decode(mainSite::getUserData($this->login, 'user_group'))	-> user_group ?? 4;
-								$this->regDate 	 = json_decode(mainSite::getUserData($this->login, 'reg_date'))		-> reg_date	  ?? null;
+								foreach ($this->personalData as $key){
+									$this->{$key}= json_decode(mainSite::getUserData($this->login, $key))	-> {$key};
+								}
 
 							// Getting Balance
-							if($this->authModules['getBalance']) {
-								if(class_exists('userbalance')) {
-									$balance = new userbalance($this->login, 'realmoney', false);
-									$units = $balance->getUserBalance();
-								} else {
-									$units = 100500;
-									echo '{"message": "Module userbalance not found!", "desc": "Balance can`t be parsed!"},';
-								}
-							}
+								$balResult = $this->getBalance();
+								$balance = $balResult[0];
+								$units = $balResult[1];
 							//================
 
 							// Fox checking
@@ -204,8 +170,8 @@ class Authorise {
 								}
 							}
 							//=================
-
-							die('{"login": "'.$this->login.'", "fullName":"'.$this->fullname.'", "regDate": '.$this->regDate.', "userGroup": '.$this->userGroup.',  "balance": '.$units.', "hardwareId":  '.$this->HWIDstatus.'}');
+							$fullname=$this->fullname??randTexts::getUserName();
+							die('{"login": "'.$this->login.'", "fullName":"'.$fullname.'", "regDate": '.$this->reg_date.', "userGroup": '.$this->user_group.',  "balance": '.$units.', "hardwareId":  '.$this->HWIDstatus.'}');
 						} else {
 							static::$LoggerAuth->WriteLine('Incorrect HWID for '.$this->login.' IP is - '.$this->ip.' Bruted by '.$HWIDuser);
 								if($config['checkHWID'] === true) {
@@ -223,7 +189,54 @@ class Authorise {
 						}
 					}
 				}
+		}
+		
+		private function loginLocation(){
+			if($this->authModules['geoIPcheck']) {
+				if(class_exists('geoPlugin')) {
+					$geoplugin = new geoPlugin($this->ip);
+					if($geoplugin->countryCode !== null) {
+						static::$LoggerAuth->WriteLine($this->login.' attemping to log from ['.$geoplugin->countryCode.']'.$geoplugin->countryName .' '.$geoplugin->city.'...');
+					} else {
+						exit('{"message": "CountryCode was not identifyed! Aborting!"}');
+					}
+				} else {
+					echo '{"message": "Module geoPlugin not found!", "desc": "Can`t get user login location!"},';
+				}
 			}
+		}
+
+		private function checkingHWID(){
+			global $config;
+			if($this->authModules['checkHWID']) {
+				if(class_exists('HWID')) {
+					$hardwareCheck = new HWID($this->login, $this->HWID, $this->launcherDB, $config['HWIDdebug']);
+					$HWIDuser = $hardwareCheck->getUserNameByHWID() ?? $this->HWID;
+					$this->HWIDstatus = $hardwareCheck->checkHWID() ? 'true' : 'false';
+				} else {
+					$this->HWIDstatus = 'true';
+					$HWIDuser = $this->login;
+					echo '{"message": "Module HWID not found!", "desc": "Can`t check user`s HWID validity!"},';
+				}
+			} else {
+				$this->HWIDstatus = 'true';
+				$HWIDuser = $this->login;
+			}
+			return array($hardwareCheck, $HWIDuser);
+		}
+		
+		private function getBalance(){
+			if($this->authModules['getBalance']) {
+				if(class_exists('userbalance')) {
+						$balance = new userbalance($this->login, 'realmoney', false);
+						$units = $balance->getUserBalance();
+				} else {
+					$units = 100500;
+					echo '{"message": "Module userbalance not found!", "desc": "Balance can`t be parsed!"},';
+				}
+			}
+			
+			return array($balance, $units);
 		}
 		
 		//Will be replaced

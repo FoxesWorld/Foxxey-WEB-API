@@ -112,10 +112,11 @@ if(!defined('startUpSound')) {
 				$getid3->Analyze($audioPath);
 				$answer['SNDMOOD'] = @$getid3->info["id3v2"]["comments"]["text"]["SNDMOOD"];
 				$answer['CHARACTER'] = @$getid3->info["id3v2"]["comments"]["text"]["CHARACTER"];
-				$answer['durationSnd'] = audioUtils::getFileLength($getid3);
+				$answer['durSnd'] = audioUtils::getFileLength($getid3);
+				$answer['timeShift'] = @$getid3->info["id3v2"]["comments"]["text"]["TIMESHIFT"];
 				$answer['fileName'] = str_replace(startUpSound::$absMnt,"",$audioPath);
 				$answer['md5'] = md5_file($audioPath);
-				$answer['soundAdditionalData'] = audioUtils::getAdditionalInfo($getid3);
+				$answer['sndADT'] = audioUtils::getAdditionalInfo($getid3);
 			} else {
 				$answer = 'noFile';
 			}
@@ -137,42 +138,6 @@ if(!defined('startUpSound')) {
 				startUpSound::$maxDuration = $duration;
 		}
 
-		/*
-		 * @param boolean $debug, Integer chance, of - sound|music
-		 * @return String easter
-		 *//*
-		protected static function easter($chance, $of) {
-			$minRange = 1;
-			$maxRange = 1000;
-			$easterChance = mt_rand($minRange, $maxRange);
-			switch($of){
-				case 'sound':
-					$confRarity = startUpSound::$config['easterSndRarity'];
-				break;
-				
-				case 'music':
-					$confRarity = startUpSound::$config['easterMusRarity'];
-				break;
-			}
-				if ($easterChance <= $chance){
-					startUpSound::$easter = "/easter";
-					switch($of){
-						case 'sound':
-							startUpSound::$isEasterSnd = 'true';
-						break;
-						
-						case 'music':
-							startUpSound::$isEasterMus = 'true';
-						break;
-					}
-					$easterStatus = true;
-				} else {
-					$easterStatus = true;
-					startUpSound::$easter = "";
-				}
-			return $easterStatus;
-		} */
-		
 		protected static function easter($chance) {
 			$minRange = 1;
 			$maxRange = 1000;
